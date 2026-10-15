@@ -1,0 +1,17 @@
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: evidence-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: evidence_user
+      POSTGRES_PASSWORD: teste
+      POSTGRES_DB: evidence_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
