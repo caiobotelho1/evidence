@@ -1,0 +1,356 @@
+
+/* Formulário principal */
+
+.form {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 20px;
+  font-family: var(--font-inter), Arial, sans-serif;
+  color: #1F3D2E;
+}
+
+/* Apresentação */
+
+.apresentacao {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.apresentacao h1 {
+  margin: 0;
+  font-family: var(--font-dm-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 1.2;
+  color: #1F3D2E;
+}
+
+.apresentacao p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #4A6A41;
+}
+
+/* Dados pessoais */
+
+.dados {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.field label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.field input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  padding: 0 16px;
+
+  border: 0.8px solid #9CAE8F;
+  border-radius: 12px;
+  background: #FFFFFF;
+
+  color: #1F3D2E;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.45;
+
+  outline: none;
+}
+
+.field input::placeholder {
+  color: #4A6A41;
+  opacity: 1;
+}
+
+.field input:focus {
+  border-color: #1F3D2E;
+  box-shadow: 0 0 0 2px rgba(31, 61, 46, 0.12);
+}
+
+/* Linha telefone + e-mail */
+
+.linhaContato {
+  display: grid;
+  grid-template-columns: 300fr 460fr;
+  gap: 20px;
+}
+
+/* Linha senha + confirmação */
+
+.linhaSenhas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.inputSenha {
+  position: relative;
+  width: 100%;
+}
+
+.inputSenha input {
+  padding-right: 48px;
+}
+
+.botaoOlho {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 28px;
+  height: 28px;
+  padding: 0;
+
+  border: none;
+  background: transparent;
+  color: #4A6441;
+  cursor: pointer;
+}
+
+.botaoOlho:hover {
+  color: #1F3D2E;
+}
+
+.botaoOlho:focus-visible {
+  outline: 2px solid #1F3D2E;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Tipo de uso */
+
+.tipoUso {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  border: none;
+}
+
+.tipoUso legend,
+.areaEmpresa legend {
+  margin-bottom: 12px;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.opcoesUso {
+  display: grid;
+  grid-template-columns: 340fr 420fr;
+  gap: 20px;
+}
+
+/* Radio buttons */
+
+.opcao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 14px;
+  line-height: 1.45;
+  color: #1F3D2E;
+
+  cursor: pointer;
+}
+
+.opcao input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+
+  width: 17px;
+  height: 17px;
+  margin: 0;
+
+  border: 1.5px solid #1F3D2E;
+  border-radius: 50%;
+  background: transparent;
+
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+}
+
+.opcao input[type="radio"]::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #1F3D2E;
+  transform: scale(0);
+}
+
+.opcao input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
+.opcao input[type="radio"]:checked + span {
+  font-weight: 500;
+}
+
+.opcao input[type="radio"]:focus-visible {
+  outline: 2px solid #4A6A41;
+  outline-offset: 3px;
+}
+
+/* Área da empresa */
+
+.areaEmpresa {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  margin: 0;
+  padding: 16px 20px;
+
+  min-width: 0;
+  border: none;
+  border-radius: 16px;
+  background: #EADFCF;
+}
+
+.areaEmpresa legend {
+  float: left;
+  width: 100%;
+  margin: 0 0 12px;
+}
+
+.opcoesPapel {
+  display: grid;
+  grid-template-columns: 390fr 330fr;
+  gap: 20px;
+  clear: both;
+}
+
+/* Finalização */
+
+.rodape {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.rodape p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.rodape a {
+  color: #1F3D2E;
+  text-decoration: none;
+}
+
+.rodape a:hover {
+  text-decoration: underline;
+}
+
+.botaoCadastrar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 236px;
+  height: 52px;
+  padding: 0 16px;
+
+  border: none;
+  border-radius: 12px;
+  background: #1F3D2E;
+
+  color: #FAF9F5;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.botaoCadastrar:hover {
+  background: #315744;
+}
+
+.botaoCadastrar:focus-visible {
+  outline: 2px solid #4A6A41;
+  outline-offset: 3px;
+}
+
+.erro {
+  margin: 0;
+  color: #B65A46;
+  font-size: 14px;
+}
+
+/* Responsividade */
+
+@media (max-width: 768px) {
+  .apresentacao h1 {
+    font-size: 32px;
+  }
+
+  .linhaContato,
+  .linhaSenhas {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .opcoesUso,
+  .opcoesPapel {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 540px) {
+  .linhaContato,
+  .linhaSenhas {
+    grid-template-columns: 1fr;
+  }
+
+  .apresentacao h1 {
+    font-size: 28px;
+  }
+
+  .rodape {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .rodape p {
+    text-align: center;
+  }
+
+  .botaoCadastrar {
+    width: 100%;
+  }
+}
