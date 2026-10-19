@@ -1,0 +1,124 @@
+.form {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.field input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  padding: 0 16px;
+  border: 0.8px solid #9CAE8F;
+  border-radius: 12px;
+  background: #FFFFFF;
+  color: #1F3D2E;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.field input::placeholder {
+  color: #4A6A41;
+  opacity: 1;
+}
+
+.field input:focus-visible {
+  outline: 2px solid #1F3D2E;
+  outline-offset: 2px;
+}
+
+.passwordWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.passwordWrapper input {
+  padding-right: 52px;
+}
+
+.passwordToggle {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  transform: translateY(-50%);
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #4A6441;
+  cursor: pointer;
+}
+
+.forgotPassword {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #1F3D2E;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+  cursor: pointer;
+}
+
+.forgotPassword:hover {
+  text-decoration: underline;
+}
+
+.submitButton {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 8px;
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 12px;
+  background: #1F3D2E;
+  color: #FAF9F5;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background: #2C503E;
+}
+
+.passwordToggle:focus-visible,
+.forgotPassword:focus-visible,
+.submitButton:focus-visible {
+  outline: 2px solid #1F3D2E;
+  outline-offset: 3px;
+}
+
+.message {
+  margin: 0;
+  color: #1F3D2E;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.message:empty {
+  display: none;
+}
