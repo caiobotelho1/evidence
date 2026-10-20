@@ -1,0 +1,101 @@
+
+.pagina {
+  min-height: 100vh;
+  background-color: #FAF9F5;
+  color: #1F3D2E;
+  padding: 32px 40px 60px;
+
+  font-family: var(--font-inter), Arial, sans-serif;
+}
+
+.cabecalho {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  color: #1F3D2E;
+  text-decoration: none;
+}
+
+.logo span {
+  font-family: var(--font-dm-serif), Georgia, serif;
+  font-size: 32px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.voltar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #1F3D2E;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.voltar:hover {
+  text-decoration: underline;
+}
+
+.container {
+  width: 100%;
+  max-width: 860px;
+  margin: 60px auto 0;
+
+  padding: 32px 40px;
+
+  background: #FFFFFF;
+  border: 1px solid #EADFCF;
+  border-radius: 24px;
+}
+
+@media (max-width: 768px) {
+  .pagina {
+    padding: 20px 16px 40px;
+  }
+
+  .logo span {
+    font-size: 26px;
+  }
+
+  .voltar {
+    font-size: 13px;
+  }
+
+  .container {
+    margin-top: 32px;
+    padding: 24px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cabecalho {
+    gap: 12px;
+  }
+
+  .logo {
+    gap: 6px;
+  }
+
+  .logo svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .logo span {
+    font-size: 23px;
+  }
+}
