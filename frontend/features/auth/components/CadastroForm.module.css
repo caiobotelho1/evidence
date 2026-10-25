@@ -1,41 +1,9 @@
-
-/* Formulário principal */
-
 .form {
   display: flex;
+  flex-direction: column;
   width: 100%;
-  flex-direction: column;
   gap: 20px;
-  font-family: var(--font-inter), Arial, sans-serif;
-  color: #1F3D2E;
 }
-
-/* Apresentação */
-
-.apresentacao {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.apresentacao h1 {
-  margin: 0;
-  font-family: var(--font-dm-serif), Georgia, serif;
-  font-style: italic;
-  font-weight: 400;
-  font-size: 40px;
-  line-height: 1.2;
-  color: #1F3D2E;
-}
-
-.apresentacao p {
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.45;
-  color: #4A6A41;
-}
-
-/* Dados pessoais */
 
 .dados {
   display: flex;
@@ -46,11 +14,13 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  flex: 1;
   min-width: 0;
+  gap: 8px;
 }
 
 .field label {
+  color: #1F3D2E;
   font-size: 14px;
   font-weight: 500;
   line-height: 1.4;
@@ -62,17 +32,13 @@
   min-width: 0;
   height: 48px;
   padding: 0 16px;
-
+  background: #FFFFFF;
+  color: #1F3D2E;
   border: 0.8px solid #9CAE8F;
   border-radius: 12px;
-  background: #FFFFFF;
-
-  color: #1F3D2E;
   font: inherit;
   font-size: 14px;
   line-height: 1.45;
-
-  outline: none;
 }
 
 .field input::placeholder {
@@ -81,60 +47,51 @@
 }
 
 .field input:focus {
-  border-color: #1F3D2E;
-  box-shadow: 0 0 0 2px rgba(31, 61, 46, 0.12);
+  outline: 2px solid #4A6A41;
+  outline-offset: 1px;
 }
 
-/* Linha telefone + e-mail */
-
-.linhaContato {
+.contato {
   display: grid;
-  grid-template-columns: 300fr 460fr;
+  grid-template-columns: 300px minmax(0, 1fr);
   gap: 20px;
 }
 
-/* Linha senha + confirmação */
-
-.linhaSenhas {
+.senhas {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
 }
 
-.inputSenha {
+.passwordWrapper {
   position: relative;
   width: 100%;
 }
 
-.inputSenha input {
-  padding-right: 48px;
+.passwordWrapper input {
+  padding-right: 84px;
 }
 
-.botaoOlho {
+.showPassword {
   position: absolute;
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 28px;
-  height: 28px;
-  padding: 0;
-
+  padding: 6px;
   border: none;
   background: transparent;
-  color: #4A6441;
+  color: #4A6A41;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
 }
 
-.botaoOlho:hover {
+.showPassword:hover {
   color: #1F3D2E;
 }
 
-.botaoOlho:focus-visible {
+.showPassword:focus-visible {
   outline: 2px solid #1F3D2E;
   outline-offset: 2px;
   border-radius: 4px;
@@ -142,215 +99,235 @@
 
 /* Tipo de uso */
 
-.tipoUso {
+.tipoUso,
+.grupoEmpresa {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  min-width: 0;
   margin: 0;
   padding: 0;
-  min-width: 0;
-  border: none;
+  border: 0;
+  gap: 12px;
 }
 
 .tipoUso legend,
-.areaEmpresa legend {
+.grupoEmpresa legend {
+  display: block;
+  width: 100%;
   margin-bottom: 12px;
   padding: 0;
+  color: #1F3D2E;
   font-size: 15px;
   font-weight: 500;
   line-height: 1.45;
 }
 
-.opcoesUso {
+.opcoesUso,
+.opcoesEmpresa {
   display: grid;
-  grid-template-columns: 340fr 420fr;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
   gap: 20px;
 }
 
-/* Radio buttons */
+.opcoesUso {
+  grid-template-columns: 340px minmax(0, 1fr);
+}
 
-.opcao {
-  display: flex;
+.opcoesEmpresa {
+  grid-template-columns: 390px minmax(0, 1fr);
+}
+
+.radioLabel {
+  display: inline-flex;
   align-items: center;
+  min-width: 0;
   gap: 10px;
-
-  font-size: 14px;
-  line-height: 1.45;
   color: #1F3D2E;
-
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
   cursor: pointer;
 }
 
-.opcao input[type="radio"] {
+.radioLabel input[type="radio"] {
   appearance: none;
   -webkit-appearance: none;
-  flex-shrink: 0;
-
-  width: 17px;
-  height: 17px;
-  margin: 0;
-
-  border: 1.5px solid #1F3D2E;
-  border-radius: 50%;
-  background: transparent;
-
   display: grid;
   place-content: center;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  margin: 0;
+  border: 1.25px solid #1F3D2E;
+  border-radius: 50%;
+  background: transparent;
   cursor: pointer;
 }
 
-.opcao input[type="radio"]::before {
+.radioLabel input[type="radio"]::before {
   content: "";
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: #1F3D2E;
   transform: scale(0);
+  transition: transform 0.12s ease;
 }
 
-.opcao input[type="radio"]:checked::before {
+.radioLabel input[type="radio"]:checked::before {
   transform: scale(1);
 }
 
-.opcao input[type="radio"]:checked + span {
-  font-weight: 500;
-}
-
-.opcao input[type="radio"]:focus-visible {
+.radioLabel input[type="radio"]:focus-visible {
   outline: 2px solid #4A6A41;
   outline-offset: 3px;
 }
 
-/* Área da empresa */
+/* Painel empresarial das telas 04 e 05 */
 
-.areaEmpresa {
+.painelEmpresa {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-
-  margin: 0;
-  padding: 16px 20px;
-
-  min-width: 0;
-  border: none;
-  border-radius: 16px;
-  background: #EADFCF;
-}
-
-.areaEmpresa legend {
-  float: left;
   width: 100%;
-  margin: 0 0 12px;
+  padding: 16px 20px;
+  gap: 12px;
+  background: #EADFCF;
+  border-radius: 16px;
 }
 
-.opcoesPapel {
-  display: grid;
-  grid-template-columns: 390fr 330fr;
-  gap: 20px;
-  clear: both;
+.observacao {
+  margin: 12px 0 0;
+  color: #4A6A41;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.45;
 }
 
-/* Finalização */
+/* Mensagens de validação */
 
-.rodape {
+.erro {
+  margin: 0;
+  padding: 10px 12px;
+  color: #9B342C;
+  background: #FFF0ED;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.mensagem {
+  margin: 0;
+  padding: 10px 12px;
+  color: #1F3D2E;
+  background: #EAF1E7;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* Rodapé */
+
+.footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   gap: 20px;
 }
 
-.rodape p {
+.loginText {
   margin: 0;
+  color: #1F3D2E;
   font-size: 14px;
   font-weight: 500;
+  line-height: 1.45;
 }
 
-.rodape a {
+.loginText a {
   color: #1F3D2E;
-  text-decoration: none;
-}
-
-.rodape a:hover {
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-.botaoCadastrar {
-  display: flex;
+.loginText a:hover {
+  color: #4A6A41;
+}
+
+.loginText a:focus-visible {
+  outline: 2px solid #1F3D2E;
+  outline-offset: 3px;
+}
+
+.submitButton {
+  display: inline-flex;
   justify-content: center;
   align-items: center;
-
   width: 236px;
-  height: 52px;
-  padding: 0 16px;
-
+  min-height: 52px;
+  padding: 12px 20px;
   border: none;
   border-radius: 12px;
   background: #1F3D2E;
-
   color: #FAF9F5;
-  font: inherit;
+  font-family: inherit;
   font-size: 15px;
   font-weight: 600;
-
+  line-height: 1.4;
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
-.botaoCadastrar:hover {
-  background: #315744;
+.submitButton:hover {
+  background: #315640;
 }
 
-.botaoCadastrar:focus-visible {
-  outline: 2px solid #4A6A41;
+.submitButton:focus-visible {
+  outline: 3px solid #9CAE8F;
   outline-offset: 3px;
-}
-
-.erro {
-  margin: 0;
-  color: #B65A46;
-  font-size: 14px;
 }
 
 /* Responsividade */
 
 @media (max-width: 768px) {
-  .apresentacao h1 {
-    font-size: 32px;
+  .contato {
+    grid-template-columns: minmax(0, 1fr) 1.4fr;
+    gap: 16px;
   }
 
-  .linhaContato,
-  .linhaSenhas {
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
+  .senhas {
+    gap: 16px;
   }
 
   .opcoesUso,
-  .opcoesPapel {
-    grid-template-columns: 1fr;
-    gap: 12px;
+  .opcoesEmpresa {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
   }
 }
 
-@media (max-width: 540px) {
-  .linhaContato,
-  .linhaSenhas {
+@media (max-width: 600px) {
+  .contato,
+  .senhas,
+  .opcoesUso,
+  .opcoesEmpresa {
     grid-template-columns: 1fr;
+    gap: 14px;
   }
 
-  .apresentacao h1 {
-    font-size: 28px;
+  .painelEmpresa {
+    padding: 16px;
   }
 
-  .rodape {
-    flex-direction: column-reverse;
+  .footer {
+    flex-direction: column;
     align-items: stretch;
+    gap: 16px;
   }
 
-  .rodape p {
-    text-align: center;
-  }
-
-  .botaoCadastrar {
+  .submitButton {
     width: 100%;
+  }
+
+  .loginText {
+    text-align: center;
   }
 }

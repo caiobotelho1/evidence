@@ -4,44 +4,99 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import styles from "./CadastroForm.module.css";
 
-
 type TipoUso = "pessoal" | "empresa";
-type PapelEmpresa = "proprietario" | "funcionario";
+type VinculoEmpresa = "responsavel" | "funcionario";
+type MomentoCadastro = "agora" | "depois";
+type SolicitacaoEmpresa = "agora" | "depois";
 
 export default function CadastroForm() {
-  const [tipoUso, setTipoUso] = useState<TipoUso>("empresa");
-  const [papel, setPapel] = useState<PapelEmpresa>("funcionario");
+  const [nome, setNome] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
 
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false);
 
-  const [senha, setSenha] = useState("");
-  const [confirmarSenha, setConfirmarSenha] = useState("");
+  const [tipoUso, setTipoUso] = useState<TipoUso>("pessoal");
+
+  const [vinculo, setVinculo] = useState<VinculoEmpresa | null>(null);
+
+  const [momentoCadastro, setMomentoCadastro] =
+    useState<MomentoCadastro>("agora");
+
+  const [solicitacaoEmpresa, setSolicitacaoEmpresa] =
+    useState<SolicitacaoEmpresa>("agora");
+
   const [erro, setErro] = useState("");
+  const [mensagem, setMensagem] = useState("");
+
+  const usaEmpresa = tipoUso === "empresa";
+  const responsavel = usaEmpresa && vinculo === "responsavel";
+  const funcionario = usaEmpresa && vinculo === "funcionario";
+
+  function alterarTipoUso(valor: TipoUso) {
+    setTipoUso(valor);
+    setVinculo(null);
+    setErro("");
+    setMensagem("");
+  }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setErro("");
 
-    if (senha !== confirmarSenha) {
-      setErro("As senhas não coincidem.");
+    setErro("");
+    setMensagem("");
+
+    if (
+      !nome.trim() ||
+      !telefone.trim() ||
+      !email.trim() ||
+      !senha ||
+      !confirmarSenha
+    ) {
+      setErro("Preencha todos os campos obrigatórios.");
       return;
     }
 
-    // Integração com o backend será adicionada aqui.
-    // Não atribua permissões apenas com base no radio selecionado.
-    console.log("Formulário validado.");
+    if (senha !== confirmarSenha) {
+      setErro("As senhas informadas não coincidem.");
+      return;
+    }
+
+    if (usaEmpresa && !vinculo) {
+      setErro("Informe seu vínculo com a empresa.");
+      return;
+    }
+
+    if (responsavel && momentoCadastro === "agora") {
+      setMensagem(
+        "Dados validados. Após a criação e autenticação da conta, " +
+          "você será encaminhado ao cadastro de empresa."
+      );
+
+      // Após a API confirmar a criação da conta e a autenticação:
+      // router.push("/cadastro-empresa");
+      return;
+    }
+
+    if (funcionario && solicitacaoEmpresa === "agora") {
+      setMensagem(
+        "Dados validados. Após criar sua conta, você poderá " +
+          "solicitar participação na empresa."
+      );
+      return;
+    }
+
+    setMensagem(
+      "Dados validados. A criação da conta estará disponível " +
+        "quando o formulário for integrado à API."
+    );
   }
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      {/* Apresentação */}
-      <div className={styles.apresentacao}>
-        <h1>Oi, prazer em te conhecer.</h1>
-        <p>Vamos começar pelos seus dados.</p>
-      </div>
-
-      {/* Dados pessoais */}
       <div className={styles.dados}>
         <div className={styles.field}>
           <label htmlFor="nome">Qual é o seu nome?</label>
@@ -49,21 +104,25 @@ export default function CadastroForm() {
             id="nome"
             name="nome"
             type="text"
-            placeholder="Seu nome completo"
+            placeholder="Digite aqui"
             autoComplete="name"
+            value={nome}
+            onChange={(event) => setNome(event.target.value)}
             required
           />
         </div>
 
-        <div className={styles.linhaContato}>
+        <div className={styles.contato}>
           <div className={styles.field}>
             <label htmlFor="telefone">Telefone</label>
             <input
               id="telefone"
               name="telefone"
               type="tel"
-              placeholder="(00) 00000-0000"
+              placeholder="Digite aqui"
               autoComplete="tel"
+              value={telefone}
+              onChange={(event) => setTelefone(event.target.value)}
               required
             />
           </div>
@@ -74,222 +133,245 @@ export default function CadastroForm() {
               id="email"
               name="email"
               type="email"
-              placeholder="voce@exemplo.com"
+              placeholder="Digite aqui"
               autoComplete="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
               required
             />
           </div>
         </div>
 
-        {/* Senhas */}
-        <div className={styles.linhaSenhas}>
+        <div className={styles.senhas}>
           <div className={styles.field}>
             <label htmlFor="senha">Senha</label>
 
-            <div className={styles.inputSenha}>
+            <div className={styles.passwordWrapper}>
               <input
                 id="senha"
                 name="senha"
                 type={mostrarSenha ? "text" : "password"}
-                placeholder="Crie uma senha"
+                placeholder="Digite aqui"
                 autoComplete="new-password"
-                minLength={8}
                 value={senha}
-                onChange={(e) => setSenha(e.target.value)}
+                onChange={(event) => setSenha(event.target.value)}
                 required
               />
 
               <button
                 type="button"
-                className={styles.botaoOlho}
+                className={styles.showPassword}
                 onClick={() => setMostrarSenha(!mostrarSenha)}
                 aria-label={
                   mostrarSenha ? "Ocultar senha" : "Mostrar senha"
                 }
                 aria-pressed={mostrarSenha}
               >
-                <EyeIcon />
+                {mostrarSenha ? "Ocultar" : "Mostrar"}
               </button>
             </div>
           </div>
 
           <div className={styles.field}>
-            <label htmlFor="confirmarSenha">
-              Confirmar senha
-            </label>
+            <label htmlFor="confirmarSenha">Confirmar senha</label>
 
-            <div className={styles.inputSenha}>
+            <div className={styles.passwordWrapper}>
               <input
                 id="confirmarSenha"
                 name="confirmarSenha"
                 type={mostrarConfirmacao ? "text" : "password"}
-                placeholder="Repita sua senha"
+                placeholder="Digite aqui"
                 autoComplete="new-password"
-                minLength={8}
                 value={confirmarSenha}
-                onChange={(e) => setConfirmarSenha(e.target.value)}
+                onChange={(event) =>
+                  setConfirmarSenha(event.target.value)
+                }
                 required
               />
 
               <button
                 type="button"
-                className={styles.botaoOlho}
+                className={styles.showPassword}
                 onClick={() =>
                   setMostrarConfirmacao(!mostrarConfirmacao)
                 }
                 aria-label={
                   mostrarConfirmacao
-                    ? "Ocultar confirmação"
-                    : "Mostrar confirmação"
+                    ? "Ocultar confirmação de senha"
+                    : "Mostrar confirmação de senha"
                 }
                 aria-pressed={mostrarConfirmacao}
               >
-                <EyeIcon />
+                {mostrarConfirmacao ? "Ocultar" : "Mostrar"}
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Tipo de uso */}
       <fieldset className={styles.tipoUso}>
-        <legend>
-          Como você pretende usar o Evidence?
-        </legend>
+        <legend>Como você pretende usar o Evidence?</legend>
 
         <div className={styles.opcoesUso}>
-          <label className={styles.opcao}>
+          <label className={styles.radioLabel}>
             <input
               type="radio"
               name="tipoUso"
               value="pessoal"
               checked={tipoUso === "pessoal"}
-              onChange={() => setTipoUso("pessoal")}
+              onChange={() => alterarTipoUso("pessoal")}
             />
             <span>Apenas para uso pessoal</span>
           </label>
 
-          <label className={styles.opcao}>
+          <label className={styles.radioLabel}>
             <input
               type="radio"
               name="tipoUso"
               value="empresa"
               checked={tipoUso === "empresa"}
-              onChange={() => setTipoUso("empresa")}
+              onChange={() => alterarTipoUso("empresa")}
             />
             <span>Também para minha empresa</span>
           </label>
         </div>
       </fieldset>
 
-      {/* Vínculo com empresa */}
-      {tipoUso === "empresa" && (
-        <fieldset className={styles.areaEmpresa}>
-          <legend>
-            Você é responsável pela empresa?
-          </legend>
+      {usaEmpresa && (
+        <section
+          className={styles.painelEmpresa}
+          aria-label="Seu vínculo com a empresa"
+        >
+          <fieldset className={styles.grupoEmpresa}>
+            <legend>Você é responsável pela empresa?</legend>
 
-          <div className={styles.opcoesPapel}>
-            <label className={styles.opcao}>
-              <input
-                type="radio"
-                name="papel"
-                value="proprietario"
-                checked={papel === "proprietario"}
-                onChange={() => setPapel("proprietario")}
-              />
-              <span>
-                Sim, quero cadastrar minha empresa
-              </span>
-            </label>
-
-            <label className={styles.opcao}>
-              <input
-                type="radio"
-                name="papel"
-                value="funcionario"
-                checked={papel === "funcionario"}
-                onChange={() => setPapel("funcionario")}
-              />
-              <span>Não, sou funcionário(a)</span>
-            </label>
-          </div>
-
-          {papel === "funcionario" && (
-            <div className={styles.field}>
-              <label htmlFor="empresa">
-                Busque sua empresa
+            <div className={styles.opcoesEmpresa}>
+              <label className={styles.radioLabel}>
+                <input
+                  type="radio"
+                  name="vinculo"
+                  value="responsavel"
+                  checked={vinculo === "responsavel"}
+                  onChange={() => {
+                    setVinculo("responsavel");
+                    setErro("");
+                    setMensagem("");
+                  }}
+                />
+                <span>Sim, sou responsável pela empresa</span>
               </label>
 
-              <input
-                id="empresa"
-                name="empresa"
-                type="text"
-                placeholder="Digite o nome ou CNPJ da empresa"
-                required
-              />
-            </div>
-          )}
-
-          {papel === "proprietario" && (
-            <div className={styles.field}>
-              <label htmlFor="nomeEmpresa">
-                Nome da sua empresa
+              <label className={styles.radioLabel}>
+                <input
+                  type="radio"
+                  name="vinculo"
+                  value="funcionario"
+                  checked={vinculo === "funcionario"}
+                  onChange={() => {
+                    setVinculo("funcionario");
+                    setErro("");
+                    setMensagem("");
+                  }}
+                />
+                <span>Não, sou funcionário(a)</span>
               </label>
-
-              <input
-                id="nomeEmpresa"
-                name="nomeEmpresa"
-                type="text"
-                placeholder="Digite o nome da empresa"
-                required
-              />
             </div>
+          </fieldset>
+
+          {responsavel && (
+            <fieldset className={styles.grupoEmpresa}>
+              <legend>
+                Quando deseja cadastrar sua empresa?
+              </legend>
+
+              <div className={styles.opcoesEmpresa}>
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="momentoCadastro"
+                    value="agora"
+                    checked={momentoCadastro === "agora"}
+                    onChange={() => setMomentoCadastro("agora")}
+                  />
+                  <span>Cadastrar agora</span>
+                </label>
+
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="momentoCadastro"
+                    value="depois"
+                    checked={momentoCadastro === "depois"}
+                    onChange={() => setMomentoCadastro("depois")}
+                  />
+                  <span>Cadastrar depois</span>
+                </label>
+              </div>
+
+              <p className={styles.observacao}>
+                Você também poderá cadastrar sua empresa mais
+                tarde, pela sua conta.
+              </p>
+            </fieldset>
           )}
-        </fieldset>
+
+          {funcionario && (
+            <fieldset className={styles.grupoEmpresa}>
+              <legend>
+                Deseja solicitar participação na sua empresa?
+              </legend>
+
+              <div className={styles.opcoesEmpresa}>
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="solicitacaoEmpresa"
+                    value="agora"
+                    checked={solicitacaoEmpresa === "agora"}
+                    onChange={() => setSolicitacaoEmpresa("agora")}
+                  />
+                  <span>
+                    Sim, solicitar logo após criar minha conta
+                  </span>
+                </label>
+
+                <label className={styles.radioLabel}>
+                  <input
+                    type="radio"
+                    name="solicitacaoEmpresa"
+                    value="depois"
+                    checked={solicitacaoEmpresa === "depois"}
+                    onChange={() => setSolicitacaoEmpresa("depois")}
+                  />
+                  <span>Vou fazer isso depois</span>
+                </label>
+              </div>
+            </fieldset>
+          )}
+        </section>
       )}
 
-      {/* Mensagem de erro */}
       {erro && (
         <p className={styles.erro} role="alert">
           {erro}
         </p>
       )}
 
-      {/* Finalização */}
-      <div className={styles.rodape}>
-        <p>
-          Já tem conta?{" "}
-          <Link href="/login">Entrar</Link>
+      {mensagem && (
+        <p className={styles.mensagem} role="status">
+          {mensagem}
+        </p>
+      )}
+
+      <div className={styles.footer}>
+        <p className={styles.loginText}>
+          Já tem conta? <Link href="/login">Entrar</Link>
         </p>
 
-        <button
-          type="submit"
-          className={styles.botaoCadastrar}
-        >
-          Criar minha conta
+        <button type="submit" className={styles.submitButton}>
+          Continuar
         </button>
       </div>
     </form>
-  );
-}
-
-// Ícone para mostrar e ocultar senha
-function EyeIcon() {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
   );
 }
