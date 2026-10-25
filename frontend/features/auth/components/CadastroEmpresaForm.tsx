@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, type FormEvent } from "react";
@@ -73,14 +72,6 @@ export default function CadastroEmpresaForm() {
       setErro("Informe um e-mail válido.");
       return;
     }
-
-    // TODO: integrar com a API de cadastro de empresas.
-    // O backend deverá validar o CNPJ, os dados da empresa
-    // e a permissão do usuário responsável.
-    //
-    // Após confirmação do backend, redirecionar para a
-    // página apropriada do fluxo.
-
     setMensagem(
       "Dados validados! O cadastro da empresa será concluído " +
         "quando a integração com o backend estiver disponível."
