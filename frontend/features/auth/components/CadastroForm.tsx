@@ -75,9 +75,6 @@ export default function CadastroForm() {
         "Dados validados. Após a criação e autenticação da conta, " +
           "você será encaminhado ao cadastro de empresa."
       );
-
-      // Após a API confirmar a criação da conta e a autenticação:
-      // router.push("/cadastro-empresa");
       return;
     }
 

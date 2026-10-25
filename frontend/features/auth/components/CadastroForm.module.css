@@ -97,8 +97,6 @@
   border-radius: 4px;
 }
 
-/* Tipo de uso */
-
 .tipoUso,
 .grupoEmpresa {
   display: flex;
@@ -184,8 +182,6 @@
   outline-offset: 3px;
 }
 
-/* Painel empresarial das telas 04 e 05 */
-
 .painelEmpresa {
   display: flex;
   flex-direction: column;
@@ -204,8 +200,6 @@
   line-height: 1.45;
 }
 
-/* Mensagens de validação */
-
 .erro {
   margin: 0;
   padding: 10px 12px;
@@ -223,8 +217,6 @@
   border-radius: 8px;
   font-size: 14px;
 }
-
-/* Rodapé */
 
 .footer {
   display: flex;
@@ -284,8 +276,6 @@
   outline: 3px solid #9CAE8F;
   outline-offset: 3px;
 }
-
-/* Responsividade */
 
 @media (max-width: 768px) {
   .contato {

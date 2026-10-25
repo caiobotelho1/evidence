@@ -1,0 +1,166 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 20px;
+}
+
+.dadosEmpresa {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: 8px;
+}
+
+.field label {
+  color: #1F3D2E;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.field input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  padding: 0 16px;
+  background: #FFFFFF;
+  color: #1F3D2E;
+  border: 0.8px solid #9CAE8F;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.field input::placeholder {
+  color: #4A6A41;
+  opacity: 1;
+}
+
+.field input:focus {
+  outline: 2px solid #4A6A41;
+  outline-offset: 1px;
+}
+
+.contato {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 20px;
+}
+
+.observacao {
+  margin: 0;
+  color: #4A6A41;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+.erro {
+  margin: 0;
+  padding: 10px 12px;
+  background: #FFF0ED;
+  color: #9B342C;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.mensagem {
+  margin: 0;
+  padding: 10px 12px;
+  background: #EAF1E7;
+  color: #1F3D2E;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+}
+
+.laterLink {
+  color: #1F3D2E;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.laterLink:hover {
+  text-decoration: underline;
+}
+
+.laterLink:focus-visible {
+  outline: 2px solid #1F3D2E;
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.submitButton {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 236px;
+  min-height: 52px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 12px;
+  background: #1F3D2E;
+  color: #FAF9F5;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.submitButton:hover {
+  background: #315640;
+}
+
+.submitButton:focus-visible {
+  outline: 3px solid #9CAE8F;
+  outline-offset: 3px;
+}
+
+@media (max-width: 768px) {
+  .contato {
+    grid-template-columns: minmax(0, 1fr) 1.4fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .contato {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .laterLink {
+    text-align: center;
+  }
+
+  .submitButton {
+    width: 100%;
+  }
+}

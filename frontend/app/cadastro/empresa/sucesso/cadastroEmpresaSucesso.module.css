@@ -1,0 +1,267 @@
+.page {
+  box-sizing: border-box;
+  min-height: 100vh;
+  width: 100%;
+  padding: 32px 40px 80px;
+  background: #FAF9F5;
+  color: #1F3D2E;
+  font-family: var(--font-inter), Arial, sans-serif;
+}
+
+.page *,
+.page *::before,
+.page *::after {
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: #1F3D2E;
+  text-decoration: none;
+  font-family: var(--font-dm-serif), Georgia, serif;
+  font-size: 32px;
+  font-style: italic;
+  line-height: 1.2;
+}
+
+.brandSymbol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.brandSymbol svg {
+  display: block;
+  width: 36px;
+  height: 36px;
+}
+
+.backLink {
+  color: #1F3D2E;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 860px;
+  margin: 150px auto 0;
+  padding: 32px 40px;
+  gap: 20px;
+  background: #FFFFFF;
+  border: 1px solid #EADFCF;
+  border-radius: 24px;
+  text-align: center;
+}
+
+.successIcon {
+  width: 64px;
+  height: 64px;
+  color: #1F3D2E;
+}
+
+.successIcon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.intro h1 {
+  margin: 0;
+  color: #1F3D2E;
+  font-family: var(--font-dm-serif), Georgia, serif;
+  font-size: 40px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.intro p {
+  margin: 0;
+  color: #4A6A41;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.infoPanel {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  padding: 20px 24px;
+  gap: 14px;
+  background: #EADFCF;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.panelIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: #1F3D2E;
+  border: 1.5px solid #1F3D2E;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.panelContent {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.panelContent h2 {
+  margin: 0;
+  color: #1F3D2E;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.panelContent p {
+  margin: 0;
+  color: #4A6A41;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+}
+
+.footer p {
+  margin: 0;
+  color: #4A6A41;
+  font-size: 15px;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.submitButton {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 236px;
+  min-height: 52px;
+  padding: 12px 24px;
+  background: #1F3D2E;
+  color: #FAF9F5;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.submitButton:hover {
+  background: #315640;
+}
+
+.submitButton:focus-visible,
+.backLink:focus-visible,
+.brand:focus-visible {
+  outline: 3px solid #9CAE8F;
+  outline-offset: 4px;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 24px 20px 48px;
+  }
+
+  .card {
+    margin-top: 80px;
+    padding: 28px 24px;
+  }
+
+  .intro h1 {
+    font-size: 34px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 20px 14px 40px;
+  }
+
+  .brand {
+    font-size: 25px;
+    gap: 6px;
+  }
+
+  .brandSymbol,
+  .brandSymbol svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .backLink {
+    font-size: 12px;
+  }
+
+  .card {
+    margin-top: 48px;
+    padding: 24px 18px;
+    border-radius: 18px;
+  }
+
+  .intro h1 {
+    font-size: 30px;
+  }
+
+  .infoPanel {
+    padding: 16px;
+  }
+
+  .submitButton {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .footer p {
+    text-align: center;
+  }
+
+}
