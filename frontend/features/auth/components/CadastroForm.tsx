@@ -2,6 +2,9 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ApiError } from "@/services/api";
+import { createUser } from "@/services/users.service";
 import styles from "./CadastroForm.module.css";
 
 type TipoUso = "pessoal" | "empresa";
@@ -10,6 +13,8 @@ type MomentoCadastro = "agora" | "depois";
 type SolicitacaoEmpresa = "agora" | "depois";
 
 export default function CadastroForm() {
+  const router = useRouter();
+
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
@@ -31,6 +36,7 @@ export default function CadastroForm() {
 
   const [erro, setErro] = useState("");
   const [mensagem, setMensagem] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
   const usaEmpresa = tipoUso === "empresa";
   const responsavel = usaEmpresa && vinculo === "responsavel";
@@ -43,7 +49,7 @@ export default function CadastroForm() {
     setMensagem("");
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setErro("");
@@ -70,26 +76,26 @@ export default function CadastroForm() {
       return;
     }
 
-    if (responsavel && momentoCadastro === "agora") {
-      setMensagem(
-        "Dados validados. Após a criação e autenticação da conta, " +
-          "você será encaminhado ao cadastro de empresa."
-      );
-      return;
-    }
+    setEnviando(true);
 
-    if (funcionario && solicitacaoEmpresa === "agora") {
-      setMensagem(
-        "Dados validados. Após criar sua conta, você poderá " +
-          "solicitar participação na empresa."
-      );
-      return;
-    }
+    try {
+      await createUser({
+        name: nome.trim(),
+        email: email.trim(),
+        phone: telefone,
+        password: senha,
+      });
 
-    setMensagem(
-      "Dados validados. A criação da conta estará disponível " +
-        "quando o formulário for integrado à API."
-    );
+      if (responsavel && momentoCadastro === "agora") {
+        router.push("/cadastro/empresa");
+        return;
+      }
+
+      router.push("/cadastro/sucesso");
+    } catch (error) {
+      setErro(mensagemDeErro(error));
+      setEnviando(false);
+    }
   }
 
   return (
@@ -365,10 +371,25 @@ export default function CadastroForm() {
           Já tem conta? <Link href="/login">Entrar</Link>
         </p>
 
-        <button type="submit" className={styles.submitButton}>
-          Continuar
+        <button
+          type="submit"
+          className={styles.submitButton}
+          disabled={enviando}
+        >
+          {enviando ? "Criando conta..." : "Continuar"}
         </button>
       </div>
     </form>
   );
+}
+
+function mensagemDeErro(error: unknown): string {
+  if (error instanceof ApiError) {
+    const primeira = error.fields
+      ? Object.values(error.fields).flat()[0]
+      : undefined;
+    return primeira ?? error.message;
+  }
+
+  return "Ocorreu um erro inesperado.";
 }
