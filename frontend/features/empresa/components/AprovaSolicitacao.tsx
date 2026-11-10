@@ -17,7 +17,6 @@ export default function SolicitacaoAprovada() {
 
   return (
     <div className={styles.container}>
-      {/* Ícone de confirmação */}
       <div className={styles.successIcon} aria-hidden="true">
         <svg viewBox="0 0 64 64" fill="none">
           <circle
@@ -37,7 +36,7 @@ export default function SolicitacaoAprovada() {
         </svg>
       </div>
 
-      {/* Apresentação */}
+
       <div className={styles.intro}>
         <h1>Solicitação aprovada!</h1>
 
@@ -46,7 +45,6 @@ export default function SolicitacaoAprovada() {
         </p>
       </div>
 
-      {/* Informações da aprovação */}
       <div className={styles.infoPanel}>
         <div className={styles.panelHeader}>
           <svg
@@ -88,13 +86,11 @@ export default function SolicitacaoAprovada() {
         </div>
       </div>
 
-      {/* Informação adicional */}
       <p className={styles.description}>
         O funcionário já pode acessar a empresa com a sua conta
         e começar a utilizar o sistema.
       </p>
 
-      {/* Botão de retorno */}
       <div className={styles.footer}>
         <Link
           href="/cadastro/empresa/receber-solicitacao"
