@@ -1,18 +1,35 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { ApiError } from "@/services/api";
+import { login } from "@/services/auth.service";
 import styles from "./LoginForm.module.css";
 
 export function LoginForm() {
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    setMessage(
-      "O login ainda não está conectado ao servidor."
-    );
+    setMessage("");
+    setError("");
+    setSubmitting(true);
+
+    try {
+      await login({ email, password });
+      router.replace("/registros");
+    } catch (err) {
+      setError(errorMessage(err));
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -26,6 +43,8 @@ export function LoginForm() {
           type="email"
           placeholder="voce@exemplo.com"
           autoComplete="username"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
           required
         />
       </div>
@@ -40,6 +59,8 @@ export function LoginForm() {
             type={showPassword ? "text" : "password"}
             placeholder="Digite sua senha"
             autoComplete="current-password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
             required
           />
 
@@ -73,15 +94,26 @@ export function LoginForm() {
       <button
         type="button"
         className={styles.forgotPassword}
-        onClick={() =>
-          setMessage("A recuperação de senha ainda não está disponível.")
-        }
+        onClick={() => {
+          setError("");
+          setMessage("A recuperação de senha ainda não está disponível.");
+        }}
       >
         Esqueci minha senha
       </button>
 
-      <button type="submit" className={styles.submitButton}>
-        Entrar
+      {error && (
+        <p className={styles.error} role="alert">
+          {error}
+        </p>
+      )}
+
+      <button
+        type="submit"
+        className={styles.submitButton}
+        disabled={submitting}
+      >
+        {submitting ? "Entrando..." : "Entrar"}
       </button>
 
       <p className={styles.message} role="status">
@@ -89,4 +121,16 @@ export function LoginForm() {
       </p>
     </form>
   );
+}
+
+function errorMessage(error: unknown): string {
+  if (error instanceof ApiError) {
+    const firstFieldError = error.fields
+      ? Object.values(error.fields).flat()[0]
+      : undefined;
+
+    return firstFieldError ?? error.message;
+  }
+
+  return "Ocorreu um erro inesperado.";
 }

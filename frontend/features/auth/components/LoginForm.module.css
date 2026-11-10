@@ -105,6 +105,11 @@
   background: #2C503E;
 }
 
+.submitButton:disabled {
+  background: #6F8478;
+  cursor: not-allowed;
+}
+
 .passwordToggle:focus-visible,
 .forgotPassword:focus-visible,
 .submitButton:focus-visible {
@@ -121,4 +126,14 @@
 
 .message:empty {
   display: none;
+}
+
+.error {
+  margin: 0;
+  padding: 10px 12px;
+  color: #9B342C;
+  background: #FFF0ED;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
 }
