@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { AuthGate } from "@/features/auth/components/AuthGate";
+import { UserMenu } from "@/features/auth/components/UserMenu";
 
 export const metadata: Metadata = {
   title: "Registros | Evidence",
@@ -6,8 +8,13 @@ export const metadata: Metadata = {
 
 export default function RegistrosPage() {
   return (
-    <main className="flex flex-1 flex-col gap-6 p-6">
-      <h1 className="text-2xl font-semibold">Registros</h1>
-    </main>
+    <AuthGate>
+      <main className="flex flex-1 flex-col gap-6 p-6">
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-2xl font-semibold">Registros</h1>
+          <UserMenu />
+        </div>
+      </main>
+    </AuthGate>
   );
 }
