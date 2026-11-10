@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { DM_Serif_Display, Inter } from "next/font/google";
 
-import SolicitarParticipacaoForm from "@/features/auth/components/SolicitarParticipacaoForm";
+import SolicitarParticipacaoForm from "@/features/empresa/components/SolicitarParticipacaoForm";
 import styles from "./solicitarParticipacao.module.css";
 
 const inter = Inter({

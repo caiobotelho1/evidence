@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { DM_Serif_Display, Inter } from "next/font/google";
 
-import CadastroEmpresaForm from "@/features/auth/components/CadastroEmpresaForm";
+import CadastroEmpresaForm from "@/features/empresa/components/CadastroEmpresaForm";
 import styles from "./cadastroEmpresa.module.css";
 
 const inter = Inter({
