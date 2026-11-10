@@ -2,9 +2,16 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+import { ApiError } from "@/services/api";
+import { createCompany } from "@/services/company.service";
+
 import styles from "./CadastroEmpresaForm.module.css";
 
 export default function CadastroEmpresaForm() {
+  const router = useRouter();
+
   const [cnpj, setCnpj] = useState("");
   const [razaoSocial, setRazaoSocial] = useState("");
   const [nomeFantasia, setNomeFantasia] = useState("");
@@ -12,7 +19,7 @@ export default function CadastroEmpresaForm() {
   const [email, setEmail] = useState("");
 
   const [erro, setErro] = useState("");
-  const [mensagem, setMensagem] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
   function formatarCNPJ(valor: string) {
     const numeros = valor.replace(/\D/g, "").slice(0, 14);
@@ -48,11 +55,12 @@ export default function CadastroEmpresaForm() {
     )}-${numeros.slice(7)}`;
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    if (enviando) return;
+
     setErro("");
-    setMensagem("");
 
     const cnpjNumeros = cnpj.replace(/\D/g, "");
 
@@ -72,10 +80,50 @@ export default function CadastroEmpresaForm() {
       setErro("Informe um e-mail válido.");
       return;
     }
-    setMensagem(
-      "Dados validados! O cadastro da empresa será concluído " +
-        "quando a integração com o backend estiver disponível."
-    );
+
+    setEnviando(true);
+
+    try {
+      await createCompany({
+        legalName: razaoSocial.trim(),
+        tradeName: nomeFantasia.trim() || undefined,
+        cnpj: cnpjNumeros,
+        businessEmail: email.trim(),
+        businessPhone:
+          telefone.replace(/\D/g, "") || undefined,
+      });
+
+      router.push("/cadastro/empresa/sucesso");
+    } catch (error) {
+      if (error instanceof ApiError) {
+        switch (error.status) {
+          case 400:
+            setErro("Verifique os dados informados.");
+            break;
+
+          case 401:
+            setErro(
+              "Sua sessão expirou ou você não está autenticado. Faça login novamente."
+            );
+            break;
+
+          case 409:
+            setErro("Este CNPJ já está cadastrado.");
+            break;
+
+          default:
+            setErro(
+              "Não foi possível cadastrar a empresa. Tente novamente."
+            );
+        }
+      } else {
+        setErro(
+          "Não foi possível conectar ao servidor. Tente novamente."
+        );
+      }
+    } finally {
+      setEnviando(false);
+    }
   }
 
   return (
@@ -94,6 +142,7 @@ export default function CadastroEmpresaForm() {
               setCnpj(formatarCNPJ(event.target.value))
             }
             maxLength={18}
+            disabled={enviando}
             required
           />
         </div>
@@ -109,6 +158,7 @@ export default function CadastroEmpresaForm() {
             onChange={(event) =>
               setRazaoSocial(event.target.value)
             }
+            disabled={enviando}
             required
           />
         </div>
@@ -126,6 +176,7 @@ export default function CadastroEmpresaForm() {
             onChange={(event) =>
               setNomeFantasia(event.target.value)
             }
+            disabled={enviando}
           />
         </div>
 
@@ -141,10 +192,13 @@ export default function CadastroEmpresaForm() {
               placeholder="Digite aqui"
               value={telefone}
               onChange={(event) =>
-                setTelefone(formatarTelefone(event.target.value))
+                setTelefone(
+                  formatarTelefone(event.target.value)
+                )
               }
               maxLength={15}
               autoComplete="tel"
+              disabled={enviando}
             />
           </div>
 
@@ -160,6 +214,7 @@ export default function CadastroEmpresaForm() {
                 setEmail(event.target.value)
               }
               autoComplete="email"
+              disabled={enviando}
               required
             />
           </div>
@@ -177,12 +232,6 @@ export default function CadastroEmpresaForm() {
         </p>
       )}
 
-      {mensagem && (
-        <p className={styles.mensagem} role="status">
-          {mensagem}
-        </p>
-      )}
-
       <div className={styles.footer}>
         <Link
           href="/cadastro/sucesso"
@@ -191,8 +240,12 @@ export default function CadastroEmpresaForm() {
           Cadastrar depois
         </Link>
 
-        <button type="submit" className={styles.submitButton}>
-          Criar minha conta
+        <button
+          type="submit"
+          className={styles.submitButton}
+          disabled={enviando}
+        >
+          {enviando ? "Cadastrando..." : "Cadastrar empresa"}
         </button>
       </div>
     </form>
