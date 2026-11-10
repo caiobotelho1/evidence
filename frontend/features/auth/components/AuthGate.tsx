@@ -12,7 +12,7 @@ import { getCurrentUser, type AuthUser } from "@/services/auth.service";
 
 const AuthUserContext = createContext<AuthUser | null>(null);
 
-/** Usuário autenticado. Só pode ser usado dentro de `<AuthGate>`. */
+
 export function useAuthUser(): AuthUser {
   const user = useContext(AuthUserContext);
 
@@ -23,11 +23,7 @@ export function useAuthUser(): AuthUser {
   return user;
 }
 
-/**
- * Protege uma área autenticada: consulta a sessão no servidor e envia para o
- * login quando ela não existe ou expirou. Isto só melhora a navegação; quem
- * garante o acesso aos dados é o backend, que valida a sessão em cada requisição.
- */
+
 export function AuthGate({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [user, setUser] = useState<AuthUser | null>(null);
