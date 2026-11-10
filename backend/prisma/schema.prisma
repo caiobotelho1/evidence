@@ -51,15 +51,19 @@ model Company {
 }
 
 model CompanyMembership {
-  id          String           @id @default(uuid())
-  userId      String
-  companyId   String
-  role        MembershipRole
-  status      MembershipStatus @default(PENDING)
+  id        String           @id @default(uuid())
+  userId    String
+  companyId String
+  role      MembershipRole
+  status    MembershipStatus @default(PENDING)
+
+  jobTitle String?
+  message  String?
+
   decidedById String?
   decidedAt   DateTime?
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   user      User    @relation("MembershipUser", fields: [userId], references: [id])
   company   Company @relation(fields: [companyId], references: [id])

@@ -56,3 +56,15 @@ export async function createCompany(
     throw error;
   }
 }
+
+export async function getCompanyByCnpj(cnpj: string) {
+  return prisma.company.findUnique({
+    where: { cnpj },
+    select: {
+      id: true,
+      legalName: true,
+      tradeName: true,
+      cnpj: true,
+    },
+  });
+}
