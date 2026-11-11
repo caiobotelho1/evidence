@@ -20,6 +20,32 @@ const membershipRequestSelect = {
   },
 } satisfies Prisma.CompanyMembershipSelect;
 
+const membershipReviewSelect = {
+  id: true,
+  role: true,
+  status: true,
+  jobTitle: true,
+  message: true,
+  createdAt: true,
+  decidedById: true,
+  decidedAt: true,
+  user: {
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+    },
+  },
+  company: {
+    select: {
+      id: true,
+      legalName: true,
+      tradeName: true,
+    },
+  },
+} satisfies Prisma.CompanyMembershipSelect;
+
 export async function createMembershipRequest(
   userId: string,
   companyId: string,
@@ -105,4 +131,76 @@ export async function createMembershipRequest(
 
     throw error;
   }
+}
+
+export async function listPendingMembershipRequests(companyId: string) {
+  const requests = await prisma.companyMembership.findMany({
+    where: {
+      companyId,
+      role: "EMPLOYEE",
+      status: "PENDING",
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+    select: membershipReviewSelect,
+  });
+
+  return { requests };
+}
+
+export async function decideMembershipRequest(
+  companyId: string,
+  membershipId: string,
+  decidedById: string,
+  decision: "ACTIVE" | "REJECTED"
+) {
+  const request = await prisma.companyMembership.findFirst({
+    where: {
+      id: membershipId,
+      companyId,
+      role: "EMPLOYEE",
+    },
+    select: {
+      id: true,
+      status: true,
+    },
+  });
+
+  if (!request) {
+    throw notFound("Solicitação não encontrada.");
+  }
+
+  if (request.status !== "PENDING") {
+    throw conflict("Esta solicitação já foi decidida.");
+  }
+
+  const result = await prisma.companyMembership.updateMany({
+    where: {
+      id: membershipId,
+      companyId,
+      role: "EMPLOYEE",
+      status: "PENDING",
+    },
+    data: {
+      status: decision,
+      decidedById,
+      decidedAt: new Date(),
+    },
+  });
+
+  if (result.count === 0) {
+    throw conflict("Esta solicitação já foi decidida.");
+  }
+
+  const updatedRequest = await prisma.companyMembership.findUnique({
+    where: { id: membershipId },
+    select: membershipReviewSelect,
+  });
+
+  if (!updatedRequest) {
+    throw notFound("Solicitação não encontrada.");
+  }
+
+  return { request: updatedRequest };
 }
