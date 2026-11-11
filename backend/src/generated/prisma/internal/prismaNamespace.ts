@@ -788,6 +788,8 @@ export const CompanyMembershipScalarFieldEnum = {
   companyId: 'companyId',
   role: 'role',
   status: 'status',
+  jobTitle: 'jobTitle',
+  message: 'message',
   decidedById: 'decidedById',
   decidedAt: 'decidedAt',
   createdAt: 'createdAt',

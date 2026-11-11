@@ -30,6 +30,8 @@ export type CompanyMembershipMinAggregateOutputType = {
   companyId: string | null
   role: $Enums.MembershipRole | null
   status: $Enums.MembershipStatus | null
+  jobTitle: string | null
+  message: string | null
   decidedById: string | null
   decidedAt: Date | null
   createdAt: Date | null
@@ -42,6 +44,8 @@ export type CompanyMembershipMaxAggregateOutputType = {
   companyId: string | null
   role: $Enums.MembershipRole | null
   status: $Enums.MembershipStatus | null
+  jobTitle: string | null
+  message: string | null
   decidedById: string | null
   decidedAt: Date | null
   createdAt: Date | null
@@ -54,6 +58,8 @@ export type CompanyMembershipCountAggregateOutputType = {
   companyId: number
   role: number
   status: number
+  jobTitle: number
+  message: number
   decidedById: number
   decidedAt: number
   createdAt: number
@@ -68,6 +74,8 @@ export type CompanyMembershipMinAggregateInputType = {
   companyId?: true
   role?: true
   status?: true
+  jobTitle?: true
+  message?: true
   decidedById?: true
   decidedAt?: true
   createdAt?: true
@@ -80,6 +88,8 @@ export type CompanyMembershipMaxAggregateInputType = {
   companyId?: true
   role?: true
   status?: true
+  jobTitle?: true
+  message?: true
   decidedById?: true
   decidedAt?: true
   createdAt?: true
@@ -92,6 +102,8 @@ export type CompanyMembershipCountAggregateInputType = {
   companyId?: true
   role?: true
   status?: true
+  jobTitle?: true
+  message?: true
   decidedById?: true
   decidedAt?: true
   createdAt?: true
@@ -177,6 +189,8 @@ export type CompanyMembershipGroupByOutputType = {
   companyId: string
   role: $Enums.MembershipRole
   status: $Enums.MembershipStatus
+  jobTitle: string | null
+  message: string | null
   decidedById: string | null
   decidedAt: Date | null
   createdAt: Date
@@ -210,6 +224,8 @@ export type CompanyMembershipWhereInput = {
   companyId?: Prisma.StringFilter<"CompanyMembership"> | string
   role?: Prisma.EnumMembershipRoleFilter<"CompanyMembership"> | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusFilter<"CompanyMembership"> | $Enums.MembershipStatus
+  jobTitle?: Prisma.StringNullableFilter<"CompanyMembership"> | string | null
+  message?: Prisma.StringNullableFilter<"CompanyMembership"> | string | null
   decidedById?: Prisma.StringNullableFilter<"CompanyMembership"> | string | null
   decidedAt?: Prisma.DateTimeNullableFilter<"CompanyMembership"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"CompanyMembership"> | Date | string
@@ -225,6 +241,8 @@ export type CompanyMembershipOrderByWithRelationInput = {
   companyId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  jobTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  message?: Prisma.SortOrderInput | Prisma.SortOrder
   decidedById?: Prisma.SortOrderInput | Prisma.SortOrder
   decidedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -244,6 +262,8 @@ export type CompanyMembershipWhereUniqueInput = Prisma.AtLeast<{
   companyId?: Prisma.StringFilter<"CompanyMembership"> | string
   role?: Prisma.EnumMembershipRoleFilter<"CompanyMembership"> | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusFilter<"CompanyMembership"> | $Enums.MembershipStatus
+  jobTitle?: Prisma.StringNullableFilter<"CompanyMembership"> | string | null
+  message?: Prisma.StringNullableFilter<"CompanyMembership"> | string | null
   decidedById?: Prisma.StringNullableFilter<"CompanyMembership"> | string | null
   decidedAt?: Prisma.DateTimeNullableFilter<"CompanyMembership"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"CompanyMembership"> | Date | string
@@ -259,6 +279,8 @@ export type CompanyMembershipOrderByWithAggregationInput = {
   companyId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  jobTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  message?: Prisma.SortOrderInput | Prisma.SortOrder
   decidedById?: Prisma.SortOrderInput | Prisma.SortOrder
   decidedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -277,6 +299,8 @@ export type CompanyMembershipScalarWhereWithAggregatesInput = {
   companyId?: Prisma.StringWithAggregatesFilter<"CompanyMembership"> | string
   role?: Prisma.EnumMembershipRoleWithAggregatesFilter<"CompanyMembership"> | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusWithAggregatesFilter<"CompanyMembership"> | $Enums.MembershipStatus
+  jobTitle?: Prisma.StringNullableWithAggregatesFilter<"CompanyMembership"> | string | null
+  message?: Prisma.StringNullableWithAggregatesFilter<"CompanyMembership"> | string | null
   decidedById?: Prisma.StringNullableWithAggregatesFilter<"CompanyMembership"> | string | null
   decidedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CompanyMembership"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CompanyMembership"> | Date | string
@@ -287,6 +311,8 @@ export type CompanyMembershipCreateInput = {
   id?: string
   role: $Enums.MembershipRole
   status?: $Enums.MembershipStatus
+  jobTitle?: string | null
+  message?: string | null
   decidedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -301,6 +327,8 @@ export type CompanyMembershipUncheckedCreateInput = {
   companyId: string
   role: $Enums.MembershipRole
   status?: $Enums.MembershipStatus
+  jobTitle?: string | null
+  message?: string | null
   decidedById?: string | null
   decidedAt?: Date | string | null
   createdAt?: Date | string
@@ -311,6 +339,8 @@ export type CompanyMembershipUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -325,6 +355,8 @@ export type CompanyMembershipUncheckedUpdateInput = {
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -337,6 +369,8 @@ export type CompanyMembershipCreateManyInput = {
   companyId: string
   role: $Enums.MembershipRole
   status?: $Enums.MembershipStatus
+  jobTitle?: string | null
+  message?: string | null
   decidedById?: string | null
   decidedAt?: Date | string | null
   createdAt?: Date | string
@@ -347,6 +381,8 @@ export type CompanyMembershipUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -358,6 +394,8 @@ export type CompanyMembershipUncheckedUpdateManyInput = {
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -385,6 +423,8 @@ export type CompanyMembershipCountOrderByAggregateInput = {
   companyId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  jobTitle?: Prisma.SortOrder
+  message?: Prisma.SortOrder
   decidedById?: Prisma.SortOrder
   decidedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -397,6 +437,8 @@ export type CompanyMembershipMaxOrderByAggregateInput = {
   companyId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  jobTitle?: Prisma.SortOrder
+  message?: Prisma.SortOrder
   decidedById?: Prisma.SortOrder
   decidedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -409,6 +451,8 @@ export type CompanyMembershipMinOrderByAggregateInput = {
   companyId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  jobTitle?: Prisma.SortOrder
+  message?: Prisma.SortOrder
   decidedById?: Prisma.SortOrder
   decidedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -557,6 +601,8 @@ export type CompanyMembershipCreateWithoutUserInput = {
   id?: string
   role: $Enums.MembershipRole
   status?: $Enums.MembershipStatus
+  jobTitle?: string | null
+  message?: string | null
   decidedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -569,6 +615,8 @@ export type CompanyMembershipUncheckedCreateWithoutUserInput = {
   companyId: string
   role: $Enums.MembershipRole
   status?: $Enums.MembershipStatus
+  jobTitle?: string | null
+  message?: string | null
   decidedById?: string | null
   decidedAt?: Date | string | null
   createdAt?: Date | string
@@ -589,6 +637,8 @@ export type CompanyMembershipCreateWithoutDecidedByInput = {
   id?: string
   role: $Enums.MembershipRole
   status?: $Enums.MembershipStatus
+  jobTitle?: string | null
+  message?: string | null
   decidedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -602,6 +652,8 @@ export type CompanyMembershipUncheckedCreateWithoutDecidedByInput = {
   companyId: string
   role: $Enums.MembershipRole
   status?: $Enums.MembershipStatus
+  jobTitle?: string | null
+  message?: string | null
   decidedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -642,6 +694,8 @@ export type CompanyMembershipScalarWhereInput = {
   companyId?: Prisma.StringFilter<"CompanyMembership"> | string
   role?: Prisma.EnumMembershipRoleFilter<"CompanyMembership"> | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusFilter<"CompanyMembership"> | $Enums.MembershipStatus
+  jobTitle?: Prisma.StringNullableFilter<"CompanyMembership"> | string | null
+  message?: Prisma.StringNullableFilter<"CompanyMembership"> | string | null
   decidedById?: Prisma.StringNullableFilter<"CompanyMembership"> | string | null
   decidedAt?: Prisma.DateTimeNullableFilter<"CompanyMembership"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"CompanyMembership"> | Date | string
@@ -668,6 +722,8 @@ export type CompanyMembershipCreateWithoutCompanyInput = {
   id?: string
   role: $Enums.MembershipRole
   status?: $Enums.MembershipStatus
+  jobTitle?: string | null
+  message?: string | null
   decidedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -680,6 +736,8 @@ export type CompanyMembershipUncheckedCreateWithoutCompanyInput = {
   userId: string
   role: $Enums.MembershipRole
   status?: $Enums.MembershipStatus
+  jobTitle?: string | null
+  message?: string | null
   decidedById?: string | null
   decidedAt?: Date | string | null
   createdAt?: Date | string
@@ -717,6 +775,8 @@ export type CompanyMembershipCreateManyUserInput = {
   companyId: string
   role: $Enums.MembershipRole
   status?: $Enums.MembershipStatus
+  jobTitle?: string | null
+  message?: string | null
   decidedById?: string | null
   decidedAt?: Date | string | null
   createdAt?: Date | string
@@ -729,6 +789,8 @@ export type CompanyMembershipCreateManyDecidedByInput = {
   companyId: string
   role: $Enums.MembershipRole
   status?: $Enums.MembershipStatus
+  jobTitle?: string | null
+  message?: string | null
   decidedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -738,6 +800,8 @@ export type CompanyMembershipUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -750,6 +814,8 @@ export type CompanyMembershipUncheckedUpdateWithoutUserInput = {
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -761,6 +827,8 @@ export type CompanyMembershipUncheckedUpdateManyWithoutUserInput = {
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -771,6 +839,8 @@ export type CompanyMembershipUpdateWithoutDecidedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -784,6 +854,8 @@ export type CompanyMembershipUncheckedUpdateWithoutDecidedByInput = {
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -795,6 +867,8 @@ export type CompanyMembershipUncheckedUpdateManyWithoutDecidedByInput = {
   companyId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -805,6 +879,8 @@ export type CompanyMembershipCreateManyCompanyInput = {
   userId: string
   role: $Enums.MembershipRole
   status?: $Enums.MembershipStatus
+  jobTitle?: string | null
+  message?: string | null
   decidedById?: string | null
   decidedAt?: Date | string | null
   createdAt?: Date | string
@@ -815,6 +891,8 @@ export type CompanyMembershipUpdateWithoutCompanyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -827,6 +905,8 @@ export type CompanyMembershipUncheckedUpdateWithoutCompanyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -838,6 +918,8 @@ export type CompanyMembershipUncheckedUpdateManyWithoutCompanyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumMembershipRoleFieldUpdateOperationsInput | $Enums.MembershipRole
   status?: Prisma.EnumMembershipStatusFieldUpdateOperationsInput | $Enums.MembershipStatus
+  jobTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -852,6 +934,8 @@ export type CompanyMembershipSelect<ExtArgs extends runtime.Types.Extensions.Int
   companyId?: boolean
   role?: boolean
   status?: boolean
+  jobTitle?: boolean
+  message?: boolean
   decidedById?: boolean
   decidedAt?: boolean
   createdAt?: boolean
@@ -867,6 +951,8 @@ export type CompanyMembershipSelectCreateManyAndReturn<ExtArgs extends runtime.T
   companyId?: boolean
   role?: boolean
   status?: boolean
+  jobTitle?: boolean
+  message?: boolean
   decidedById?: boolean
   decidedAt?: boolean
   createdAt?: boolean
@@ -882,6 +968,8 @@ export type CompanyMembershipSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   companyId?: boolean
   role?: boolean
   status?: boolean
+  jobTitle?: boolean
+  message?: boolean
   decidedById?: boolean
   decidedAt?: boolean
   createdAt?: boolean
@@ -897,13 +985,15 @@ export type CompanyMembershipSelectScalar = {
   companyId?: boolean
   role?: boolean
   status?: boolean
+  jobTitle?: boolean
+  message?: boolean
   decidedById?: boolean
   decidedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CompanyMembershipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "companyId" | "role" | "status" | "decidedById" | "decidedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["companyMembership"]>
+export type CompanyMembershipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "companyId" | "role" | "status" | "jobTitle" | "message" | "decidedById" | "decidedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["companyMembership"]>
 export type CompanyMembershipInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   company?: boolean | Prisma.CompanyDefaultArgs<ExtArgs>
@@ -933,6 +1023,8 @@ export type $CompanyMembershipPayload<ExtArgs extends runtime.Types.Extensions.I
     companyId: string
     role: $Enums.MembershipRole
     status: $Enums.MembershipStatus
+    jobTitle: string | null
+    message: string | null
     decidedById: string | null
     decidedAt: Date | null
     createdAt: Date
@@ -1368,6 +1460,8 @@ export interface CompanyMembershipFieldRefs {
   readonly companyId: Prisma.FieldRef<"CompanyMembership", 'String'>
   readonly role: Prisma.FieldRef<"CompanyMembership", 'MembershipRole'>
   readonly status: Prisma.FieldRef<"CompanyMembership", 'MembershipStatus'>
+  readonly jobTitle: Prisma.FieldRef<"CompanyMembership", 'String'>
+  readonly message: Prisma.FieldRef<"CompanyMembership", 'String'>
   readonly decidedById: Prisma.FieldRef<"CompanyMembership", 'String'>
   readonly decidedAt: Prisma.FieldRef<"CompanyMembership", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"CompanyMembership", 'DateTime'>
