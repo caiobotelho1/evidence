@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ApiError } from "@/services/api";
 import { createUser } from "@/services/users.service";
 import styles from "./CadastroForm.module.css";
+import { login } from "@/services/auth.service";
 
 type TipoUso = "pessoal" | "empresa";
 type VinculoEmpresa = "responsavel" | "funcionario";
@@ -34,6 +35,8 @@ export default function CadastroForm() {
   const [solicitacaoEmpresa, setSolicitacaoEmpresa] =
     useState<SolicitacaoEmpresa>("agora");
 
+  const [contaCriada, setContaCriada] = useState(false);
+
   const [erro, setErro] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [enviando, setEnviando] = useState(false);
@@ -49,54 +52,76 @@ export default function CadastroForm() {
     setMensagem("");
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
 
-    setErro("");
-    setMensagem("");
+async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  event.preventDefault();
 
-    if (
-      !nome.trim() ||
-      !telefone.trim() ||
-      !email.trim() ||
-      !senha ||
-      !confirmarSenha
-    ) {
-      setErro("Preencha todos os campos obrigatórios.");
-      return;
-    }
+  setErro("");
+  setMensagem("");
 
-    if (senha !== confirmarSenha) {
-      setErro("As senhas informadas não coincidem.");
-      return;
-    }
+  if (
+    !nome.trim() ||
+    !telefone.trim() ||
+    !email.trim() ||
+    !senha ||
+    !confirmarSenha
+  ) {
+    setErro("Preencha todos os campos obrigatórios.");
+    return;
+  }
 
-    if (usaEmpresa && !vinculo) {
-      setErro("Informe seu vínculo com a empresa.");
-      return;
-    }
+  if (senha !== confirmarSenha) {
+    setErro("As senhas informadas não coincidem.");
+    return;
+  }
 
-    setEnviando(true);
+  if (usaEmpresa && !vinculo) {
+    setErro("Informe seu vínculo com a empresa.");
+    return;
+  }
 
-    try {
-      await createUser({
-        name: nome.trim(),
-        email: email.trim(),
-        phone: telefone,
-        password: senha,
-      });
+  setEnviando(true);
 
-      if (responsavel && momentoCadastro === "agora") {
-        router.push("/cadastro/empresa");
+  try {
+    await createUser({
+      name: nome.trim(),
+      email: email.trim(),
+      phone: telefone,
+      password: senha,
+    });
+
+    // Funcionário que deseja solicitar participação agora.
+    if (funcionario && solicitacaoEmpresa === "agora") {
+      try {
+        await login({
+          email: email.trim(),
+          password: senha,
+        });
+      } catch {
+        setContaCriada(true);
+        setMensagem(
+          "Sua conta foi criada, mas não foi possível iniciar sua sessão automaticamente. Faça login para solicitar sua participação."
+        );
+        setEnviando(false);
         return;
       }
 
-      router.push("/cadastro/sucesso");
-    } catch (error) {
-      setErro(mensagemDeErro(error));
-      setEnviando(false);
+      router.push("/cadastro/solicitar-participacao");
+      return;
     }
+
+    // Responsável que deseja cadastrar a empresa agora.
+    if (responsavel && momentoCadastro === "agora") {
+      router.push("/cadastro/empresa");
+      return;
+    }
+
+    router.push("/cadastro/sucesso");
+  } catch (error) {
+    setErro(mensagemDeErro(error));
+    setEnviando(false);
   }
+}
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
@@ -367,16 +392,27 @@ export default function CadastroForm() {
       )}
 
       <div className={styles.footer}>
-        <p className={styles.loginText}>
-          Já tem conta? <Link href="/login">Entrar</Link>
-        </p>
+        {contaCriada ? (
+          <p className={styles.loginText}>
+            Sua conta já foi criada. <Link href="/login">Faça login</Link>
+            {" "}para continuar.
+          </p>
+        ) : (
+          <p className={styles.loginText}>
+            Já tem conta? <Link href="/login">Entrar</Link>
+          </p>
+        )}
 
         <button
           type="submit"
           className={styles.submitButton}
-          disabled={enviando}
+          disabled={enviando || contaCriada}
         >
-          {enviando ? "Criando conta..." : "Criar minha conta"}
+          {contaCriada
+            ? "Conta criada"
+            : enviando
+              ? "Criando conta..."
+              : "Continuar"}
         </button>
       </div>
     </form>
