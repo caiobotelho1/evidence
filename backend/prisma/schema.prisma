@@ -31,6 +31,7 @@ model User {
   memberships        CompanyMembership[] @relation("MembershipUser")
   decidedMemberships CompanyMembership[] @relation("MembershipDecidedBy")
   sessions           Session[]
+  tags               Tag[]
 
   @@map("users")
 }
@@ -46,6 +47,7 @@ model Company {
   updatedAt     DateTime @updatedAt
 
   memberships CompanyMembership[]
+  tags        Tag[]
 
   @@map("companies")
 }
@@ -86,4 +88,25 @@ model Session {
   @@index([userId])
   @@index([expiresAt])
   @@map("sessions")
+}
+
+model Tag {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  color       String
+
+  userId    String?
+  companyId String?
+
+  user    User?    @relation(fields: [userId], references: [id], onDelete: Restrict)
+  company Company? @relation(fields: [companyId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([userId])
+  @@index([companyId])
+  @@map("tags")
 }
