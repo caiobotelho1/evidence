@@ -61,3 +61,8 @@ export type CompanyMembership = Prisma.CompanyMembershipModel
  * 
  */
 export type Session = Prisma.SessionModel
+/**
+ * Model Tag
+ * 
+ */
+export type Tag = Prisma.TagModel
