@@ -1,5 +1,7 @@
+
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { DM_Serif_Display, Inter } from "next/font/google";
 import styles from "./solicitarSucesso.module.css";
 
@@ -20,10 +22,77 @@ export const metadata: Metadata = {
   description: "Confirmação de solicitação de entrada em empresa.",
 };
 
-export default function SolicitacaoSucessoPage() {
-  const empresa = "Nome da Empresa";
-  const cargo = "Auxiliar administrativo";
+type SearchParams = {
+  empresa?: string | string[];
+  cargo?: string | string[];
+};
 
+type DetalhesProps = {
+  searchParams: Promise<SearchParams>;
+};
+
+async function DetalhesSolicitacao({ searchParams }: DetalhesProps) {
+  const parametros = await searchParams;
+
+  const empresa =
+    typeof parametros.empresa === "string" && parametros.empresa.trim()
+      ? parametros.empresa.trim()
+      : "empresa informada";
+
+  const cargo =
+    typeof parametros.cargo === "string" && parametros.cargo.trim()
+      ? parametros.cargo.trim()
+      : "Não informado";
+
+  return (
+    <>
+      <div className={styles.intro}>
+        <h1>Solicitação enviada!</h1>
+
+        <p>
+          Seu pedido para participar da {empresa} foi enviado ao responsável.
+        </p>
+      </div>
+
+      <div className={styles.statusPanel}>
+        <div className={styles.statusHeader}>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            />
+            <path
+              d="M12 6V12L16 14"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+
+          <h2>Aguardando aprovação</h2>
+        </div>
+
+        <div className={styles.detailRow}>
+          <span>Empresa</span>
+          <strong>{empresa}</strong>
+        </div>
+
+        <div className={styles.detailRow}>
+          <span>Cargo informado</span>
+          <strong>{cargo}</strong>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default function SolicitacaoSucessoPage({
+  searchParams,
+}: DetalhesProps) {
   return (
     <main
       className={`${styles.page} ${inter.variable} ${dmSerif.variable}`}
@@ -75,50 +144,16 @@ export default function SolicitacaoSucessoPage() {
           </svg>
         </div>
 
-        <div className={styles.intro}>
-          <h1>Solicitação enviada!</h1>
-
-          <p>
-            Seu pedido para participar da {empresa} foi enviado ao responsável.
-          </p>
-        </div>
-
-        <div className={styles.statusPanel}>
-          <div className={styles.statusHeader}>
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <circle
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              />
-              <path
-                d="M12 6V12L16 14"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-
-            <h2>Aguardando aprovação</h2>
-          </div>
-
-          <div className={styles.detailRow}>
-            <span>Empresa</span>
-            <strong>{empresa}</strong>
-          </div>
-
-          <div className={styles.detailRow}>
-            <span>Cargo informado</span>
-            <strong>{cargo}</strong>
-          </div>
-        </div>
+        <Suspense
+          fallback={
+            <div className={styles.intro}>
+              <h1>Solicitação enviada!</h1>
+              <p role="status">Carregando os dados da solicitação...</p>
+            </div>
+          }
+        >
+          <DetalhesSolicitacao searchParams={searchParams} />
+        </Suspense>
 
         <p className={styles.description}>
           Você poderá acompanhar o status pela sua conta. O acesso à

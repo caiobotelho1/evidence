@@ -2,12 +2,16 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
-import styles from "./SolicitarParticipacaoForm.module.css";
+import { useRouter } from "next/navigation";
 
-type Empresa = {
-  nome: string;
-  cnpj: string;
-};
+import { ApiError } from "@/services/api";
+import {
+  getCompanyByCnpj,
+  type CompanyByCnpj,
+} from "@/services/companies.service";
+import { createMembershipRequest } from "@/services/memberships.service";
+
+import styles from "./SolicitarParticipacaoForm.module.css";
 
 function formatarCNPJ(valor: string) {
   const numeros = valor.replace(/\D/g, "").slice(0, 14);
@@ -20,14 +24,20 @@ function formatarCNPJ(valor: string) {
 }
 
 export default function SolicitarParticipacaoForm() {
+  const router = useRouter();
+
   const [cnpj, setCnpj] = useState("");
-  const [empresa, setEmpresa] = useState<Empresa | null>(null);
+  const [empresa, setEmpresa] = useState<CompanyByCnpj | null>(null);
   const [cargo, setCargo] = useState("");
   const [mensagem, setMensagem] = useState("");
+
   const [erro, setErro] = useState("");
   const [aviso, setAviso] = useState("");
 
-  function buscarEmpresa() {
+  const [buscando, setBuscando] = useState(false);
+  const [enviando, setEnviando] = useState(false);
+
+  async function buscarEmpresa() {
     setErro("");
     setAviso("");
     setEmpresa(null);
@@ -39,20 +49,24 @@ export default function SolicitarParticipacaoForm() {
       return;
     }
 
-    setEmpresa({
-      nome: "Empresa de demonstração",
-      cnpj: formatarCNPJ(numeros),
-    });
-    
-    setAviso(
-      "Esta empresa é fictícia. " +
-      "A busca real dependerá da integração com a API."
-    );
+    setBuscando(true);
+
+    try {
+      const resultado = await getCompanyByCnpj(numeros);
+
+      setEmpresa(resultado);
+      setAviso("Empresa encontrada! Confira os dados antes de continuar.");
+    } catch (error) {
+      setErro(mensagemDeErro(error, "busca"));
+    } finally {
+      setBuscando(false);
+    }
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErro("");
+    setAviso("");
 
     if (!empresa) {
       setErro("Busque e selecione uma empresa antes de continuar.");
@@ -62,6 +76,27 @@ export default function SolicitarParticipacaoForm() {
     if (!cargo.trim()) {
       setErro("Informe seu cargo ou função na empresa.");
       return;
+    }
+
+    setEnviando(true);
+
+    try {
+      const solicitacao = await createMembershipRequest(empresa.id, {
+        jobTitle: cargo.trim(),
+        message: mensagem.trim() || undefined,
+      });
+
+      const parametros = new URLSearchParams({
+        empresa: empresa.tradeName || empresa.legalName,
+        cargo: solicitacao.jobTitle,
+      });
+
+      router.push(
+        `/cadastro/solicitar-participacao/sucesso?${parametros.toString()}`
+      );
+    } catch (error) {
+      setErro(mensagemDeErro(error, "solicitacao"));
+      setEnviando(false);
     }
   }
 
@@ -81,6 +116,7 @@ export default function SolicitarParticipacaoForm() {
               setCnpj(formatarCNPJ(event.target.value));
               setEmpresa(null);
               setAviso("");
+              setErro("");
             }}
             maxLength={18}
             required
@@ -91,19 +127,28 @@ export default function SolicitarParticipacaoForm() {
           type="button"
           className={styles.searchButton}
           onClick={buscarEmpresa}
+          disabled={buscando || enviando}
         >
-          Buscar empresa
+          {buscando ? "Buscando..." : "Buscar empresa"}
         </button>
       </div>
 
       {empresa && (
         <section className={styles.resultado} aria-label="Resultado da busca">
           <span className={styles.resultadoLabel}>
-            EMPRESA DE DEMONSTRAÇÃO
+            EMPRESA ENCONTRADA
           </span>
 
-          <h2>{empresa.nome}</h2>
-          <p className={styles.cnpjResultado}>CNPJ: {empresa.cnpj}</p>
+          <h2>{empresa.tradeName || empresa.legalName}</h2>
+
+          {empresa.tradeName && (
+            <p>{empresa.legalName}</p>
+          )}
+
+          <p className={styles.cnpjResultado}>
+            CNPJ: {formatarCNPJ(empresa.cnpj)}
+          </p>
+
           <p className={styles.resultadoDescricao}>
             Confira se esta é a empresa da qual você deseja participar.
           </p>
@@ -119,6 +164,7 @@ export default function SolicitarParticipacaoForm() {
           placeholder="Digite aqui"
           value={cargo}
           onChange={(event) => setCargo(event.target.value)}
+          maxLength={100}
           required
         />
       </div>
@@ -133,6 +179,7 @@ export default function SolicitarParticipacaoForm() {
           placeholder="Digite aqui"
           value={mensagem}
           onChange={(event) => setMensagem(event.target.value)}
+          maxLength={500}
           rows={4}
         />
       </div>
@@ -161,10 +208,37 @@ export default function SolicitarParticipacaoForm() {
           Fazer isso depois
         </Link>
 
-        <button type="submit" className={styles.submitButton}>
-          Criar minha conta
+        <button
+          type="submit"
+          className={styles.submitButton}
+          disabled={enviando || buscando}
+        >
+          {enviando ? "Enviando solicitação..." : "Enviar solicitação"}
         </button>
       </div>
     </form>
   );
+}
+
+function mensagemDeErro(
+  error: unknown,
+  operacao: "busca" | "solicitacao"
+): string {
+  if (error instanceof ApiError) {
+    if (error.status === 401) {
+      return "Sua sessão não está ativa. Faça login novamente para continuar.";
+    }
+
+    if (error.status === 404 && operacao === "busca") {
+      return "Não encontramos uma empresa com esse CNPJ.";
+    }
+
+    const primeiroErro = error.fields
+      ? Object.values(error.fields).flat()[0]
+      : undefined;
+
+    return primeiroErro ?? error.message;
+  }
+
+  return "Ocorreu um erro inesperado. Tente novamente.";
 }
