@@ -7,14 +7,11 @@ type DadosAprovacao = {
   cargo: string;
 };
 
-export default function SolicitacaoAprovada() {
-  //receber os dados da solicitação aprovada pela API.
-  const dados: DadosAprovacao = {
-    funcionario: "Nome do funcionário",
-    empresa: "Nome da empresa",
-    cargo: "Nome do cargo",
-  };
-
+export default function SolicitacaoAprovada({
+  funcionario,
+  empresa,
+  cargo,
+}: DadosAprovacao) {
   return (
     <div className={styles.container}>
       <div className={styles.successIcon} aria-hidden="true">
@@ -36,7 +33,6 @@ export default function SolicitacaoAprovada() {
         </svg>
       </div>
 
-
       <div className={styles.intro}>
         <h1>Solicitação aprovada!</h1>
 
@@ -47,11 +43,7 @@ export default function SolicitacaoAprovada() {
 
       <div className={styles.infoPanel}>
         <div className={styles.panelHeader}>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            aria-hidden="true"
-          >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <circle
               cx="12"
               cy="7"
@@ -72,17 +64,17 @@ export default function SolicitacaoAprovada() {
 
         <div className={styles.detailRow}>
           <span>Funcionário</span>
-          <strong>{dados.funcionario}</strong>
+          <strong>{funcionario}</strong>
         </div>
 
         <div className={styles.detailRow}>
           <span>Empresa</span>
-          <strong>{dados.empresa}</strong>
+          <strong>{empresa}</strong>
         </div>
 
         <div className={styles.detailRow}>
           <span>Cargo</span>
-          <strong>{dados.cargo}</strong>
+          <strong>{cargo}</strong>
         </div>
       </div>
 

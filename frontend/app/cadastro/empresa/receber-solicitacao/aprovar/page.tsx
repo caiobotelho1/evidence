@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DM_Serif_Display, Inter } from "next/font/google";
@@ -22,7 +23,42 @@ export const metadata: Metadata = {
   description: "Confirmação de aprovação de participação na empresa.",
 };
 
-export default function SolicitacaoAprovadaPage() {
+type Props = {
+  searchParams: Promise<{
+    funcionario?: string | string[];
+    empresa?: string | string[];
+    cargo?: string | string[];
+  }>;
+};
+
+async function ConteudoAprovacao({ searchParams }: Props) {
+  const params = await searchParams;
+
+  const funcionario =
+    typeof params.funcionario === "string"
+      ? params.funcionario
+      : "Funcionário";
+
+  const empresa =
+    typeof params.empresa === "string"
+      ? params.empresa
+      : "Empresa";
+
+  const cargo =
+    typeof params.cargo === "string"
+      ? params.cargo
+      : "Não informado";
+
+  return (
+    <SolicitacaoAprovada
+      funcionario={funcionario}
+      empresa={empresa}
+      cargo={cargo}
+    />
+  );
+}
+
+export default function SolicitacaoAprovadaPage({ searchParams }: Props) {
   return (
     <main
       className={`${styles.page} ${inter.variable} ${dmSerif.variable}`}
@@ -55,7 +91,9 @@ export default function SolicitacaoAprovadaPage() {
       </header>
 
       <section className={styles.card}>
-        <SolicitacaoAprovada />
+        <Suspense fallback={<p>Carregando confirmação...</p>}>
+          <ConteudoAprovacao searchParams={searchParams} />
+        </Suspense>
       </section>
     </main>
   );
