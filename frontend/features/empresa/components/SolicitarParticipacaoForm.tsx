@@ -162,7 +162,7 @@ export default function SolicitarParticipacaoForm() {
         </Link>
 
         <button type="submit" className={styles.submitButton}>
-          Criar minha conta
+          Solicitar Participação
         </button>
       </div>
     </form>

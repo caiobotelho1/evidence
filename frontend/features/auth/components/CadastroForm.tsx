@@ -376,7 +376,7 @@ export default function CadastroForm() {
           className={styles.submitButton}
           disabled={enviando}
         >
-          {enviando ? "Criando conta..." : "Continuar"}
+          {enviando ? "Criando conta..." : "Criar minha conta"}
         </button>
       </div>
     </form>
