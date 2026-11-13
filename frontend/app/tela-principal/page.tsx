@@ -1,11 +1,10 @@
 import Link from "next/link";
+import Image from "next/image";
 import { DM_Serif_Display, Inter } from "next/font/google";
-import {
-  ChevronDown,
-  Menu as MenuIcon,
-  Plus,
-  UserRound,
-} from "lucide-react";
+
+import iconUser from "../../imgs/icon_user.png";
+import iconMenu from "../../imgs/icon_menu.png";
+import iconSeta from "../../imgs/icon_seta.png";
 
 import styles from "./telaPrincipal.module.css";
 
@@ -22,7 +21,6 @@ const dmSerif = DM_Serif_Display({
 export default function DashboardPage() {
   return (
     <div className={`${styles.dashboard} ${inter.className}`}>
-
       <header className={styles.header}>
         <Link href="/" className={styles.logo}>
           <svg
@@ -53,20 +51,27 @@ export default function DashboardPage() {
           <div className={styles.environmentSlot} />
 
           <details className={styles.menu}>
-
             <summary className={styles.menuButton}>
-              <MenuIcon size={20} strokeWidth={1.8} />
+              <Image
+                src={iconMenu}
+                alt=""
+                width={20}
+                height={20}
+              />
 
               <span>Menu</span>
 
-              <ChevronDown size={18} strokeWidth={1.8} />
+              <Image
+                src={iconSeta}
+                alt=""
+                width={18}
+                height={18}
+              />
             </summary>
 
             <div className={styles.dropdown}>
             </div>
-
           </details>
-
         </div>
       </header>
 
@@ -85,9 +90,13 @@ export default function DashboardPage() {
         </nav>
 
         <section className={styles.titleSection}>
-
           <div className={styles.environment}>
-            <UserRound size={18} strokeWidth={1.5} />
+            <Image
+              src={iconUser}
+              alt=""
+              width={18}
+              height={18}
+            />
 
             <span>ESPAÇO </span>
           </div>
@@ -95,11 +104,9 @@ export default function DashboardPage() {
           <h1 className={`${styles.title} ${dmSerif.className}`}>
             Sua história
           </h1>
-
         </section>
 
         <section className={styles.searchSection}>
-
           <input
             type="search"
             placeholder="Digite aqui"
@@ -114,7 +121,12 @@ export default function DashboardPage() {
           >
             <span>Tags</span>
 
-            <ChevronDown size={18} strokeWidth={1.8} />
+            <Image
+              src={iconSeta}
+              alt=""
+              width={18}
+              height={18}
+            />
           </button>
 
           <button
@@ -122,20 +134,19 @@ export default function DashboardPage() {
             className={styles.newRecordButton}
             disabled
           >
-            <Plus size={18} strokeWidth={1.8} />
+            <span className={styles.plusIcon} aria-hidden="true">
+              +
+            </span>
 
             <span>Novo registro</span>
           </button>
-
         </section>
 
         <section
           className={styles.timelineSection}
           aria-label="Timeline de registros"
         >
-
         </section>
-
       </main>
     </div>
   );

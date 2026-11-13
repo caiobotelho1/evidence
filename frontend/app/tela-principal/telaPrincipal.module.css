@@ -85,15 +85,16 @@
   display: none;
 }
 
-.menuButton svg {
+.menuButton img {
   flex-shrink: 0;
+  object-fit: contain;
 }
 
-.menuButton svg:last-child {
+.menuButton img:last-child {
   transition: transform 0.2s ease;
 }
 
-.menu[open] .menuButton svg:last-child {
+.menu[open] .menuButton img:last-child {
   transform: rotate(180deg);
 }
 
@@ -169,9 +170,12 @@
   color: #4A6A41;
 }
 
-.environment svg {
-  color: #1F3D2E;
+.environment img {
   flex-shrink: 0;
+  object-fit: contain;
+  width: 18px;
+  height: 18px;
+  transform: translateY(-2px);
 }
 
 .title {
@@ -193,7 +197,6 @@
   width: 100%;
   margin: 0;
 }
-
 
 .searchInput {
   flex: 1;
@@ -244,9 +247,9 @@
   box-sizing: border-box;
 }
 
-.filterButton svg,
-.newRecordButton svg {
+.filterButton img {
   flex-shrink: 0;
+  object-fit: contain;
 }
 
 .filterButton {
@@ -267,6 +270,19 @@
   color: #FAF9F5;
 }
 
+.plusIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 18px;
+  height: 18px;
+
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1;
+}
+
 .filterButton:disabled,
 .newRecordButton:disabled {
   cursor: default;
@@ -278,7 +294,6 @@
   min-height: 600px;
   margin-top: 28px;
 }
-
 
 @media (max-width: 900px) {
   .header {
