@@ -279,14 +279,14 @@
   margin-top: 28px;
 }
 
-@media (max-width: 900px) {
 
+@media (max-width: 900px) {
   .header {
     padding: 0 32px;
   }
 
   .main {
-    padding: 18px 32px 48px;
+    padding: 28px 32px 48px;
   }
 
   .headerActions {
@@ -298,12 +298,10 @@
   }
 }
 
-
 @media (max-width: 600px) {
-
   .header {
     height: auto;
-    min-height: 100px;
+    min-height: 102px;
     padding: 20px;
     flex-wrap: wrap;
   }
@@ -323,6 +321,10 @@
 
   .main {
     padding: 24px 20px;
+  }
+
+  .breadcrumb {
+    margin-bottom: 24px;
   }
 
   .title {
