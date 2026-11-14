@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useId, useState } from "react";
@@ -7,19 +8,20 @@ import styles from "./TagModal.module.css";
 
 import type {
   CreateTagInput,
-  TagCompanyOption,
   TagScope,
 } from "../types";
 
 type TagModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  scope: TagScope;
+  companyId?: string;
+  companyName?: string;
   onSubmit?: (
     data: CreateTagInput,
     scope: TagScope,
     companyId?: string
   ) => void;
-  companies?: TagCompanyOption[];
 };
 
 const DEFAULT_COLOR = "#476844";
@@ -27,21 +29,17 @@ const DEFAULT_COLOR = "#476844";
 export default function TagModal({
   isOpen,
   onClose,
+  scope,
+  companyId,
+  companyName,
   onSubmit,
-  companies = [],
 }: TagModalProps) {
   const titleId = useId();
-
-  const [scope, setScope] = useState<TagScope>("personal");
-  const [companyId, setCompanyId] = useState("");
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [color, setColor] = useState(DEFAULT_COLOR);
-
   const [error, setError] = useState("");
-
-  const availableCompanies = companies;
 
   useEffect(() => {
     if (!isOpen) return;
@@ -71,8 +69,6 @@ export default function TagModal({
   }, [isOpen, onClose]);
 
   function resetForm() {
-    setScope("personal");
-    setCompanyId("");
     setName("");
     setDescription("");
     setColor(DEFAULT_COLOR);
@@ -82,12 +78,6 @@ export default function TagModal({
   function handleClose() {
     resetForm();
     onClose();
-  }
-
-  function handleScopeChange(value: TagScope) {
-    setScope(value);
-    setCompanyId("");
-    setError("");
   }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -113,7 +103,7 @@ export default function TagModal({
     }
 
     if (scope === "company" && !companyId) {
-      setError("Selecione uma empresa.");
+      setError("Não foi possível identificar a empresa.");
       return;
     }
 
@@ -166,65 +156,13 @@ export default function TagModal({
           </button>
         </div>
 
+        <div className={styles.contextBadge}>
+          {scope === "personal"
+            ? "Pessoal"
+            : `Empresa${companyName ? ` · ${companyName}` : ""}`}
+        </div>
+
         <form className={styles.form} onSubmit={handleSubmit}>
-          <fieldset className={styles.scopeFieldset}>
-            <legend className={styles.fieldLabel}>
-              Onde deseja utilizar esta tag?
-            </legend>
-
-            <label className={styles.radioOption}>
-              <input
-                type="radio"
-                name="tagScope"
-                value="personal"
-                checked={scope === "personal"}
-                onChange={() => handleScopeChange("personal")}
-              />
-              <span>Uso pessoal</span>
-            </label>
-
-            <label className={styles.radioOption}>
-              <input
-                type="radio"
-                name="tagScope"
-                value="company"
-                checked={scope === "company"}
-                onChange={() => handleScopeChange("company")}
-              />
-              <span>Empresa</span>
-            </label>
-          </fieldset>
-
-          {scope === "company" && (
-            <div className={styles.field}>
-              <label
-                htmlFor="tag-company"
-                className={styles.fieldLabel}
-              >
-                Empresa
-              </label>
-
-              <select
-                id="tag-company"
-                className={styles.input}
-                value={companyId}
-                onChange={(event) =>
-                  setCompanyId(event.target.value)
-                }
-                required
-              >
-                <option value="">Selecione uma empresa</option>
-
-                {availableCompanies.map((company) => (
-                  <option key={company.id} value={company.id}>
-                    {company.name}
-                  </option>
-                ))}
-              </select>
-
-            </div>
-          )}
-
           <div className={styles.field}>
             <label
               htmlFor="tag-name"
