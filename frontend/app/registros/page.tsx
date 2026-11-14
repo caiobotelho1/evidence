@@ -33,18 +33,6 @@ export default function RegistrosPage() {
           <UserMenu />
         </div>
 
-        <TagModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          companies={[
-            { id: "1", name: "Empresa Teste" },
-          ]}
-          onSubmit={(data, scope, companyId) => {
-            console.log("Tag:", data);
-            console.log("Tipo:", scope);
-            console.log("Empresa:", companyId);
-          }}
-        />
       </main>
     </AuthGate>
   );
