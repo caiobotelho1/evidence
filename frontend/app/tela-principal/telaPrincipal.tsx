@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { DM_Serif_Display, Inter } from "next/font/google";
@@ -13,6 +13,21 @@ import iconSeta from "../../imgs/icon_seta.png";
 import TagModal from "@/features/tags/components/TagModal";
 import MenuAmbiente from "../../features/ambiente/components/MenuAmbiente";
 import MenuTags from "../../features/ambiente/components/MenuTags";
+
+import {
+  createPersonalTag,
+  createCompanyTag,
+  getPersonalTags,
+  getCompanyTags,
+} from "@/services/tag.service";
+
+import type {
+  CreateTagInput,
+  TagScope,
+} from "@/features/tags/types";
+
+import type { Tag } from "@/services/tag.service";
+
 import styles from "./telaPrincipal.module.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -25,14 +40,8 @@ const dmSerif = DM_Serif_Display({
 
 type Ambiente = "pessoal" | "empresa";
 
-const tagsExemplo = [
-  { id: "1", nome: "Documentos", cor: "#1F3D2E" },
-  { id: "2", nome: "Financeiro", cor: "#B65A46" },
-  { id: "3", nome: "Outros registros", cor: "#4A6A41" },
-];
-
 export default function DashboardClient() {
- const searchParams = useSearchParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
 
   const ambienteAtual: Ambiente =
@@ -40,19 +49,101 @@ export default function DashboardClient() {
       ? "empresa"
       : "pessoal";
 
+  const isPessoal = ambienteAtual === "pessoal";
+
   const setAmbienteAtual = (ambiente: Ambiente) => {
     router.push(`/tela-principal?ambiente=${ambiente}`);
   };
 
+  // Temporário: substituir pelo papel do usuário autenticado.
   const papelEmpresa: "proprietario" | "funcionario" =
     "proprietario";
 
-  const isPessoal = ambienteAtual === "pessoal";
+  // A empresa ativa ainda precisa ser conectada.
+  const companyId: string | undefined = undefined;
+  const companyName: string | undefined = undefined;
 
-  const [isTagModalOpen, setIsTagModalOpen] = useState(false);
-  
+  const [isTagModalOpen, setIsTagModalOpen] =
+    useState(false);
+
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [tagsError, setTagsError] = useState("");
+
+  // Carrega as tags do ambiente selecionado.
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadTags() {
+      setTags([]);
+      setTagsError("");
+
+      try {
+        if (!isPessoal && !companyId) {
+          return;
+        }
+
+        const result = isPessoal
+          ? await getPersonalTags()
+          : await getCompanyTags(companyId!);
+
+        if (!cancelled) {
+          setTags(result);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setTagsError(
+            error instanceof Error
+              ? error.message
+              : "Não foi possível carregar as tags."
+          );
+        }
+      }
+    }
+
+    void loadTags();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isPessoal, companyId]);
+
+  async function handleCreateTag(
+    data: CreateTagInput,
+    scope: TagScope,
+    selectedCompanyId?: string
+  ): Promise<void> {
+    const newTag =
+      scope === "personal"
+        ? await createPersonalTag(data)
+        : await (async () => {
+            if (!selectedCompanyId) {
+              throw new Error(
+                "Nenhuma empresa selecionada."
+              );
+            }
+
+            return createCompanyTag(
+              selectedCompanyId,
+              data
+            );
+          })();
+
+    setTags((previousTags) => [
+      ...previousTags,
+      newTag,
+    ]);
+  }
+
+  const menuTags = tags.map((tag) => ({
+    id: tag.id,
+    nome: tag.name,
+    cor: tag.color,
+  }));
+
   return (
-    <div className={`${styles.dashboard} ${inter.className}`}>
+    <div
+      className={`${styles.dashboard} ${inter.className}`}
+    >
       <header className={styles.header}>
         <Link href="/" className={styles.logo}>
           <svg
@@ -68,13 +159,35 @@ export default function DashboardClient() {
               stroke="#1F3D2E"
               strokeWidth="1.2"
             />
-            <circle cx="18" cy="7" r="3.4" fill="#1F3D2E" />
-            <circle cx="8" cy="18" r="3.4" fill="#4A6A41" />
-            <circle cx="15" cy="29" r="3.4" fill="#1F3D2E" />
-            <circle cx="29" cy="22" r="3.4" fill="#B65A46" />
+            <circle
+              cx="18"
+              cy="7"
+              r="3.4"
+              fill="#1F3D2E"
+            />
+            <circle
+              cx="8"
+              cy="18"
+              r="3.4"
+              fill="#4A6A41"
+            />
+            <circle
+              cx="15"
+              cy="29"
+              r="3.4"
+              fill="#1F3D2E"
+            />
+            <circle
+              cx="29"
+              cy="22"
+              r="3.4"
+              fill="#B65A46"
+            />
           </svg>
 
-          <span className={dmSerif.className}>Evidence</span>
+          <span className={dmSerif.className}>
+            Evidence
+          </span>
         </Link>
 
         <div className={styles.headerActions}>
@@ -85,10 +198,16 @@ export default function DashboardClient() {
           >
             <button
               type="button"
-              className={`${styles.environmentButton} ${
-                isPessoal ? styles.environmentActive : ""
+              className={`${
+                styles.environmentButton
+              } ${
+                isPessoal
+                  ? styles.environmentActive
+                  : ""
               }`}
-              onClick={() => setAmbienteAtual("pessoal")}
+              onClick={() =>
+                setAmbienteAtual("pessoal")
+              }
               aria-pressed={isPessoal}
             >
               Pessoal
@@ -96,10 +215,16 @@ export default function DashboardClient() {
 
             <button
               type="button"
-              className={`${styles.environmentButton} ${
-                !isPessoal ? styles.environmentActive : ""
+              className={`${
+                styles.environmentButton
+              } ${
+                !isPessoal
+                  ? styles.environmentActive
+                  : ""
               }`}
-              onClick={() => setAmbienteAtual("empresa")}
+              onClick={() =>
+                setAmbienteAtual("empresa")
+              }
               aria-pressed={!isPessoal}
             >
               Empresa
@@ -126,13 +251,13 @@ export default function DashboardClient() {
             </summary>
 
             <div className={styles.dropdown}>
-              <div className={styles.dropdown}>
-                <MenuAmbiente
-                  ambiente={ambienteAtual}
-                  papelEmpresa={papelEmpresa}
-                  onCriarTag={() => setIsTagModalOpen(true)}
-                />
-              </div>
+              <MenuAmbiente
+                ambiente={ambienteAtual}
+                papelEmpresa={papelEmpresa}
+                onCriarTag={() =>
+                  setIsTagModalOpen(true)
+                }
+              />
             </div>
           </details>
         </div>
@@ -143,24 +268,32 @@ export default function DashboardClient() {
           className={styles.breadcrumb}
           aria-label="Localização"
         >
-          <span>{isPessoal ? "Pessoal" : "Empresa"}</span>
+          <span>
+            {isPessoal ? "Pessoal" : "Empresa"}
+          </span>
 
-          <span className={styles.separator}>/</span>
+          <span className={styles.separator}>
+            /
+          </span>
 
-          <span className={styles.currentPage}>Timeline</span>
+          <span className={styles.currentPage}>
+            Timeline
+          </span>
         </nav>
 
         <section className={styles.titleSection}>
           <div className={styles.environment}>
-              <Image
-                src={iconUser}
-                alt=""
-                width={18}
-                height={18}
-              />
+            <Image
+              src={iconUser}
+              alt=""
+              width={18}
+              height={18}
+            />
 
             <span>
-              {isPessoal ? "ESPAÇO PESSOAL" : "ESPAÇO EMPRESA"}
+              {isPessoal
+                ? "ESPAÇO PESSOAL"
+                : "ESPAÇO EMPRESA"}
             </span>
           </div>
 
@@ -179,22 +312,26 @@ export default function DashboardClient() {
             className={styles.searchInput}
           />
 
-        <details className={styles.tagsDropdown}>
-          <summary className={styles.filterButton}>
-            <span>Tags</span>
+          <details className={styles.tagsDropdown}>
+            <summary className={styles.filterButton}>
+              <span>Tags</span>
 
-            <Image
-              src={iconSeta}
-              alt=""
-              width={18}
-              height={18}
-            />
-          </summary>
+              <Image
+                src={iconSeta}
+                alt=""
+                width={18}
+                height={18}
+              />
+            </summary>
 
-          <div className={styles.tagsDropdownContent}>
-            <MenuTags tags={tagsExemplo} />
-          </div>
-        </details>
+            <div className={styles.tagsDropdownContent}>
+              {tagsError ? (
+                <p role="alert">{tagsError}</p>
+              ) : (
+                <MenuTags tags={menuTags} />
+              )}
+            </div>
+          </details>
 
           <button
             type="button"
@@ -219,18 +356,14 @@ export default function DashboardClient() {
         />
       </main>
 
-
-        <TagModal
-          isOpen={isTagModalOpen}
-          onClose={() => setIsTagModalOpen(false)}
-          scope={isPessoal ? "personal" : "company"}
-          onSubmit={(data, scope, companyId) => {
-            console.log("Tag:", data);
-            console.log("Ambiente:", scope);
-            console.log("Empresa:", companyId);
-          }}
-        />
-
+      <TagModal
+        isOpen={isTagModalOpen}
+        onClose={() => setIsTagModalOpen(false)}
+        scope={isPessoal ? "personal" : "company"}
+        companyId={companyId}
+        companyName={companyName}
+        onSubmit={handleCreateTag}
+      />
     </div>
   );
 }

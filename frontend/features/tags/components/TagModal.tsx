@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useId, useState } from "react";
@@ -21,7 +20,7 @@ type TagModalProps = {
     data: CreateTagInput,
     scope: TagScope,
     companyId?: string
-  ) => void;
+  ) => Promise<void>;
 };
 
 const DEFAULT_COLOR = "#476844";
@@ -40,6 +39,7 @@ export default function TagModal({
   const [description, setDescription] = useState("");
   const [color, setColor] = useState(DEFAULT_COLOR);
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -53,11 +53,11 @@ export default function TagModal({
   }, [isOpen]);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || isSubmitting) return;
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        onClose();
+        handleClose();
       }
     }
 
@@ -66,7 +66,7 @@ export default function TagModal({
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, isSubmitting, onClose]);
 
   function resetForm() {
     setName("");
@@ -76,12 +76,19 @@ export default function TagModal({
   }
 
   function handleClose() {
+    if (isSubmitting) return;
+
     resetForm();
     onClose();
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
     event.preventDefault();
+
+    if (isSubmitting) return;
+
     setError("");
 
     const trimmedName = name.trim();
@@ -107,20 +114,36 @@ export default function TagModal({
       return;
     }
 
+    if (!onSubmit) {
+      setError("O cadastro de tags está indisponível.");
+      return;
+    }
+
     const data: CreateTagInput = {
       name: trimmedName,
       description: trimmedDescription || undefined,
       color,
     };
 
-    onSubmit?.(
-      data,
-      scope,
-      scope === "company" ? companyId : undefined
-    );
+    try {
+      setIsSubmitting(true);
 
-    if (onSubmit) {
-      handleClose();
+      await onSubmit(
+        data,
+        scope,
+        scope === "company" ? companyId : undefined
+      );
+
+      resetForm();
+      onClose();
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível cadastrar a tag."
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -130,7 +153,10 @@ export default function TagModal({
     <div
       className={styles.overlay}
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) {
+        if (
+          event.target === event.currentTarget &&
+          !isSubmitting
+        ) {
           handleClose();
         }
       }}
@@ -140,6 +166,7 @@ export default function TagModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
+        aria-busy={isSubmitting}
       >
         <div className={styles.header}>
           <h2 id={titleId} className={styles.title}>
@@ -150,6 +177,7 @@ export default function TagModal({
             type="button"
             className={styles.closeButton}
             onClick={handleClose}
+            disabled={isSubmitting}
             aria-label="Fechar modal"
           >
             ×
@@ -162,7 +190,10 @@ export default function TagModal({
             : `Empresa${companyName ? ` · ${companyName}` : ""}`}
         </div>
 
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <form
+          className={styles.form}
+          onSubmit={handleSubmit}
+        >
           <div className={styles.field}>
             <label
               htmlFor="tag-name"
@@ -176,9 +207,12 @@ export default function TagModal({
               type="text"
               className={styles.input}
               value={name}
-              onChange={(event) => setName(event.target.value)}
+              onChange={(event) =>
+                setName(event.target.value)
+              }
               placeholder="Manutenção"
               maxLength={100}
+              disabled={isSubmitting}
               required
             />
           </div>
@@ -201,16 +235,24 @@ export default function TagModal({
               placeholder="Revisões e reparos de equipamentos."
               maxLength={500}
               rows={2}
+              disabled={isSubmitting}
             />
           </div>
 
           <TagColorPicker
             value={color}
-            onChange={setColor}
+            onChange={(value) => {
+              if (!isSubmitting) {
+                setColor(value);
+              }
+            }}
           />
 
           {error && (
-            <p className={styles.errorMessage} role="alert">
+            <p
+              className={styles.errorMessage}
+              role="alert"
+            >
               {error}
             </p>
           )}
@@ -220,6 +262,7 @@ export default function TagModal({
               type="button"
               className={styles.cancelButton}
               onClick={handleClose}
+              disabled={isSubmitting}
             >
               Cancelar
             </button>
@@ -227,8 +270,11 @@ export default function TagModal({
             <button
               type="submit"
               className={styles.submitButton}
+              disabled={isSubmitting}
             >
-              Criar tag
+              {isSubmitting
+                ? "Criando..."
+                : "Criar tag"}
             </button>
           </div>
         </form>
