@@ -25,7 +25,7 @@ export function LoginForm() {
 
     try {
       await login({ email, password });
-      router.replace("/registros");
+      router.replace("/login/escolher-ambiente");
     } catch (err) {
       setError(errorMessage(err));
       setSubmitting(false);

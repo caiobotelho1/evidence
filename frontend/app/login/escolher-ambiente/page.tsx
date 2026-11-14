@@ -59,7 +59,8 @@ export default function EscolherEspacoPage() {
         </div>
 
         <div className={styles.spaces}>
-          <Link href="/pessoal" className={styles.personalCard}>
+           <Link href="/tela-principal?ambiente=pessoal"
+           className={styles.personalCard}>
             <div className={styles.iconWrapper}>
               <svg
                 viewBox="0 0 64 64"
@@ -106,7 +107,7 @@ export default function EscolherEspacoPage() {
               </svg>
             </div>
           </Link>
-          <Link href="/empresa" className={styles.companyCard}>
+          <Link href="/tela-principal?ambiente=empresa" className={styles.companyCard}>
             <div className={styles.iconWrapper}>
               <svg
                 viewBox="0 0 64 64"

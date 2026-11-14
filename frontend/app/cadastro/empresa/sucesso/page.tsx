@@ -98,7 +98,7 @@ export default function EmpresaSucessoPage() {
           </p>
 
           <Link href="/login" className={styles.submitButton}>
-            Acessar minha conta
+            Ir ao menu
           </Link>
         </div>
       </section>

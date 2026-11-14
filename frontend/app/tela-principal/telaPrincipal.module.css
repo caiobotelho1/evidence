@@ -5,17 +5,17 @@
 }
 
 .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+
   width: 100%;
   max-width: 1200px;
   height: 102px;
 
   margin: 0 auto;
   padding: 0 24px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 32px;
 
   box-sizing: border-box;
 }
@@ -27,6 +27,7 @@
 
   color: #1F3D2E;
   text-decoration: none;
+
   transform: translateX(-100px);
 }
 
@@ -47,10 +48,50 @@
   gap: 32px;
 }
 
-.environmentSlot {
-  width: 232px;
-  height: 48px;
-  flex-shrink: 0;
+.environmentSwitcher {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  padding: 4px;
+
+  background-color: #E3E8DC;
+  border-radius: 12px;
+
+  box-sizing: border-box;
+}
+
+.environmentButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 110px;
+  height: 40px;
+  padding: 0 12px;
+
+  border: none;
+  border-radius: 9px;
+
+  background-color: transparent;
+  color: #1F3D2E;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.environmentActive {
+  background-color: #1F3D2E;
+  color: #FFFFFF;
+}
+
+.environmentButton:focus-visible {
+  outline: 2px solid #4A6A41;
+  outline-offset: 2px;
 }
 
 .menu {
@@ -103,19 +144,15 @@
   top: calc(100% + 8px);
   right: 0;
 
-  width: 240px;
-  min-height: 20px;
-  padding: 12px;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  padding: 0;
 
-  background-color: #FFFFFF;
-
-  border: 1px solid #E3E8DC;
-  border-radius: 12px;
-
-  box-shadow: 0 8px 24px rgba(31, 61, 46, 0.10);
+  background: transparent;
+  border: none;
+  box-shadow: none;
 
   z-index: 10;
-  box-sizing: border-box;
 }
 
 .main {
@@ -171,10 +208,12 @@
 }
 
 .environment img {
-  flex-shrink: 0;
-  object-fit: contain;
   width: 18px;
   height: 18px;
+
+  flex-shrink: 0;
+  object-fit: contain;
+
   transform: translateY(-2px);
 }
 
@@ -247,11 +286,6 @@
   box-sizing: border-box;
 }
 
-.filterButton img {
-  flex-shrink: 0;
-  object-fit: contain;
-}
-
 .filterButton {
   min-width: 170px;
 
@@ -259,6 +293,11 @@
   border: 1px solid #9CAE8F;
 
   color: #1F3D2E;
+}
+
+.filterButton img {
+  flex-shrink: 0;
+  object-fit: contain;
 }
 
 .newRecordButton {
@@ -281,6 +320,8 @@
   font-size: 24px;
   font-weight: 400;
   line-height: 1;
+
+  transform: translateY(-2px);
 }
 
 .filterButton:disabled,
@@ -295,19 +336,60 @@
   margin-top: 28px;
 }
 
+.tagsDropdown {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.tagsDropdown .filterButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 48px;
+  gap: 10px;
+
+  cursor: pointer;
+  list-style: none;
+}
+
+.tagsDropdown .filterButton::-webkit-details-marker {
+  display: none;
+}
+
+.tagsDropdown .filterButton img {
+  transition: transform 0.2s ease;
+}
+
+.tagsDropdown[open] .filterButton img {
+  transform: rotate(180deg);
+}
+
+.tagsDropdownContent {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+
+  z-index: 20;
+
+  width: max-content;
+  max-width: calc(100vw - 40px);
+}
+
 @media (max-width: 900px) {
   .header {
     padding: 0 32px;
   }
-
-  .main {
-    padding: 28px 32px 48px;
+  .logo {
+    transform: none;
   }
-
   .headerActions {
     gap: 20px;
   }
-
+  .main {
+    padding: 28px 32px 48px;
+  }
   .searchSection {
     flex-wrap: wrap;
   }
@@ -318,34 +400,29 @@
     height: auto;
     min-height: 102px;
     padding: 20px;
+
     flex-wrap: wrap;
   }
-
   .logo span {
     font-size: 28px;
   }
-
   .headerActions {
     width: 100%;
     justify-content: flex-end;
+    gap: 12px;
   }
-
-  .environmentSlot {
-    display: none;
+  .environmentButton {
+    width: 88px;
   }
-
   .main {
     padding: 24px 20px;
   }
-
   .breadcrumb {
     margin-bottom: 24px;
   }
-
   .title {
     font-size: 36px;
   }
-
   .searchSection {
     flex-direction: column;
     align-items: stretch;
@@ -357,8 +434,20 @@
     width: 100%;
     flex: auto;
   }
-
   .timelineSection {
     min-height: 400px;
+  }
+}
+
+@media (max-width: 600px) {
+  .tagsDropdown {
+    width: 100%;
+    flex: 0 0 auto;
+  }
+  .tagsDropdown .filterButton {
+    width: 100%;
+  }
+  .tagsDropdownContent {
+    right: 0;
   }
 }
