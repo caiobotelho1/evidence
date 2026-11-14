@@ -1,27 +1,224 @@
-.colorPicker {
+
+/* ========================================
+   MODAL - ESTRUTURA
+======================================== */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 100dvh;
+  padding: 20px;
+  box-sizing: border-box;
+
+  background: rgba(40, 62, 51, 0.36);
+}
+
+.modal {
+  box-sizing: border-box;
+
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100dvh - 40px);
+
+  margin: 0;
+  padding: 30px 32px;
+
+  overflow-y: auto;
+
+  background: #faf9f6;
+  border: 1px solid #e9e4d9;
+  border-radius: 16px;
+
+  box-shadow: 0 12px 32px rgba(20, 42, 29, 0.15);
+}
+
+/* ========================================
+   CABEÇALHO
+======================================== */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.title {
+  margin: 0;
+
+  color: #1f3d2f;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 28px;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 30px;
+  height: 30px;
+
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+
+  background: transparent;
+  color: #476844;
+
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  background: #edf2e9;
+}
+
+/* ========================================
+   INDICADOR DO AMBIENTE
+======================================== */
+
+.contextBadge {
+  display: inline-flex;
+  align-items: center;
+
+  width: fit-content;
+  max-width: 100%;
+
+  padding: 5px 11px;
+  margin-bottom: 22px;
+
+  border: 1px solid #d9e3d3;
+  border-radius: 6px;
+
+  background: #edf2e9;
+  color: #476844;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ========================================
+   FORMULÁRIO
+======================================== */
+
+.form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 18px;
+
+  width: 100%;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  width: 100%;
 }
 
 .fieldLabel {
+  color: #1f3d2f;
   font-size: 13px;
   font-weight: 500;
+}
+
+.input,
+.textarea {
+  box-sizing: border-box;
+
+  display: block;
+  width: 100%;
+
+  padding: 11px 12px;
+
+  border: 1px solid #b4c4a8;
+  border-radius: 9px;
+
+  background: #ffffff;
   color: #1f3d2f;
+
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+
+  outline: none;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: #476844;
+  box-shadow: 0 0 0 2px rgba(71, 104, 68, 0.12);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: #8b8b8b;
+}
+
+.textarea {
+  min-height: 85px;
+  resize: vertical;
+}
+
+.helperText {
+  margin: 0;
+
+  color: #66815d;
+  font-size: 11px;
+}
+
+.errorMessage {
+  margin: 0;
+
+  color: #b94e3e;
+  font-size: 12px;
+}
+
+/* ========================================
+   SELETOR DE CORES
+======================================== */
+
+.colorPicker {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  width: 100%;
 }
 
 .colorRow {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 10px;
+
+  gap: 12px;
 }
 
 .colorOption {
-  width: 25px;
-  height: 25px;
+  box-sizing: border-box;
+
+  width: 27px;
+  height: 27px;
+
+  padding: 0;
+
   border: 2px solid transparent;
   border-radius: 50%;
+
   cursor: pointer;
   transition: transform 0.2s ease;
 }
@@ -37,18 +234,28 @@
 
 .customColorWrapper {
   position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .addColorButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 25px;
-  height: 25px;
+
+  width: 27px;
+  height: 27px;
+
+  padding: 0;
+
   border: 1px solid #a4b79a;
   border-radius: 50%;
+
   background: transparent;
   color: #1f3d2f;
+
   font-size: 19px;
   cursor: pointer;
 }
@@ -59,184 +266,114 @@
 
 .nativeColorInput {
   position: absolute;
+
   width: 0;
   height: 0;
+
   opacity: 0;
   pointer-events: none;
 }
 
 .selectedColorLabel {
-  font-size: 11px;
   color: #476844;
+  font-size: 11px;
 }
 
 .selectedColorPreview {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
+  width: 17px;
+  height: 17px;
+
   border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 50%;
 }
 
-
-.overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: rgba(40, 62, 51, 0.36);
-}
-
-.modal {
-  width: 100%;
-  max-width: 488px;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 28px;
-  background: #faf9f6;
-  border: 1px solid #e9e4d9;
-  border-radius: 15px;
-  box-shadow: 0 12px 32px rgba(20, 42, 29, 0.15);
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.title {
-  margin: 0;
-  color: #1f3d2f;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 28px;
-  font-style: italic;
-  font-weight: 500;
-}
-
-.closeButton {
-  border: none;
-  background: transparent;
-  color: #476844;
-  font-size: 25px;
-  cursor: pointer;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.scopeFieldset {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  border: none;
-}
-
-.scopeFieldset legend {
-  margin-bottom: 9px;
-}
-
-.radioOption {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: #1f3d2f;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.radioOption input {
-  accent-color: #1f3d2f;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.input,
-.textarea {
-  width: 100%;
-  padding: 11px 12px;
-  border: 1px solid #b4c4a8;
-  border-radius: 9px;
-  background: #fff;
-  color: #1f3d2f;
-  font: inherit;
-  font-size: 13px;
-  outline: none;
-}
-
-.input:focus,
-.textarea:focus {
-  border-color: #476844;
-  box-shadow: 0 0 0 2px rgba(71, 104, 68, 0.12);
-}
-
-.textarea {
-  min-height: 50px;
-  resize: vertical;
-}
-
-.helperText {
-  margin: 0;
-  color: #66815d;
-  font-size: 11px;
-}
-
-.errorMessage {
-  margin: 0;
-  color: #b94e3e;
-  font-size: 12px;
-}
+/* ========================================
+   BOTÕES
+======================================== */
 
 .actions {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 5px;
+
+  gap: 12px;
+  width: 100%;
+
+  margin-top: 12px;
 }
 
 .cancelButton,
 .submitButton {
-  padding: 11px 19px;
+  box-sizing: border-box;
+
+  min-width: 110px;
+  padding: 11px 18px;
+
   border-radius: 10px;
+
   font-size: 13px;
   font-weight: 600;
+  text-align: center;
+
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .cancelButton {
   border: 1px solid #b4c4a8;
+
   background: transparent;
   color: #1f3d2f;
 }
 
+.cancelButton:hover {
+  background: #edf2e9;
+}
+
 .submitButton {
   border: 1px solid #1f3d2f;
+
   background: #1f3d2f;
-  color: white;
+  color: #ffffff;
 }
 
 .submitButton:hover {
   background: #315740;
 }
 
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
 @media (max-width: 480px) {
+  .overlay {
+    padding: 12px;
+  }
+
   .modal {
-    padding: 22px;
+    max-height: calc(100dvh - 24px);
+    padding: 24px 20px;
   }
 
   .title {
     font-size: 25px;
+  }
+
+  .form {
+    gap: 16px;
+  }
+
+  .actions {
+    gap: 8px;
+  }
+
+  .cancelButton,
+  .submitButton {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .colorRow {
+    gap: 10px;
   }
 }

@@ -218,18 +218,19 @@ export default function DashboardClient() {
           aria-label="Timeline de registros"
         />
       </main>
+
+
         <TagModal
           isOpen={isTagModalOpen}
           onClose={() => setIsTagModalOpen(false)}
-          companies={[
-            { id: "1", name: "Empresa Teste" },
-        ]}
-        onSubmit={(data, scope, companyId) => {
-          console.log("Tag:", data);
-          console.log("Tipo:", scope);
-          console.log("Empresa:", companyId);
-        }}
-      />
+          scope={isPessoal ? "personal" : "company"}
+          onSubmit={(data, scope, companyId) => {
+            console.log("Tag:", data);
+            console.log("Ambiente:", scope);
+            console.log("Empresa:", companyId);
+          }}
+        />
+
     </div>
   );
 }
