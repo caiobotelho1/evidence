@@ -1,0 +1,75 @@
+.menuTags {
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  width: 296px;
+  height: auto;
+
+  padding: 18px 16px;
+  gap: 6px;
+
+  background: #FAF9F5;
+  border: 1px solid #EADFCF;
+
+  box-shadow: 0px 8px 26px rgba(26, 38, 28, 0.15);
+  border-radius: 16px;
+}
+
+.titulo {
+  margin: 0;
+
+  font-family: "DM Serif Display", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 33px;
+
+  color: #1F3D2E;
+}
+
+.listaTags {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  width: 100%;
+  gap: 0;
+}
+
+.tagItem {
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  width: 100%;
+  min-height: 35px;
+
+  padding: 9px 8px;
+  gap: 12px;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 17px;
+
+  color: #1F3D2E;
+}
+
+.circulo {
+  width: 12px;
+  height: 12px;
+
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.mensagemVazia {
+  margin: 8px;
+  font-size: 14px;
+  color: #4A6A41;
+}
