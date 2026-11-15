@@ -68,3 +68,26 @@ export async function getCompanyByCnpj(cnpj: string) {
     },
   });
 }
+
+export async function listMyCompanies(userId: string) {
+  return prisma.companyMembership.findMany({
+    where: {
+      userId,
+      status: "ACTIVE",
+    },
+    select: {
+      role: true,
+      company: {
+        select: {
+          id: true,
+          legalName: true,
+          tradeName: true,
+          cnpj: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+}

@@ -27,3 +27,15 @@ export async function createCompany(
     body: JSON.stringify(payload),
   });
 }
+
+export type MyCompany = {
+  id: string;
+  legalName: string;
+  tradeName: string | null;
+  cnpj: string;
+  role: "OWNER" | "EMPLOYEE";
+};
+
+export async function getMyCompanies(): Promise<MyCompany[]> {
+  return apiFetch<MyCompany[]>("/api/companies/mine");
+}

@@ -1,7 +1,6 @@
-
 import type { RequestHandler } from "express";
 import { createCompanySchema } from "../models/company.schema.js";
-import { createCompany } from "../services/company.service.js";
+import { createCompany, listMyCompanies } from "../services/company.service.js";
 import { getAuth } from "../middlewares/authenticate.js";
 import { notFound } from "../lib/errors.js";
 import { companyCnpjParamsSchema } from "../models/membership.schema.js";
@@ -31,3 +30,17 @@ export const getCompanyByCnpjController: RequestHandler = async (
 
   res.status(200).json({ company });
 };
+
+export const listMyCompaniesController: RequestHandler =
+  async (req, res) => {
+    const { user } = getAuth(req);
+
+    const memberships = await listMyCompanies(user.id);
+
+    res.status(200).json(
+      memberships.map((membership) => ({
+        ...membership.company,
+        role: membership.role,
+      }))
+    );
+  };
