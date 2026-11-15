@@ -51,8 +51,8 @@ export default function SolicitacoesPage() {
             <span>Evidence</span>
           </Link>
 
-          <Link href="/" className={styles.backLink}>
-            ← Voltar ao início
+          <Link href="/gerenciar-empresa" className={styles.backLink}>
+            ← Voltar ao gerenciamento
           </Link>
         </header>
 

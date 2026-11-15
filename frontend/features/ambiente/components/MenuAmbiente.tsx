@@ -54,7 +54,7 @@ export default function MenuAmbiente({
       )}
 
       {isProprietario && (
-        <Link href="/empresa" className={styles.menuItem}>
+        <Link href="/gerenciar-empresa" className={styles.menuItem}>
           <Image
             src={iconEquipe}
             alt=""
