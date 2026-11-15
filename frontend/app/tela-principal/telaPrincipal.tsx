@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { DM_Serif_Display, Inter } from "next/font/google";
 import { useSearchParams, useRouter } from "next/navigation";
+import {getMyCompanies, type MyCompany,} from "@/services/company.service";
 
 import iconUser from "../../imgs/icon_user.png";
 import iconMenu from "../../imgs/icon_menu.png";
@@ -55,13 +56,63 @@ export default function DashboardClient() {
     router.push(`/tela-principal?ambiente=${ambiente}`);
   };
 
+  // A empresa ativa ainda precisa ser conectada.
+ const [companies, setCompanies] = useState<MyCompany[]>([]);
+const [selectedCompanyId, setSelectedCompanyId] = useState("");
+const [companiesLoading, setCompaniesLoading] = useState(true);
+const [companiesError, setCompaniesError] = useState("");
+
+useEffect(() => {
+  let cancelled = false;
+
+  async function loadCompanies() {
+    try {
+      const result = await getMyCompanies();
+
+      if (cancelled) return;
+
+      setCompanies(result);
+
+      // Seleciona automaticamente apenas se houver uma empresa.
+     if (result.length === 1) {
+        setSelectedCompanyId(result[0].id);
+      }
+    } catch (error) {
+      if (!cancelled) {
+        setCompaniesError(
+          error instanceof Error
+            ? error.message
+            : "Não foi possível carregar as empresas."
+        );
+      }
+    } finally {
+      if (!cancelled) {
+        setCompaniesLoading(false);
+      }
+    }
+  }
+ 
+  void loadCompanies();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
+
+const selectedCompany = companies.find(
+  (company) => company.id === selectedCompanyId
+); 
+const companyId = selectedCompany?.id;
+
+const companyName =
+  selectedCompany?.tradeName ??
+  selectedCompany?.legalName;
+
   // Temporário: substituir pelo papel do usuário autenticado.
   const papelEmpresa: "proprietario" | "funcionario" =
-    "proprietario";
-
-  // A empresa ativa ainda precisa ser conectada.
-  const companyId: string | undefined = undefined;
-  const companyName: string | undefined = undefined;
+    selectedCompany?.role === "OWNER"
+      ? "proprietario"
+      : "funcionario";
 
   const [isTagModalOpen, setIsTagModalOpen] =
     useState(false);
@@ -99,7 +150,6 @@ export default function DashboardClient() {
         }
       }
     }
-
     void loadTags();
 
     return () => {
@@ -139,7 +189,6 @@ export default function DashboardClient() {
     nome: tag.name,
     cor: tag.color,
   }));
-
   return (
     <div
       className={`${styles.dashboard} ${inter.className}`}
@@ -189,7 +238,6 @@ export default function DashboardClient() {
             Evidence
           </span>
         </Link>
-
         <div className={styles.headerActions}>
           <div
             className={styles.environmentSwitcher}
@@ -280,7 +328,6 @@ export default function DashboardClient() {
             Timeline
           </span>
         </nav>
-
         <section className={styles.titleSection}>
           <div className={styles.environment}>
             <Image
@@ -332,7 +379,6 @@ export default function DashboardClient() {
               )}
             </div>
           </details>
-
           <button
             type="button"
             className={styles.newRecordButton}
@@ -355,7 +401,6 @@ export default function DashboardClient() {
           aria-label="Timeline de registros"
         />
       </main>
-
       <TagModal
         isOpen={isTagModalOpen}
         onClose={() => setIsTagModalOpen(false)}
@@ -367,3 +412,4 @@ export default function DashboardClient() {
     </div>
   );
 }
+  
