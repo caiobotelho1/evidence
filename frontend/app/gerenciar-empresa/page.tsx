@@ -1,13 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { DM_Serif_Display, Inter } from "next/font/google";
-
-import FuncionarioModal, {
-  type Funcionario,
-} from "@/features/empresa/components/FuncionarioModal";
-
+import FuncionarioModal, {type Funcionario,} from "@/features/empresa/components/FuncionarioModal";
+import {getMyCompanies,getCompanyMembers,getCompanyMember,removeCompanyMember,type CompanyMember,type MyCompany,} from "@/services/company.service";
 import styles from "./gerenciarEmpresa.module.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -18,52 +15,123 @@ const dmSerif = DM_Serif_Display({
   style: "italic",
 });
 
-const funcionarios: Funcionario[] = [
-  {
-    id: "1",
-    nome: "Funcionário 1",
-    email: "funcionario1@example.com",
-    iniciais: "f1",
-    telefone: "(11) 9XXXX-0101",
-    dataEntrada: "2025-07-01",
-  },
-  {
-    id: "2",
-    nome: "Funcionário 2",
-    email: "funcionario2@example.com",
-    iniciais: "f2",
-    telefone: "(11) 9XXXX-0102",
-    dataEntrada: "2025-08-01",
-  },
-  {
-    id: "3",
-    nome: "Funcionário 3",
-    email: "funcionario3@example.com",
-    iniciais: "f3",
-    telefone: "(11) 9XXXX-0103",
-    dataEntrada: "2025-09-01",
-  },
-  {
-    id: "4",
-    nome: "Funcionário 4",
-    email: "funcionario4@example.com",
-    iniciais: "f4",
-    telefone: "(11) 9XXXX-0104",
-    dataEntrada: "2025-10-01",
-  },
-];
+function converterFuncionario(member: CompanyMember): Funcionario {
+  const nome = member.user.name.trim();
+
+  const iniciais = nome
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((parte) => parte.charAt(0))
+    .join("")
+    .toUpperCase();
+
+  return {
+    id: member.id,
+    nome,
+    email: member.user.email,
+    iniciais,
+    telefone: member.user.phone || "Não informado",
+    dataEntrada: (member.decidedAt ?? member.createdAt).slice(0, 10),
+  };
+}
 
 export default function GerenciarEmpresaPage() {
-  const nomeEmpresa = "Empresa Exemplo LTDA";
-  const quantidadeSolicitacoes = 1;
-
+  const [empresa, setEmpresa] = useState<MyCompany | null>(null);
+  const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
   const [funcionarioSelecionado, setFuncionarioSelecionado] =
     useState<Funcionario | null>(null);
 
-  function handleRemove(funcionario: Funcionario) {
-    // A remoção real será integrada ao backend posteriormente.
-    console.log("Remoção ainda não implementada:", funcionario.id);
+  const [carregando, setCarregando] = useState(true);
+  const [carregandoDetalhes, setCarregandoDetalhes] = useState(false);
+  const [removendo, setRemovendo] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
+
+  const carregarDados = useCallback(async () => {
+    setCarregando(true);
+    setErro(null);
+
+    try {
+      const empresas = await getMyCompanies();
+
+      const empresaProprietaria = empresas.find(
+        (item) => item.role === "OWNER"
+      );
+
+      if (!empresaProprietaria) {
+        setEmpresa(null);
+        setFuncionarios([]);
+        setErro("Nenhuma empresa disponível para gerenciamento.");
+        return;
+      }
+
+      setEmpresa(empresaProprietaria);
+
+      const membros = await getCompanyMembers(empresaProprietaria.id);
+
+      setFuncionarios(membros.map(converterFuncionario));
+    } catch (error) {
+      console.error("Erro ao carregar empresa:", error);
+      setErro("Não foi possível carregar os dados da empresa.");
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void carregarDados();
+  }, [carregarDados]);
+
+  async function abrirFuncionario(funcionario: Funcionario) {
+    if (!empresa || carregandoDetalhes) return;
+
+    setCarregandoDetalhes(true);
+    setErro(null);
+
+    try {
+      const member = await getCompanyMember(
+        empresa.id,
+        funcionario.id
+      );
+
+      setFuncionarioSelecionado(converterFuncionario(member));
+    } catch (error) {
+      console.error("Erro ao consultar funcionário:", error);
+      setErro("Não foi possível carregar os detalhes do funcionário.");
+    } finally {
+      setCarregandoDetalhes(false);
+    }
   }
+
+  async function handleRemove(funcionario: Funcionario) {
+    if (!empresa || removendo) return;
+
+    const confirmado = window.confirm(
+      `Deseja realmente remover ${funcionario.nome} da empresa?`
+    );
+
+    if (!confirmado) return;
+
+    setRemovendo(true);
+    setErro(null);
+
+    try {
+      await removeCompanyMember(empresa.id, funcionario.id);
+
+      setFuncionarios((atuais) =>
+        atuais.filter((item) => item.id !== funcionario.id)
+      );
+
+      setFuncionarioSelecionado(null);
+    } catch (error) {
+      console.error("Erro ao remover funcionário:", error);
+      setErro("Não foi possível remover o funcionário.");
+    } finally {
+      setRemovendo(false);
+    }
+  }
+
+  const nomeEmpresa =
+    empresa?.tradeName || empresa?.legalName || "Gerenciar empresa";
 
   return (
     <div className={`${styles.page} ${inter.className}`}>
@@ -106,84 +174,99 @@ export default function GerenciarEmpresaPage() {
         </div>
 
         <h1 className={`${styles.title} ${dmSerif.className}`}>
-          {nomeEmpresa}
+          {carregando ? "Carregando..." : nomeEmpresa}
         </h1>
 
-        <Link
-          href="/cadastro/empresa/receber-solicitacao"
-          className={styles.requestsSection}
-        >
-          <span className={styles.requestsLabel}>
-            Solicitações de participação
-          </span>
+        {erro && (
+          <p role="alert" style={{ color: "#B65A46", marginBottom: 20 }}>
+            {erro}
+          </p>
+        )}
 
-          <span className={styles.requestsInfo}>
-            <span>
-              {quantidadeSolicitacoes}{" "}
-              {quantidadeSolicitacoes === 1
-                ? "solicitação"
-                : "solicitações"}
-            </span>
-            <span aria-hidden="true">→</span>
-          </span>
-        </Link>
-
-        <section className={styles.employeesSection}>
-          <div className={styles.sectionHeader}>
-            <h2
-              className={`${styles.sectionTitle} ${dmSerif.className}`}
+        {empresa && (
+          <>
+            <Link
+              href="/cadastro/empresa/receber-solicitacao"
+              className={styles.requestsSection}
             >
-              Funcionários
-            </h2>
+              <span className={styles.requestsLabel}>
+                Solicitações de participação
+              </span>
 
-            <span className={styles.employeeCount}>
-              {funcionarios.length} pessoas
-            </span>
-          </div>
+              <span className={styles.requestsInfo}>
+                <span>Ver solicitações</span>
+                <span aria-hidden="true">→</span>
+              </span>
+            </Link>
 
-          <div className={styles.employeesGrid}>
-            {funcionarios.map((funcionario, index) => (
-              <button
-                type="button"
-                key={funcionario.id}
-                className={styles.employeeCard}
-                onClick={() => setFuncionarioSelecionado(funcionario)}
-                aria-label={`Visualizar detalhes de ${funcionario.nome}`}
-              >
-                <span
-                  className={`${styles.avatar} ${
-                    index % 2 === 0
-                      ? styles.avatarGreen
-                      : styles.avatarBeige
-                  }`}
+            <section className={styles.employeesSection}>
+              <div className={styles.sectionHeader}>
+                <h2
+                  className={`${styles.sectionTitle} ${dmSerif.className}`}
                 >
-                  {funcionario.iniciais}
-                </span>
+                  Funcionários
+                </h2>
 
-                <span className={styles.employeeInfo}>
-                  <span className={styles.employeeName}>
-                    {funcionario.nome}
-                  </span>
-
-                  <span className={styles.employeeEmail}>
-                    {funcionario.email}
-                  </span>
+                <span className={styles.employeeCount}>
+                  {funcionarios.length}{" "}
+                  {funcionarios.length === 1 ? "pessoa" : "pessoas"}
                 </span>
+              </div>
 
-                <span className={styles.cardArrow} aria-hidden="true">
-                  ›
-                </span>
-              </button>
-            ))}
-          </div>
-        </section>
+              {carregando ? (
+                <p>Carregando funcionários...</p>
+              ) : funcionarios.length === 0 ? (
+                <p>Nenhum funcionário ativo nesta empresa.</p>
+              ) : (
+                <div className={styles.employeesGrid}>
+                  {funcionarios.map((funcionario, index) => (
+                    <button
+                      type="button"
+                      key={funcionario.id}
+                      className={styles.employeeCard}
+                      disabled={carregandoDetalhes || removendo}
+                      onClick={() => void abrirFuncionario(funcionario)}
+                      aria-label={`Visualizar detalhes de ${funcionario.nome}`}
+                    >
+                      <span
+                        className={`${styles.avatar} ${
+                          index % 2 === 0
+                            ? styles.avatarGreen
+                            : styles.avatarBeige
+                        }`}
+                      >
+                        {funcionario.iniciais}
+                      </span>
+
+                      <span className={styles.employeeInfo}>
+                        <span className={styles.employeeName}>
+                          {funcionario.nome}
+                        </span>
+
+                        <span className={styles.employeeEmail}>
+                          {funcionario.email}
+                        </span>
+                      </span>
+
+                      <span className={styles.cardArrow} aria-hidden="true">
+                        ›
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </section>
+          </>
+        )}
       </main>
 
       <FuncionarioModal
         funcionario={funcionarioSelecionado}
         nomeEmpresa={nomeEmpresa}
-        onClose={() => setFuncionarioSelecionado(null)}
-        onRemove={handleRemove}
+        onClose={() => {
+          if (!removendo) setFuncionarioSelecionado(null);
+        }}
+        onRemove={(funcionario) => void handleRemove(funcionario)}
       />
     </div>
   );
