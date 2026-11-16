@@ -39,3 +39,52 @@ export type MyCompany = {
 export async function getMyCompanies(): Promise<MyCompany[]> {
   return apiFetch<MyCompany[]>("/api/companies/mine");
 }
+
+
+export type CompanyMember = {
+  id: string;
+  role: "EMPLOYEE";
+  status: "ACTIVE";
+  jobTitle: string | null;
+  createdAt: string;
+  decidedAt: string | null;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+  };
+};
+
+export async function getCompanyMembers(
+  companyId: string
+): Promise<CompanyMember[]> {
+  const response = await apiFetch<{ members: CompanyMember[] }>(
+    `/api/companies/${companyId}/members`
+  );
+
+  return response.members;
+}
+
+export async function getCompanyMember(
+  companyId: string,
+  membershipId: string
+): Promise<CompanyMember> {
+  const response = await apiFetch<{ member: CompanyMember }>(
+    `/api/companies/${companyId}/members/${membershipId}`
+  );
+
+  return response.member;
+}
+
+export async function removeCompanyMember(
+  companyId: string,
+  membershipId: string
+): Promise<void> {
+  await apiFetch<{ message: string }>(
+    `/api/companies/${companyId}/members/${membershipId}`,
+    {
+      method: "DELETE",
+    }
+  );
+}

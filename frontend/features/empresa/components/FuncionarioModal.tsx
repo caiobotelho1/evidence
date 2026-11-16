@@ -29,26 +29,33 @@ type FuncionarioModalProps = {
 };
 
 function formatarTempo(dataEntrada: string): string {
-  const inicio = new Date(`${dataEntrada}T12:00:00`);
+  const [ano, mes, dia] = dataEntrada.split("-").map(Number);
+
+  const entrada = Date.UTC(ano, mes - 1, dia);
   const hoje = new Date();
 
-  let anos = hoje.getFullYear() - inicio.getFullYear();
-  let meses = hoje.getMonth() - inicio.getMonth();
+  const dataHoje = Date.UTC(
+    hoje.getFullYear(),
+    hoje.getMonth(),
+    hoje.getDate()
+  );
 
-  if (hoje.getDate() < inicio.getDate()) meses--;
+  const dias = Math.floor(
+    (dataHoje - entrada) / (1000 * 60 * 60 * 24)
+  );
 
-  if (meses < 0) {
-    anos--;
-    meses += 12;
-  }
+  if (dias <= 0) return "Hoje";
+  if (dias === 1) return "1 dia";
+  if (dias < 30) return `${dias} dias`;
 
-  if (anos < 0) return "Data futura";
+  const meses = Math.floor(dias / 30);
 
-  const partes = [];
-  if (anos > 0) partes.push(`${anos} ${anos === 1 ? "ano" : "anos"}`);
-  if (meses > 0) partes.push(`${meses} ${meses === 1 ? "mês" : "meses"}`);
+  if (meses === 1) return "1 mês";
+  if (meses < 12) return `${meses} meses`;
 
-  return partes.join(" e ") || "Menos de 1 mês";
+  const anos = Math.floor(meses / 12);
+
+  return `${anos} ${anos === 1 ? "ano" : "anos"}`;
 }
 
 function formatarData(dataEntrada: string): string {
