@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAuthUser } from "@/features/auth/components/AuthGate";
 import Link from "next/link";
 import Image from "next/image";
 import { DM_Serif_Display, Inter } from "next/font/google";
@@ -12,6 +13,7 @@ import iconMenu from "../../imgs/icon_menu.png";
 import iconSeta from "../../imgs/icon_seta.png";
 
 import TagModal from "@/features/tags/components/TagModal";
+import NovaRegistroModal from "@/features/registros/components/NovaRegistroModal";
 import MenuAmbiente from "../../features/ambiente/components/MenuAmbiente";
 import MenuTags from "../../features/ambiente/components/MenuTags";
 
@@ -42,6 +44,7 @@ const dmSerif = DM_Serif_Display({
 type Ambiente = "pessoal" | "empresa";
 
 export default function DashboardClient() {
+  const user = useAuthUser();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -108,6 +111,39 @@ const companyName =
   selectedCompany?.tradeName ??
   selectedCompany?.legalName;
 
+const selectedMembership = user.memberships.find(
+  (membership) =>
+    membership.companyId === companyId &&
+    membership.status === "ACTIVE"
+);
+
+const canCreateRecord = isPessoal
+  ? user.personalPermissions.includes("record:write")
+  : Boolean(
+      selectedMembership?.permissions.includes("record:write")
+    );
+
+const canOpenRecordModal = isPessoal
+  ? canCreateRecord
+  : !companiesLoading &&
+    !companiesError &&
+    Boolean(companyId) &&
+    canCreateRecord;
+
+const recordCreationMessage = isPessoal
+  ? canCreateRecord
+    ? ""
+    : "Você não tem permissão para criar registros pessoais."
+  : companiesLoading || companiesError
+    ? ""
+    : companies.length === 0
+      ? "Nenhuma empresa disponível para criar registros."
+      : !companyId
+        ? "Selecione uma empresa para criar um registro."
+        : !canCreateRecord
+          ? "Você não tem permissão para criar registros nesta empresa."
+          : "";
+
   // Temporário: substituir pelo papel do usuário autenticado.
   const papelEmpresa: "proprietario" | "funcionario" =
     selectedCompany?.role === "OWNER"
@@ -116,9 +152,12 @@ const companyName =
 
   const [isTagModalOpen, setIsTagModalOpen] =
     useState(false);
+  const [isRecordModalOpen, setIsRecordModalOpen] =
+    useState(false);
 
   const [tags, setTags] = useState<Tag[]>([]);
   const [tagsError, setTagsError] = useState("");
+  const [tagsLoading, setTagsLoading] = useState(false);
 
   // Carrega as tags do ambiente selecionado.
   useEffect(() => {
@@ -127,6 +166,7 @@ const companyName =
     async function loadTags() {
       setTags([]);
       setTagsError("");
+      setTagsLoading(true);
 
       try {
         if (!isPessoal && !companyId) {
@@ -147,6 +187,10 @@ const companyName =
               ? error.message
               : "Não foi possível carregar as tags."
           );
+        }
+      } finally {
+        if (!cancelled) {
+          setTagsLoading(false);
         }
       }
     }
@@ -189,6 +233,12 @@ const companyName =
     nome: tag.name,
     cor: tag.color,
   }));
+
+  async function handleCreateRecord(): Promise<void> {
+    throw new Error(
+      "O salvamento de registros será disponibilizado na etapa de integração."
+    );
+  }
   return (
     <div
       className={`${styles.dashboard} ${inter.className}`}
@@ -349,6 +399,52 @@ const companyName =
           >
             Sua história
           </h1>
+
+          {!isPessoal && (
+            <div className={styles.companySelector}>
+              <label
+                htmlFor="empresa-atual"
+                className={styles.companySelectorLabel}
+              >
+                Empresa
+              </label>
+
+              {companiesLoading ? (
+                <p className={styles.companySelectorStatus} role="status">
+                  Carregando empresas...
+                </p>
+              ) : companiesError ? (
+                <p className={styles.companySelectorError} role="alert">
+                  {companiesError}
+                </p>
+              ) : companies.length === 0 ? (
+                <p className={styles.companySelectorStatus} role="status">
+                  Nenhuma empresa disponível para sua conta.
+                </p>
+              ) : companies.length === 1 ? (
+                <p className={styles.companySelectorName}>
+                  {companies[0].tradeName?.trim() || companies[0].legalName}
+                </p>
+              ) : (
+                <select
+                  id="empresa-atual"
+                  className={styles.companySelect}
+                  value={selectedCompanyId}
+                  onChange={(event) =>
+                    setSelectedCompanyId(event.target.value)
+                  }
+                >
+                  <option value="">Selecione uma empresa</option>
+
+                  {companies.map((company) => (
+                    <option key={company.id} value={company.id}>
+                      {company.tradeName?.trim() || company.legalName}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+          )}
         </section>
 
         <section className={styles.searchSection}>
@@ -382,7 +478,13 @@ const companyName =
           <button
             type="button"
             className={styles.newRecordButton}
-            disabled
+            disabled={!canOpenRecordModal}
+            onClick={() => setIsRecordModalOpen(true)}
+            aria-describedby={
+              recordCreationMessage
+                ? "record-creation-message"
+                : undefined
+            }
           >
             <span
               className={styles.plusIcon}
@@ -395,7 +497,16 @@ const companyName =
           </button>
         </section>
 
-        {/* Timeline será implementada posteriormente */}
+        {recordCreationMessage && (
+          <p
+            id="record-creation-message"
+            className={styles.recordCreationMessage}
+            role="status"
+          >
+            {recordCreationMessage}
+          </p>
+        )}
+
         <section
           className={styles.timelineSection}
           aria-label="Timeline de registros"
@@ -408,6 +519,15 @@ const companyName =
         companyId={companyId}
         companyName={companyName}
         onSubmit={handleCreateTag}
+      />
+
+      <NovaRegistroModal
+        isOpen={isRecordModalOpen}
+        onClose={() => setIsRecordModalOpen(false)}
+        onSubmit={handleCreateRecord}
+        tags={tags}
+        tagsLoading={tagsLoading}
+        tagsError={tagsError}
       />
     </div>
   );
