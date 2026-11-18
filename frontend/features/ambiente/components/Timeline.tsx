@@ -68,7 +68,7 @@ export default function Timeline({ registros }: TimelineProps) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setAnimacaoInicial(false);
-    }, 2000);
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -104,10 +104,12 @@ export default function Timeline({ registros }: TimelineProps) {
 
   return (
     <section className={styles.timeline}>
+    {animacaoInicial && (
       <div
         className={styles.bolinhaInicial}
         aria-hidden="true"
       />
+    )}
       <div className={styles.cabecalho}>
         {/* Integrar com o filtro de data futuramente */}
         <h2 className={styles.mes}>
@@ -138,7 +140,11 @@ export default function Timeline({ registros }: TimelineProps) {
         </button>
 
         <div className={styles.trilho}>
-          <div className={`${styles.linha} ${styles.linhaAnimada}`}/>
+          <div
+            className={`${styles.linha} ${
+              animacaoInicial ? styles.linhaAnimada : ""
+            }`}
+          />
 
           <div key={inicioAtual} className={`${styles.registros} ${
               direcao === "direita"
