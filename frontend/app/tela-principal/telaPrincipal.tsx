@@ -16,6 +16,9 @@ import TagModal from "@/features/tags/components/TagModal";
 import NovaRegistroModal from "@/features/registros/components/NovaRegistroModal";
 import MenuAmbiente from "../../features/ambiente/components/MenuAmbiente";
 import MenuTags from "../../features/ambiente/components/MenuTags";
+import Timeline, {
+  type RegistroTimeline,
+} from "@/features/ambiente/components/Timeline";
 
 import {
   createPersonalTag,
@@ -30,7 +33,6 @@ import type {
 } from "@/features/tags/types";
 
 import type { Tag } from "@/services/tag.service";
-
 import styles from "./telaPrincipal.module.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -40,6 +42,83 @@ const dmSerif = DM_Serif_Display({
   weight: "400",
   style: "italic",
 });
+
+// MOCK: registros temporários para testar a timeline.
+// Substituir pelos dados retornados pelo backend.
+
+const registrosExemplo: RegistroTimeline[] = [
+  {
+    id: "1",
+    titulo: "Documento cadastrado",
+    autor: "Usuário teste",
+    data: "2026-10-05",
+    descricao: "Documento importante registrado no sistema.",
+    tags: [
+      { id: "1", nome: "Documentos", cor: "#ef3375" },
+    ],
+  },
+  {
+    id: "2",
+    titulo: "Atualização financeira",
+    autor: "Usuário teste",
+    data: "2026-10-17",
+    descricao: "Atualização das informações financeiras.",
+    tags: [
+      { id: "2", nome: "Financeiro", cor: "#1cd93c" },
+    ],
+  },
+  {
+    id: "3",
+    titulo: "Manutenção",
+    autor: "Usuário teste",
+    data: "2026-10-20",
+    descricao:
+      "Realizada a manutenção preventiva da máquina.",
+    tags: [
+      { id: "3", nome: "Tag 1", cor: "#1adfc8" },
+    ],
+  },
+  {
+    id: "4",
+    titulo: "Registro pessoal",
+    autor: "Usuário teste",
+    data: "2026-10-23",
+    descricao: "Registro de um acontecimento importante.",
+    tags: [
+      { id: "4", nome: "Pessoal", cor: "#371d96" },
+    ],
+  },
+  {
+    id: "5",
+    titulo: "Registro pessoal",
+    autor: "Usuário teste",
+    data: "2026-10-23",
+    descricao: "Registro de um acontecimento importante.",
+    tags: [
+      { id: "5", nome: "Pessoal", cor: "#EADFCF" },
+    ],
+  },
+  {
+    id: "6",
+    titulo: "Registro pessoal",
+    autor: "Usuário teste",
+    data: "2026-10-23",
+    descricao: "Registro de um acontecimento importante.",
+    tags: [
+      { id: "6", nome: "Pessoal", cor: "#d32525" },
+    ],
+  },
+  {
+    id: "7",
+    titulo: "Registro pessoal",
+    autor: "Usuário teste",
+    data: "2026-10-23",
+    descricao: "Registro de um acontecimento importante.",
+    tags: [
+      { id: "7", nome: "Pessoal", cor: "#effb13" },
+    ],
+  },
+];
 
 type Ambiente = "pessoal" | "empresa";
 
@@ -60,10 +139,10 @@ export default function DashboardClient() {
   };
 
   // A empresa ativa ainda precisa ser conectada.
- const [companies, setCompanies] = useState<MyCompany[]>([]);
-const [selectedCompanyId, setSelectedCompanyId] = useState("");
-const [companiesLoading, setCompaniesLoading] = useState(true);
-const [companiesError, setCompaniesError] = useState("");
+  const [companies, setCompanies] = useState<MyCompany[]>([]);
+  const [selectedCompanyId, setSelectedCompanyId] = useState("");
+  const [companiesLoading, setCompaniesLoading] = useState(true);
+  const [companiesError, setCompaniesError] = useState("");
 
 useEffect(() => {
   let cancelled = false;
@@ -244,50 +323,23 @@ const recordCreationMessage = isPessoal
       className={`${styles.dashboard} ${inter.className}`}
     >
       <header className={styles.header}>
-        <Link href="/" className={styles.logo}>
-          <svg
-            width="36"
-            height="36"
-            viewBox="0 0 36 36"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path
-              d="M18 7L8 18L15 29L29 22L18 7Z"
-              stroke="#1F3D2E"
-              strokeWidth="1.2"
-            />
-            <circle
-              cx="18"
-              cy="7"
-              r="3.4"
-              fill="#1F3D2E"
-            />
-            <circle
-              cx="8"
-              cy="18"
-              r="3.4"
-              fill="#4A6A41"
-            />
-            <circle
-              cx="15"
-              cy="29"
-              r="3.4"
-              fill="#1F3D2E"
-            />
-            <circle
-              cx="29"
-              cy="22"
-              r="3.4"
-              fill="#B65A46"
-            />
-          </svg>
+      <Link
+        href="/"
+        aria-label="Evidence — página inicial"
+        className={styles.logo}
+      >
+        <Image
+          src="/evidence-simbolo.svg"
+          alt=""
+          width={36}
+          height={36}
+          priority
+        />
 
-          <span className={dmSerif.className}>
-            Evidence
-          </span>
-        </Link>
+        <span className={dmSerif.className}>
+          Evidence
+        </span>
+      </Link>
         <div className={styles.headerActions}>
           <div
             className={styles.environmentSwitcher}
@@ -507,10 +559,12 @@ const recordCreationMessage = isPessoal
           </p>
         )}
 
-        <section
-          className={styles.timelineSection}
-          aria-label="Timeline de registros"
-        />
+      <section
+        className={styles.timelineSection}
+        aria-label="Timeline de registros"
+      >
+        <Timeline registros={registrosExemplo} />
+      </section>
       </main>
       <TagModal
         isOpen={isTagModalOpen}

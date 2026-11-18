@@ -8,44 +8,44 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 32px;
+  gap: 24px;
 
   width: 100%;
-  max-width: 1200px;
-  height: 102px;
+  max-width: 1440px;
+  min-height: 88px;
 
   margin: 0 auto;
-  padding: 0 24px;
-
+  padding: 0 32px;
   box-sizing: border-box;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 12px;
-
+  gap: 10px;
   color: #1F3D2E;
   text-decoration: none;
-
-  transform: translateX(-100px);
 }
 
-.logo svg {
+.logo img {
+  display: block;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
+  object-fit: contain;
 }
 
 .logo span {
-  font-size: 32px;
+  font-size: 30px;
   font-style: italic;
   font-weight: 400;
-  line-height: 120%;
+  line-height: 1.2;
 }
 
 .headerActions {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 20px;
 }
 
 .environmentSwitcher {
@@ -57,7 +57,6 @@
 
   background-color: #E3E8DC;
   border-radius: 12px;
-
   box-sizing: border-box;
 }
 
@@ -66,8 +65,8 @@
   align-items: center;
   justify-content: center;
 
-  width: 110px;
-  height: 40px;
+  width: 104px;
+  height: 38px;
   padding: 0 12px;
 
   border: none;
@@ -102,23 +101,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 9px;
 
-  height: 45px;
-  min-width: 136px;
-  padding: 0 16px;
+  height: 42px;
+  min-width: 120px;
+  padding: 0 14px;
 
   border-radius: 9px;
   background-color: #E3E8DC;
   color: #1F3D2E;
 
   font-family: inherit;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
 
   cursor: pointer;
   list-style: none;
-
   box-sizing: border-box;
 }
 
@@ -160,7 +158,7 @@
   max-width: 1200px;
 
   margin: 0 auto;
-  padding: 28px 24px 60px;
+  padding: 24px 32px 48px;
 
   box-sizing: border-box;
 }
@@ -170,7 +168,7 @@
   align-items: center;
   gap: 10px;
 
-  margin: 0 0 28px;
+  margin: 0 0 22px;
 
   font-size: 13px;
   line-height: 145%;
@@ -190,9 +188,9 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
+  gap: 6px;
 
-  margin: 0 0 24px;
+  margin: 0 0 20px;
 }
 
 .environment {
@@ -200,7 +198,7 @@
   align-items: center;
   gap: 8px;
 
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   line-height: 145%;
 
@@ -208,22 +206,21 @@
 }
 
 .environment img {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
 
   flex-shrink: 0;
   object-fit: contain;
-
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .title {
   margin: 0;
 
-  font-size: 46px;
+  font-size: 40px;
   font-style: italic;
   font-weight: 400;
-  line-height: 120%;
+  line-height: 115%;
 
   color: #1F3D2E;
 }
@@ -231,7 +228,7 @@
 .searchSection {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 
   width: 100%;
   margin: 0;
@@ -241,13 +238,13 @@
   flex: 1;
   min-width: 0;
 
-  height: 48px;
-  padding: 0 16px;
+  height: 44px;
+  padding: 0 14px;
 
   background-color: #FFFFFF;
 
-  border: 0.8px solid #9CAE8F;
-  border-radius: 12px;
+  border: 1px solid #9CAE8F;
+  border-radius: 10px;
 
   color: #1F3D2E;
 
@@ -271,15 +268,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
 
-  height: 48px;
-  padding: 0 16px;
+  height: 44px;
+  padding: 0 14px;
 
-  border-radius: 12px;
+  border-radius: 10px;
 
   font-family: inherit;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
 
   white-space: nowrap;
@@ -287,7 +284,7 @@
 }
 
 .filterButton {
-  min-width: 170px;
+  min-width: 130px;
 
   background-color: #FAF9F5;
   border: 1px solid #9CAE8F;
@@ -301,7 +298,7 @@
 }
 
 .newRecordButton {
-  min-width: 166px;
+  min-width: 148px;
 
   background-color: #1F3D2E;
   border: 1px solid #1F3D2E;
@@ -320,14 +317,14 @@
   align-items: center;
   justify-content: center;
 
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
 
-  font-size: 24px;
+  font-size: 21px;
   font-weight: 400;
   line-height: 1;
 
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .filterButton:disabled,
@@ -336,11 +333,22 @@
   opacity: 1;
 }
 
+.newRecordButton:focus-visible,
+.filterButton:focus-visible,
+.menuButton:focus-visible {
+  outline: 2px solid #4A6A41;
+  outline-offset: 3px;
+}
+
+/* TIMELINE */
+
 .timelineSection {
   width: 100%;
-  min-height: 600px;
-  margin-top: 28px;
+  min-height: 480px;
+  margin-top: 24px;
 }
+
+/* DROPDOWN DE TAGS */
 
 .tagsDropdown {
   position: relative;
@@ -353,8 +361,8 @@
   justify-content: center;
 
   width: 100%;
-  height: 48px;
-  gap: 10px;
+  height: 44px;
+  gap: 8px;
 
   cursor: pointer;
   list-style: none;
@@ -383,83 +391,8 @@
   max-width: calc(100vw - 40px);
 }
 
-@media (max-width: 900px) {
-  .header {
-    padding: 0 32px;
-  }
-  .logo {
-    transform: none;
-  }
-  .headerActions {
-    gap: 20px;
-  }
-  .main {
-    padding: 28px 32px 48px;
-  }
-  .searchSection {
-    flex-wrap: wrap;
-  }
-}
+/* SELETOR DA EMPRESA */
 
-@media (max-width: 600px) {
-  .header {
-    height: auto;
-    min-height: 102px;
-    padding: 20px;
-
-    flex-wrap: wrap;
-  }
-  .logo span {
-    font-size: 28px;
-  }
-  .headerActions {
-    width: 100%;
-    justify-content: flex-end;
-    gap: 12px;
-  }
-  .environmentButton {
-    width: 88px;
-  }
-  .main {
-    padding: 24px 20px;
-  }
-  .breadcrumb {
-    margin-bottom: 24px;
-  }
-  .title {
-    font-size: 36px;
-  }
-  .searchSection {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .searchInput,
-  .filterButton,
-  .newRecordButton {
-    width: 100%;
-    flex: auto;
-  }
-  .timelineSection {
-    min-height: 400px;
-  }
-}
-
-@media (max-width: 600px) {
-  .tagsDropdown {
-    width: 100%;
-    flex: 0 0 auto;
-  }
-  .tagsDropdown .filterButton {
-    width: 100%;
-  }
-  .tagsDropdownContent {
-    right: 0;
-  }
-}
-
-
-/* Seletor da empresa ativa na timeline */
 .companySelector {
   display: flex;
   flex-direction: column;
@@ -513,14 +446,180 @@
   color: #900B09;
 }
 
+.recordCreationMessage {
+  margin: 12px 0 0;
+  color: #4A6A41;
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .header {
+    padding: 0 24px;
+    gap: 16px;
+  }
+
+  .headerActions {
+    gap: 12px;
+  }
+
+  .main {
+    padding: 24px 24px 48px;
+  }
+
+  .title {
+    font-size: 38px;
+  }
+
+  .searchSection {
+    flex-wrap: wrap;
+  }
+
+  .searchInput {
+    flex: 1 1 100%;
+  }
+
+  .tagsDropdown {
+    flex: 1 1 160px;
+    min-width: 0;
+  }
+
+  .newRecordButton {
+    flex: 1 1 160px;
+  }
+}
+
 @media (max-width: 600px) {
+  .header {
+    height: auto;
+    min-height: auto;
+    padding: 18px 16px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .logo span {
+    font-size: 26px;
+  }
+
+  .headerActions {
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .environmentSwitcher {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .environmentButton {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+    height: 38px;
+    padding: 0 8px;
+    font-size: 12px;
+  }
+
+  .menu {
+    flex-shrink: 0;
+  }
+
+  .menuButton {
+    min-width: auto;
+    height: 46px;
+    padding: 0 12px;
+    font-size: 14px;
+  }
+
+  .main {
+    padding: 20px 16px 36px;
+  }
+
+  .breadcrumb {
+    margin-bottom: 20px;
+    font-size: 12px;
+  }
+
+  .titleSection {
+    margin-bottom: 18px;
+  }
+
+  .environment {
+    font-size: 13px;
+  }
+
+  .title {
+    font-size: 34px;
+  }
+
+  .searchSection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .searchInput {
+    flex: 1 1 100%;
+    width: 100%;
+    height: 44px;
+  }
+
+  .tagsDropdown {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+  }
+
+  .tagsDropdown .filterButton {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .newRecordButton {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    padding: 0 10px;
+    font-size: 13px;
+  }
+
+  .timelineSection {
+    min-height: 360px;
+    margin-top: 20px;
+  }
+
+  .tagsDropdownContent {
+    left: 0;
+    right: auto;
+    max-width: calc(100vw - 32px);
+  }
+
   .companySelector {
     max-width: 100%;
   }
 }
 
-.recordCreationMessage {
-  margin: 12px 0 0;
-  color: #4A6A41;
-  font-size: 13px;
+@media (max-width: 380px) {
+  .logo span {
+    font-size: 24px;
+  }
+
+  .title {
+    font-size: 30px;
+  }
+
+  .menuButton {
+    gap: 6px;
+    padding: 0 10px;
+  }
+
+  .newRecordButton {
+    font-size: 12px;
+    gap: 5px;
+  }
+
+  .filterButton {
+    font-size: 13px;
+  }
 }
