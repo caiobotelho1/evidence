@@ -2,9 +2,11 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { DM_Serif_Display, Inter } from "next/font/google";
+import { ApiError } from "@/services/api";
 import styles from "./ConfiguracoesModal.module.css";
 
 const inter = Inter({ subsets: ["latin"] });
+
 const dmSerif = DM_Serif_Display({
   subsets: ["latin"],
   weight: "400",
@@ -19,7 +21,7 @@ export type AlteracaoSenha = {
 type Props = {
   aberto: boolean;
   onClose: () => void;
-  onSave: (dados: AlteracaoSenha) => void;
+  onSave: (dados: AlteracaoSenha) => Promise<void>;
 };
 
 export default function AlterarSenhaModal({
@@ -31,9 +33,10 @@ export default function AlterarSenhaModal({
   const [novaSenha, setNovaSenha] = useState("");
   const [confirmacao, setConfirmacao] = useState("");
   const [erro, setErro] = useState("");
+  const [salvando, setSalvando] = useState(false);
 
   useEffect(() => {
-    if (!aberto) return;
+    if (!aberto || salvando) return;
 
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") onClose();
@@ -41,18 +44,19 @@ export default function AlterarSenhaModal({
 
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
-  }, [aberto, onClose]);
+  }, [aberto, salvando, onClose]);
 
-  function salvar(event: FormEvent<HTMLFormElement>) {
+  async function salvar(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (salvando) return;
 
     if (!senhaAtual) {
       setErro("Informe sua senha atual.");
       return;
     }
 
-    if (novaSenha.length < 8) {
-      setErro("A nova senha deve ter pelo menos 8 caracteres.");
+    if (novaSenha.length < 8 || novaSenha.length > 128) {
+      setErro("A nova senha deve ter entre 8 e 128 caracteres.");
       return;
     }
 
@@ -66,8 +70,21 @@ export default function AlterarSenhaModal({
       return;
     }
 
-    onSave({ senhaAtual, novaSenha });
-    onClose();
+    setSalvando(true);
+    setErro("");
+
+    try {
+      await onSave({ senhaAtual, novaSenha });
+      onClose();
+    } catch (error) {
+      setErro(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível alterar sua senha."
+      );
+    } finally {
+      setSalvando(false);
+    }
   }
 
   if (!aberto) return null;
@@ -76,7 +93,12 @@ export default function AlterarSenhaModal({
     <div
       className={styles.overlay}
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (
+          !salvando &&
+          event.target === event.currentTarget
+        ) {
+          onClose();
+        }
       }}
     >
       <div
@@ -84,6 +106,7 @@ export default function AlterarSenhaModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="alterar-senha-title"
+        aria-describedby="alterar-senha-description"
       >
         <h2
           id="alterar-senha-title"
@@ -92,13 +115,19 @@ export default function AlterarSenhaModal({
           Alterar senha
         </h2>
 
-        <p className={styles.description}>
+        <p
+          id="alterar-senha-description"
+          className={styles.description}
+        >
           Informe sua senha atual e escolha uma nova.
         </p>
 
         <form className={styles.form} onSubmit={salvar}>
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="senha-atual">
+            <label
+              className={styles.label}
+              htmlFor="senha-atual"
+            >
               Senha atual
             </label>
             <input
@@ -112,12 +141,16 @@ export default function AlterarSenhaModal({
                 setSenhaAtual(event.target.value);
                 setErro("");
               }}
+              disabled={salvando}
               required
             />
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="nova-senha">
+            <label
+              className={styles.label}
+              htmlFor="nova-senha"
+            >
               Nova senha
             </label>
             <input
@@ -132,6 +165,8 @@ export default function AlterarSenhaModal({
                 setErro("");
               }}
               minLength={8}
+              maxLength={128}
+              disabled={salvando}
               required
             />
             <p className={styles.hint}>
@@ -140,7 +175,10 @@ export default function AlterarSenhaModal({
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="confirmar-senha">
+            <label
+              className={styles.label}
+              htmlFor="confirmar-senha"
+            >
               Confirmar nova senha
             </label>
             <input
@@ -154,6 +192,7 @@ export default function AlterarSenhaModal({
                 setConfirmacao(event.target.value);
                 setErro("");
               }}
+              disabled={salvando}
               required
             />
           </div>
@@ -169,12 +208,17 @@ export default function AlterarSenhaModal({
               type="button"
               className={styles.cancelButton}
               onClick={onClose}
+              disabled={salvando}
             >
               Cancelar
             </button>
 
-            <button type="submit" className={styles.saveButton}>
-              Salvar nova senha
+            <button
+              type="submit"
+              className={styles.saveButton}
+              disabled={salvando}
+            >
+              {salvando ? "Salvando..." : "Salvar nova senha"}
             </button>
           </div>
         </form>

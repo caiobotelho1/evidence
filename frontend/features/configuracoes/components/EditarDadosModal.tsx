@@ -1,8 +1,8 @@
-
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
 import { DM_Serif_Display, Inter } from "next/font/google";
+import { ApiError } from "@/services/api";
 import styles from "./ConfiguracoesModal.module.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -23,7 +23,7 @@ type Props = {
   aberto: boolean;
   dados: DadosPessoais;
   onClose: () => void;
-  onSave: (dados: DadosPessoais) => void;
+  onSave: (dados: DadosPessoais) => Promise<void>;
 };
 
 export default function EditarDadosModal({
@@ -34,33 +34,40 @@ export default function EditarDadosModal({
 }: Props) {
   const [form, setForm] = useState<DadosPessoais>(dados);
   const [erro, setErro] = useState("");
+  const [salvando, setSalvando] = useState(false);
 
   useEffect(() => {
-    if (!aberto) return;
+    if (!aberto || salvando) return;
 
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") onClose();
     }
 
     document.addEventListener("keydown", handleEscape);
-
     return () => document.removeEventListener("keydown", handleEscape);
-  }, [aberto, onClose]);
+  }, [aberto, salvando, onClose]);
 
-  function atualizarCampo(campo: keyof DadosPessoais, valor: string) {
-    setForm((anterior) => ({ ...anterior, [campo]: valor }));
+  function atualizarCampo(
+    campo: keyof DadosPessoais,
+    valor: string
+  ) {
+    setForm((anterior) => ({
+      ...anterior,
+      [campo]: valor,
+    }));
     setErro("");
   }
 
-  function salvar(event: FormEvent<HTMLFormElement>) {
+  async function salvar(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (salvando) return;
 
     const nome = form.nome.trim();
     const email = form.email.trim().toLowerCase();
     const telefone = form.telefone.trim();
 
-    if (nome.length < 2) {
-      setErro("Informe um nome válido.");
+    if (nome.length < 3) {
+      setErro("Informe o nome completo.");
       return;
     }
 
@@ -69,13 +76,26 @@ export default function EditarDadosModal({
       return;
     }
 
-    if (telefone.replace(/\D/g, "").length < 10) {
+    if (!/^\d{10,11}$/.test(telefone.replace(/\D/g, ""))) {
       setErro("Informe um telefone válido com DDD.");
       return;
     }
 
-    onSave({ nome, email, telefone });
-    onClose();
+    setSalvando(true);
+    setErro("");
+
+    try {
+      await onSave({ nome, email, telefone });
+      onClose();
+    } catch (error) {
+      setErro(
+        error instanceof ApiError
+          ? error.message
+          : "Não foi possível salvar suas alterações."
+      );
+    } finally {
+      setSalvando(false);
+    }
   }
 
   if (!aberto) return null;
@@ -84,7 +104,12 @@ export default function EditarDadosModal({
     <div
       className={styles.overlay}
       onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
+        if (
+          !salvando &&
+          event.target === event.currentTarget
+        ) {
+          onClose();
+        }
       }}
     >
       <div
@@ -92,6 +117,7 @@ export default function EditarDadosModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="editar-dados-title"
+        aria-describedby="editar-dados-description"
       >
         <h2
           id="editar-dados-title"
@@ -100,13 +126,19 @@ export default function EditarDadosModal({
           Editar dados pessoais
         </h2>
 
-        <p className={styles.description}>
+        <p
+          id="editar-dados-description"
+          className={styles.description}
+        >
           Atualize suas informações de contato.
         </p>
 
         <form className={styles.form} onSubmit={salvar}>
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="editar-nome">
+            <label
+              className={styles.label}
+              htmlFor="editar-nome"
+            >
               Nome completo
             </label>
             <input
@@ -117,12 +149,16 @@ export default function EditarDadosModal({
                 atualizarCampo("nome", event.target.value)
               }
               autoComplete="name"
+              disabled={salvando}
               required
             />
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="editar-email">
+            <label
+              className={styles.label}
+              htmlFor="editar-email"
+            >
               E-mail
             </label>
             <input
@@ -134,12 +170,16 @@ export default function EditarDadosModal({
                 atualizarCampo("email", event.target.value)
               }
               autoComplete="email"
+              disabled={salvando}
               required
             />
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="editar-telefone">
+            <label
+              className={styles.label}
+              htmlFor="editar-telefone"
+            >
               Telefone
             </label>
             <input
@@ -151,6 +191,7 @@ export default function EditarDadosModal({
                 atualizarCampo("telefone", event.target.value)
               }
               autoComplete="tel"
+              disabled={salvando}
               required
             />
           </div>
@@ -166,12 +207,17 @@ export default function EditarDadosModal({
               type="button"
               className={styles.cancelButton}
               onClick={onClose}
+              disabled={salvando}
             >
               Cancelar
             </button>
 
-            <button type="submit" className={styles.saveButton}>
-              Salvar alterações
+            <button
+              type="submit"
+              className={styles.saveButton}
+              disabled={salvando}
+            >
+              {salvando ? "Salvando..." : "Salvar alterações"}
             </button>
           </div>
         </form>
