@@ -1,7 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { DM_Serif_Display, Inter } from "next/font/google";
+import EditarDadosModal, {type DadosPessoais,} from "@/features/configuracoes/components/EditarDadosModal";
+import AlterarSenhaModal from "@/features/configuracoes/components/AlterarSenhaModal";
 import styles from "./configuracoes.module.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -13,11 +16,24 @@ const dmSerif = DM_Serif_Display({
 });
 
 export default function ConfiguracoesPage() {
-  const usuario = {
+  // Dados temporários até a integração com o backend
+  const [usuario, setUsuario] = useState<DadosPessoais>({
     nome: "Ana Silva",
     email: "ana.silva@example.com",
     telefone: "(11) 99999-1234",
-  };
+  });
+
+  const [modalDadosAberto, setModalDadosAberto] = useState(false);
+  const [modalSenhaAberto, setModalSenhaAberto] = useState(false);
+
+  function handleSalvarDados(novosDados: DadosPessoais) {
+    setUsuario(novosDados);
+    setModalDadosAberto(false);
+  }
+
+  function handleSalvarSenha() {
+    setModalSenhaAberto(false);
+  }
 
   return (
     <div className={`${styles.page} ${inter.className}`}>
@@ -39,7 +55,9 @@ export default function ConfiguracoesPage() {
             <circle cx="18" cy="7" r="3.4" fill="#1F3D2E" />
             <circle cx="8" cy="18" r="3.4" fill="#4A6A41" />
             <circle cx="15" cy="29" r="3.4" fill="#1F3D2E" />
-            <circle cx="29" cy="22" r="3.4" fill="#B65A46" />
+            <circle cx="29" cy="22"
+              r="3.4" fill="#B65A46"
+            />
           </svg>
           <span className={dmSerif.className}>Evidence</span>
         </Link>
@@ -55,9 +73,11 @@ export default function ConfiguracoesPage() {
 
       <main className={styles.main}>
         <span className={styles.eyebrow}>MINHA CONTA</span>
+
         <h1 className={`${styles.title} ${dmSerif.className}`}>
           Configurações
         </h1>
+
         <p className={styles.subtitle}>
           Cuide da sua conta e dos espaços que fazem parte dela.
         </p>
@@ -65,6 +85,7 @@ export default function ConfiguracoesPage() {
         <div className={styles.grid}>
           <section className={styles.card}>
             <h2>Dados pessoais</h2>
+
             <p>Suas informações de contato no Evidence.</p>
 
             <div className={styles.fields}>
@@ -72,17 +93,23 @@ export default function ConfiguracoesPage() {
                 <span>Nome completo</span>
                 <strong>{usuario.nome}</strong>
               </div>
+
               <div className={styles.field}>
                 <span>E-mail</span>
                 <strong>{usuario.email}</strong>
               </div>
+
               <div className={styles.field}>
                 <span>Telefone</span>
                 <strong>{usuario.telefone}</strong>
               </div>
             </div>
 
-            <button type="button" className={styles.outlineButton}>
+            <button
+              type="button"
+              className={styles.outlineButton}
+              onClick={() => setModalDadosAberto(true)}
+            >
               Editar dados
             </button>
           </section>
@@ -90,19 +117,32 @@ export default function ConfiguracoesPage() {
           <div className={styles.rightColumn}>
             <section className={styles.card}>
               <h2>Segurança da conta</h2>
-              <p>Altere sua senha para manter sua conta protegida.</p>
-              <button type="button" className={styles.outlineButton}>
+
+              <p>
+                Altere sua senha para manter sua conta protegida.
+              </p>
+
+              <button
+                type="button"
+                className={styles.outlineButton}
+                onClick={() => setModalSenhaAberto(true)}
+              >
                 Alterar senha
               </button>
             </section>
 
             <section className={styles.card}>
               <h2>Minhas empresas</h2>
-              <p>Sua conta pessoal também pode ter uma empresa.</p>
+
+              <p>
+                Sua conta pessoal também pode ter uma empresa.
+              </p>
+
               <p>
                 Cadastre agora ou quando precisar. Você usará o
                 mesmo acesso e será responsável pela empresa.
               </p>
+
               <Link
                 href="/cadastro/empresa"
                 className={styles.primaryButton}
@@ -113,6 +153,21 @@ export default function ConfiguracoesPage() {
           </div>
         </div>
       </main>
+      {modalDadosAberto && (
+        <EditarDadosModal
+          aberto={modalDadosAberto}
+          dados={usuario}
+          onClose={() => setModalDadosAberto(false)}
+          onSave={handleSalvarDados}
+        />
+      )}
+      {modalSenhaAberto && (
+        <AlterarSenhaModal
+          aberto={modalSenhaAberto}
+          onClose={() => setModalSenhaAberto(false)}
+          onSave={handleSalvarSenha}
+        />
+      )}
     </div>
   );
 }
