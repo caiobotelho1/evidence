@@ -13,7 +13,9 @@ import iconMenu from "../../imgs/icon_menu.png";
 import iconSeta from "../../imgs/icon_seta.png";
 
 import TagModal from "@/features/tags/components/TagModal";
-import NovaRegistroModal from "@/features/registros/components/NovaRegistroModal";
+import NovaRegistroModal, {
+  type CreateRegistroDraft,
+} from "@/features/registros/components/NovaRegistroModal";
 import MenuAmbiente from "../../features/ambiente/components/MenuAmbiente";
 import MenuTags from "../../features/ambiente/components/MenuTags";
 import Timeline, {
@@ -32,6 +34,14 @@ import type {
   TagScope,
 } from "@/features/tags/types";
 
+import {
+  createPersonalRecord,
+  createCompanyRecord,
+  getPersonalRecords,
+  getCompanyRecords,
+  type ActivityRecord,
+} from "@/services/activity-record.service";
+
 import type { Tag } from "@/services/tag.service";
 import styles from "./telaPrincipal.module.css";
 
@@ -42,83 +52,6 @@ const dmSerif = DM_Serif_Display({
   weight: "400",
   style: "italic",
 });
-
-// MOCK: registros temporários para testar a timeline.
-// Substituir pelos dados retornados pelo backend.
-
-const registrosExemplo: RegistroTimeline[] = [
-  {
-    id: "1",
-    titulo: "Documento cadastrado",
-    autor: "Usuário teste",
-    data: "2026-10-05",
-    descricao: "Documento importante registrado no sistema.",
-    tags: [
-      { id: "1", nome: "Documentos", cor: "#ef3375" },
-    ],
-  },
-  {
-    id: "2",
-    titulo: "Atualização financeira",
-    autor: "Usuário teste",
-    data: "2026-10-17",
-    descricao: "Atualização das informações financeiras.",
-    tags: [
-      { id: "2", nome: "Financeiro", cor: "#1cd93c" },
-    ],
-  },
-  {
-    id: "3",
-    titulo: "Manutenção",
-    autor: "Usuário teste",
-    data: "2026-10-20",
-    descricao:
-      "Realizada a manutenção preventiva da máquina.",
-    tags: [
-      { id: "3", nome: "Tag 1", cor: "#1adfc8" },
-    ],
-  },
-  {
-    id: "4",
-    titulo: "Registro pessoal",
-    autor: "Usuário teste",
-    data: "2026-10-23",
-    descricao: "Registro de um acontecimento importante.",
-    tags: [
-      { id: "4", nome: "Pessoal", cor: "#371d96" },
-    ],
-  },
-  {
-    id: "5",
-    titulo: "Registro pessoal",
-    autor: "Usuário teste",
-    data: "2026-10-23",
-    descricao: "Registro de um acontecimento importante.",
-    tags: [
-      { id: "5", nome: "Pessoal", cor: "#EADFCF" },
-    ],
-  },
-  {
-    id: "6",
-    titulo: "Registro pessoal",
-    autor: "Usuário teste",
-    data: "2026-10-23",
-    descricao: "Registro de um acontecimento importante.",
-    tags: [
-      { id: "6", nome: "Pessoal", cor: "#d32525" },
-    ],
-  },
-  {
-    id: "7",
-    titulo: "Registro pessoal",
-    autor: "Usuário teste",
-    data: "2026-10-23",
-    descricao: "Registro de um acontecimento importante.",
-    tags: [
-      { id: "7", nome: "Pessoal", cor: "#effb13" },
-    ],
-  },
-];
 
 type Ambiente = "pessoal" | "empresa";
 
@@ -313,11 +246,96 @@ const recordCreationMessage = isPessoal
     cor: tag.color,
   }));
 
-  async function handleCreateRecord(): Promise<void> {
-    throw new Error(
-      "O salvamento de registros será disponibilizado na etapa de integração."
-    );
+  const [records, setRecords] = useState<ActivityRecord[]>([]);
+  const [recordsLoading, setRecordsLoading] = useState(false);
+  const [recordsError, setRecordsError] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadRecords() {
+      const canLoad = isPessoal || Boolean(companyId);
+
+      setRecords([]);
+      setRecordsError("");
+      setRecordsLoading(canLoad);
+
+      if (!canLoad) return;
+
+      try {
+        const result = isPessoal
+          ? await getPersonalRecords()
+          : await getCompanyRecords(companyId!);
+
+        if (!cancelled) {
+          setRecords(result);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setRecordsError(
+            error instanceof Error
+              ? error.message
+              : "Não foi possível carregar os registros."
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setRecordsLoading(false);
+        }
+      }
+    }
+
+    void loadRecords();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isPessoal, companyId]);
+
+  const registrosTimeline: RegistroTimeline[] = records.map((record) => ({
+    id: record.id,
+    titulo: record.title,
+    autor: record.author.name,
+    data: record.createdAt,
+    descricao: record.description,
+    tags: record.tags.map((tag) => ({
+      id: tag.id,
+      nome: tag.name,
+      cor: tag.color,
+    })),
+  }));
+
+  async function handleCreateRecord(
+    data: CreateRegistroDraft
+  ): Promise<void> {
+    if (data.files.length > 0) {
+      throw new Error(
+        "O anexo de arquivos ainda não está disponível. Remova os arquivos para salvar o registro."
+      );
+    }
+
+    const payload = {
+      title: data.title,
+      description: data.description,
+      status: data.status,
+      tagIds: data.tagIds,
+    };
+
+    let record: ActivityRecord;
+
+    if (isPessoal) {
+      record = await createPersonalRecord(payload);
+    } else {
+      if (!companyId) {
+        throw new Error("Nenhuma empresa selecionada.");
+      }
+
+      record = await createCompanyRecord(companyId, payload);
+    }
+
+    setRecords((previousRecords) => [record, ...previousRecords]);
   }
+
   return (
     <div
       className={`${styles.dashboard} ${inter.className}`}
@@ -563,7 +581,17 @@ const recordCreationMessage = isPessoal
         className={styles.timelineSection}
         aria-label="Timeline de registros"
       >
-        <Timeline registros={registrosExemplo} />
+        {recordsLoading ? (
+          <p className={styles.recordCreationMessage} role="status">
+            Carregando registros...
+          </p>
+        ) : recordsError ? (
+          <p className={styles.recordCreationMessage} role="alert">
+            {recordsError}
+          </p>
+        ) : (
+          <Timeline registros={registrosTimeline} />
+        )}
       </section>
       </main>
       <TagModal

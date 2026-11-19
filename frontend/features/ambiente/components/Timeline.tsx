@@ -27,7 +27,6 @@ function formatarData(data: string) {
     day: "2-digit",
     month: "short",
     year: "numeric",
-    timeZone: "UTC",
   })
     .format(new Date(data))
     .replace(".", "")
