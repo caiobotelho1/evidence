@@ -32,6 +32,7 @@ model User {
   decidedMemberships CompanyMembership[] @relation("MembershipDecidedBy")
   sessions           Session[]
   tags               Tag[]
+  activityRecords    ActivityRecord[]
 
   @@map("users")
 }
@@ -46,8 +47,9 @@ model Company {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  memberships CompanyMembership[]
-  tags        Tag[]
+  memberships     CompanyMembership[]
+  tags            Tag[]
+  activityRecords ActivityRecord[]
 
   @@map("companies")
 }
@@ -109,4 +111,22 @@ model Tag {
   @@index([userId])
   @@index([companyId])
   @@map("tags")
+}
+
+model ActivityRecord {
+  id          String @id @default(uuid())
+  title       String
+  description String
+
+  authorId  String
+  companyId String?
+
+  author  User     @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  company Company? @relation(fields: [companyId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@index([authorId, createdAt])
+  @@index([companyId, createdAt])
+  @@map("activity_records")
 }
