@@ -1,0 +1,172 @@
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(31, 61, 46, 0.44);
+  overflow-y: auto;
+}
+
+.modal {
+  box-sizing: border-box;
+  width: min(100%, 620px);
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+  padding: 36px;
+  background: #fff;
+  border: 1px solid #ebe0d0;
+  border-radius: 22px;
+  color: #1f3d2e;
+  box-shadow: 0 20px 60px rgba(20, 40, 29, 0.12);
+}
+
+.title {
+  margin: 0 0 18px;
+  font-size: clamp(30px, 3.5vw, 42px);
+  line-height: 1.2;
+  font-weight: 400;
+}
+
+.description {
+  margin: 0 0 28px;
+  color: #4a6a41;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.label {
+  color: #1f3d2e;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 52px;
+  padding: 13px 16px;
+  background: #fff;
+  border: 1px solid #a9b99e;
+  border-radius: 12px;
+  color: #1f3d2e;
+  font: inherit;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.input::placeholder {
+  color: #4a6a41;
+  opacity: 0.85;
+}
+
+.input:focus {
+  border-color: #1f3d2e;
+  box-shadow: 0 0 0 2px rgba(31, 61, 46, 0.1);
+}
+
+.hint {
+  margin: -3px 0 0;
+  color: #4a6a41;
+  font-size: 12px;
+}
+
+.error {
+  margin: 0;
+  color: #a34237;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.cancelButton,
+.saveButton {
+  min-height: 48px;
+  padding: 12px 25px;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.cancelButton {
+  min-width: 150px;
+  background: #faf9f5;
+  border: 1px solid #a9b99e;
+  color: #1f3d2e;
+}
+
+.saveButton {
+  min-width: 210px;
+  background: #1f3d2e;
+  border: 1px solid #1f3d2e;
+  color: #fff;
+}
+
+.cancelButton:hover,
+.saveButton:hover {
+  opacity: 0.85;
+}
+
+.cancelButton:focus-visible,
+.saveButton:focus-visible {
+  outline: 2px solid #4a6a41;
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .overlay {
+    padding: 16px;
+  }
+
+  .modal {
+    padding: 26px 22px;
+    border-radius: 18px;
+    max-height: calc(100dvh - 32px);
+  }
+
+  .title {
+    font-size: 32px;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+
+  .actions {
+    gap: 10px;
+  }
+
+  .cancelButton,
+  .saveButton {
+    min-width: 0;
+    flex: 1;
+    padding: 12px;
+    font-size: 12px;
+  }
+}
