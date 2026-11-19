@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ActivityRecordStatus } from "../generated/prisma/enums.js";
 
 export const createActivityRecordSchema = z
   .object({
@@ -13,6 +14,14 @@ export const createActivityRecordSchema = z
       .trim()
       .min(1, "A descrição é obrigatória.")
       .max(20000, "A descrição deve ter no máximo 20000 caracteres."),
+
+    status: z.enum(ActivityRecordStatus, "Status inválido.").default("PENDING"),
+
+    tagIds: z
+      .array(z.uuid("Tag inválida."), "As tags devem ser uma lista.")
+      .max(50, "Selecione no máximo 50 tags.")
+      .default([])
+      .transform((ids) => [...new Set(ids)]),
   })
   .strict();
 

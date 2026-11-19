@@ -104,6 +104,8 @@ model Tag {
   user    User?    @relation(fields: [userId], references: [id], onDelete: Restrict)
   company Company? @relation(fields: [companyId], references: [id], onDelete: Restrict)
 
+  activityRecords ActivityRecordTag[]
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
@@ -113,10 +115,18 @@ model Tag {
   @@map("tags")
 }
 
+enum ActivityRecordStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELED
+}
+
 model ActivityRecord {
-  id          String @id @default(uuid())
+  id          String               @id @default(uuid())
   title       String
   description String
+  status      ActivityRecordStatus @default(PENDING)
 
   authorId  String
   companyId String?
@@ -124,9 +134,23 @@ model ActivityRecord {
   author  User     @relation(fields: [authorId], references: [id], onDelete: Restrict)
   company Company? @relation(fields: [companyId], references: [id], onDelete: Restrict)
 
+  tags ActivityRecordTag[]
+
   createdAt DateTime @default(now())
 
   @@index([authorId, createdAt])
   @@index([companyId, createdAt])
   @@map("activity_records")
+}
+
+model ActivityRecordTag {
+  activityRecordId String
+  tagId            String
+
+  activityRecord ActivityRecord @relation(fields: [activityRecordId], references: [id], onDelete: Restrict)
+  tag            Tag            @relation(fields: [tagId], references: [id], onDelete: Restrict)
+
+  @@id([activityRecordId, tagId])
+  @@index([tagId])
+  @@map("activity_record_tags")
 }
