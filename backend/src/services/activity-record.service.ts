@@ -6,6 +6,7 @@ import type {
   ListActivityRecordsQuery,
 } from "../models/activity-record.schema.js";
 import {
+  buildActivityRecordDetailWhere,
   buildActivityRecordScope,
   type ActivityRecordListContext,
 } from "./activity-record.scope.js";
@@ -117,4 +118,16 @@ export async function listActivityRecords(
     items: page.map(toActivityRecord),
     nextCursor: hasMore ? page[page.length - 1]!.id : null,
   };
+}
+
+export async function getActivityRecord(
+  context: ActivityRecordListContext,
+  recordId: string,
+) {
+  const row = await prisma.activityRecord.findFirst({
+    where: buildActivityRecordDetailWhere(context, recordId),
+    select: activityRecordSelect,
+  });
+
+  return row ? toActivityRecord(row) : null;
 }
