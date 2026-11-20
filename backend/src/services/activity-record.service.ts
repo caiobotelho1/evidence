@@ -5,6 +5,10 @@ import type {
   CreateActivityRecordInput,
   ListActivityRecordsQuery,
 } from "../models/activity-record.schema.js";
+import {
+  buildActivityRecordScope,
+  type ActivityRecordListContext,
+} from "./activity-record.scope.js";
 
 export type ActivityRecordContext =
   | {
@@ -44,14 +48,6 @@ function toActivityRecord(row: ActivityRecordRow) {
     ...record,
     tags: tags.map((item) => item.tag),
   };
-}
-
-function scopeWhere(context: ActivityRecordContext): Prisma.ActivityRecordWhereInput {
-  if (context.type === "personal") {
-    return { authorId: context.userId, companyId: null };
-  }
-
-  return { companyId: context.companyId };
 }
 
 function availableTagsWhere(context: ActivityRecordContext): Prisma.TagWhereInput {
@@ -103,11 +99,11 @@ export async function createActivityRecord(
 }
 
 export async function listActivityRecords(
-  context: ActivityRecordContext,
+  context: ActivityRecordListContext,
   query: ListActivityRecordsQuery,
 ) {
   const rows = await prisma.activityRecord.findMany({
-    where: scopeWhere(context),
+    where: buildActivityRecordScope(context),
     select: activityRecordSelect,
     orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     take: query.limit + 1,

@@ -1,5 +1,6 @@
 import type { RequestHandler } from "express";
-import { badRequest } from "../lib/errors.js";
+import type { ActivityRecordListContext } from "../services/activity-record.scope.js";
+import { badRequest, forbidden } from "../lib/errors.js";
 import { getAuth } from "../middlewares/authenticate.js";
 import {
   createActivityRecordSchema,
@@ -54,10 +55,24 @@ export const listCompanyActivityRecordsController: RequestHandler = async (req, 
   const companyId = getCompanyId(req.params.companyId);
   const query = listActivityRecordsQuerySchema.parse(req.query);
 
-  const result = await listActivityRecords(
-    { type: "company", userId: user.id, companyId },
-    query,
+  const membership = user.memberships.find(
+    (item) =>
+      item.companyId === companyId &&
+      item.status === "ACTIVE",
   );
+
+  if (!membership) {
+    throw forbidden();
+  }
+
+  const context: ActivityRecordListContext = {
+    type: "company",
+    userId: user.id,
+    companyId,
+    role: membership.role,
+  };
+
+  const result = await listActivityRecords(context, query);
 
   res.status(200).json(result);
 };
