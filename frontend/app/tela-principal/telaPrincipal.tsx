@@ -21,6 +21,7 @@ import MenuTags from "../../features/ambiente/components/MenuTags";
 import Timeline, {
   type RegistroTimeline,
 } from "@/features/ambiente/components/Timeline";
+import RecordDetailsBox from "@/features/ambiente/components/RecordDetailsBox";
 
 import {
   createPersonalTag,
@@ -249,6 +250,7 @@ const recordCreationMessage = isPessoal
   const [records, setRecords] = useState<ActivityRecord[]>([]);
   const [recordsLoading, setRecordsLoading] = useState(false);
   const [recordsError, setRecordsError] = useState("");
+  const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -297,7 +299,7 @@ const recordCreationMessage = isPessoal
     titulo: record.title,
     autor: record.author.name,
     data: record.createdAt,
-    descricao: record.description,
+    status: record.status,
     tags: record.tags.map((tag) => ({
       id: tag.id,
       nome: tag.name,
@@ -590,10 +592,21 @@ const recordCreationMessage = isPessoal
             {recordsError}
           </p>
         ) : (
-          <Timeline registros={registrosTimeline} />
+          <Timeline
+            registros={registrosTimeline}
+            onOpenDetails={setSelectedRecordId}
+          />
         )}
       </section>
       </main>
+      {selectedRecordId && (
+        <RecordDetailsBox
+          recordId={selectedRecordId}
+          isPersonal={isPessoal}
+          companyId={companyId}
+          onClose={() => setSelectedRecordId(null)}
+        />
+      )}
       <TagModal
         isOpen={isTagModalOpen}
         onClose={() => setIsTagModalOpen(false)}
