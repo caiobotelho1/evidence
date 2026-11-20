@@ -34,3 +34,12 @@ export function buildActivityRecordScope(
     authorId: context.userId,
   };
 }
+
+export function buildActivityRecordDetailWhere(
+  context: ActivityRecordListContext,
+  recordId: string,
+): Prisma.ActivityRecordWhereInput {
+  return {
+    AND: [{ id: recordId }, buildActivityRecordScope(context)],
+  };
+}

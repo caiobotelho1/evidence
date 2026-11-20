@@ -2,6 +2,8 @@ import { Router } from "express";
 import {
   createCompanyActivityRecordController,
   createPersonalActivityRecordController,
+  getCompanyActivityRecordController,
+  getPersonalActivityRecordController,
   listCompanyActivityRecordsController,
   listPersonalActivityRecordsController,
 } from "../controllers/activity-record.controller.js";
@@ -13,6 +15,7 @@ personalActivityRecordRouter.use(requireAuth);
 
 personalActivityRecordRouter.post("/", createPersonalActivityRecordController);
 personalActivityRecordRouter.get("/", listPersonalActivityRecordsController);
+personalActivityRecordRouter.get("/:recordId", getPersonalActivityRecordController);
 
 export const companyActivityRecordRouter = Router({
   mergeParams: true,
@@ -29,4 +32,9 @@ companyActivityRecordRouter.get(
   "/",
   requirePermission("record:read", { companyParam: "companyId" }),
   listCompanyActivityRecordsController,
+);
+companyActivityRecordRouter.get(
+  "/:recordId",
+  requirePermission("record:read", { companyParam: "companyId" }),
+  getCompanyActivityRecordController,
 );

@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 import type { ActivityRecordListContext } from "../services/activity-record.scope.js";
-import { badRequest, forbidden } from "../lib/errors.js";
+import { badRequest, forbidden, notFound } from "../lib/errors.js";
 import { getAuth } from "../middlewares/authenticate.js";
 import {
   createActivityRecordSchema,
@@ -8,12 +8,21 @@ import {
 } from "../models/activity-record.schema.js";
 import {
   createActivityRecord,
+  getActivityRecord,
   listActivityRecords,
 } from "../services/activity-record.service.js";
 
 function getCompanyId(value: string | string[] | undefined): string {
   if (typeof value !== "string" || !value) {
     throw badRequest("Empresa não informada.");
+  }
+
+  return value;
+}
+
+function getRecordId(value: string | string[] | undefined): string {
+  if (typeof value !== "string" || !value) {
+    throw badRequest("Registro não informado.");
   }
 
   return value;
@@ -75,4 +84,46 @@ export const listCompanyActivityRecordsController: RequestHandler = async (req, 
   const result = await listActivityRecords(context, query);
 
   res.status(200).json(result);
+};
+
+export const getPersonalActivityRecordController: RequestHandler = async (req, res) => {
+  const { user } = getAuth(req);
+  const recordId = getRecordId(req.params.recordId);
+  const record = await getActivityRecord(
+    { type: "personal", userId: user.id },
+    recordId,
+  );
+
+  if (!record) {
+    throw notFound("Registro não encontrado.");
+  }
+
+  res.status(200).json(record);
+};
+
+export const getCompanyActivityRecordController: RequestHandler = async (req, res) => {
+  const { user } = getAuth(req);
+  const companyId = getCompanyId(req.params.companyId);
+  const recordId = getRecordId(req.params.recordId);
+  const membership = user.memberships.find(
+    (item) => item.companyId === companyId && item.status === "ACTIVE",
+  );
+
+  if (!membership) {
+    throw forbidden();
+  }
+
+  const context: ActivityRecordListContext = {
+    type: "company",
+    userId: user.id,
+    companyId,
+    role: membership.role,
+  };
+  const record = await getActivityRecord(context, recordId);
+
+  if (!record) {
+    throw notFound("Registro não encontrado.");
+  }
+
+  res.status(200).json(record);
 };
