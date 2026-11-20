@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import styles from "./Timeline.module.css";
 
 export interface RegistroTimeline {
@@ -8,7 +14,7 @@ export interface RegistroTimeline {
   titulo: string;
   autor: string;
   data: string;
-  descricao: string;
+  status: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELED";
   tags: {
     id: string;
     nome: string;
@@ -18,9 +24,41 @@ export interface RegistroTimeline {
 
 interface TimelineProps {
   registros: RegistroTimeline[];
+  onOpenDetails: (recordId: string) => void;
 }
 
-const REGISTROS_POR_PAGINA = 6;
+const SMALL_SCREEN_QUERY = "(max-width: 360px)";
+const MOBILE_SCREEN_QUERY = "(max-width: 600px)";
+
+function subscribeToScreenSize(onChange: () => void) {
+  const smallScreen = window.matchMedia(SMALL_SCREEN_QUERY);
+  const mobileScreen = window.matchMedia(MOBILE_SCREEN_QUERY);
+
+  smallScreen.addEventListener("change", onChange);
+  mobileScreen.addEventListener("change", onChange);
+
+  return () => {
+    smallScreen.removeEventListener("change", onChange);
+    mobileScreen.removeEventListener("change", onChange);
+  };
+}
+
+function getRecordsPerPage() {
+  if (window.matchMedia(SMALL_SCREEN_QUERY).matches) return 2;
+  if (window.matchMedia(MOBILE_SCREEN_QUERY).matches) return 3;
+  return 6;
+}
+
+function getServerRecordsPerPage() {
+  return 6;
+}
+
+const STATUS_LABELS: Record<RegistroTimeline["status"], string> = {
+  PENDING: "Pendente",
+  IN_PROGRESS: "Em andamento",
+  COMPLETED: "Concluído",
+  CANCELED: "Cancelado",
+};
 
 function formatarData(data: string) {
   return new Intl.DateTimeFormat("pt-BR", {
@@ -33,7 +71,12 @@ function formatarData(data: string) {
     .toUpperCase();
 }
 
-export default function Timeline({ registros }: TimelineProps) {
+export default function Timeline({ registros, onOpenDetails }: TimelineProps) {
+  const registrosPorPagina = useSyncExternalStore(
+    subscribeToScreenSize,
+    getRecordsPerPage,
+    getServerRecordsPerPage,
+  );
   const [inicio, setInicio] = useState(0);
   const [registroAberto, setRegistroAberto] = useState<string | null>(null);
 
@@ -51,15 +94,16 @@ export default function Timeline({ registros }: TimelineProps) {
 
   const maxInicio = Math.max(
     0,
-    registrosOrdenados.length - REGISTROS_POR_PAGINA
+    registrosOrdenados.length - registrosPorPagina
   );
 
   const inicioAtual = Math.min(inicio, maxInicio);
 
   const registrosVisiveis = registrosOrdenados.slice(
     inicioAtual,
-    inicioAtual + REGISTROS_POR_PAGINA
+    inicioAtual + registrosPorPagina
   );
+  const passoNavegacao = registrosPorPagina === 6 ? 3 : registrosPorPagina;
 
   const [animacaoInicial, setAnimacaoInicial] = useState(true);
   const [direcao, setDirecao] = useState<"direita" | "esquerda" | null>(null);
@@ -129,7 +173,7 @@ export default function Timeline({ registros }: TimelineProps) {
           className={styles.seta}
           onClick={() => {
             setDirecao("esquerda");
-            setInicio((anterior) => Math.max(0, anterior - 3));
+            setInicio(Math.max(0, inicioAtual - passoNavegacao));
             setRegistroAberto(null);
           }}
           disabled={inicioAtual === 0}
@@ -203,6 +247,9 @@ export default function Timeline({ registros }: TimelineProps) {
                             Por {registro.autor} -{" "}
                             {formatarData(registro.data)}
                           </p>
+                          <span className={styles.statusPreview}>
+                            {STATUS_LABELS[registro.status]}
+                          </span>
                         </div>
 
                         <div className={styles.tags}>
@@ -228,10 +275,13 @@ export default function Timeline({ registros }: TimelineProps) {
 
                       <div className={styles.divisor} />
 
-                      <div className={styles.conteudo}>
-                        <h4>Descrição</h4>
-                        <p>{registro.descricao}</p>
-                      </div>
+                      <button
+                        type="button"
+                        className={styles.abrirDetalhes}
+                        onClick={() => onOpenDetails(registro.id)}
+                      >
+                        Ver todos os detalhes
+                      </button>
                     </div>
                   )}
                 </div>
@@ -245,7 +295,7 @@ export default function Timeline({ registros }: TimelineProps) {
           className={styles.seta}
           onClick={() => {
             setDirecao("direita");
-            setInicio((anterior) => Math.min(maxInicio, anterior + 3));
+            setInicio(Math.min(maxInicio, inicioAtual + passoNavegacao));
             setRegistroAberto(null);
           }}
           disabled={inicioAtual >= maxInicio}
