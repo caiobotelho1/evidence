@@ -216,6 +216,7 @@ export type TagWhereInput = {
   deletedAt?: Prisma.DateTimeNullableFilter<"Tag"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   company?: Prisma.XOR<Prisma.CompanyNullableScalarRelationFilter, Prisma.CompanyWhereInput> | null
+  activityRecords?: Prisma.ActivityRecordTagListRelationFilter
 }
 
 export type TagOrderByWithRelationInput = {
@@ -230,6 +231,7 @@ export type TagOrderByWithRelationInput = {
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   company?: Prisma.CompanyOrderByWithRelationInput
+  activityRecords?: Prisma.ActivityRecordTagOrderByRelationAggregateInput
 }
 
 export type TagWhereUniqueInput = Prisma.AtLeast<{
@@ -247,6 +249,7 @@ export type TagWhereUniqueInput = Prisma.AtLeast<{
   deletedAt?: Prisma.DateTimeNullableFilter<"Tag"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   company?: Prisma.XOR<Prisma.CompanyNullableScalarRelationFilter, Prisma.CompanyWhereInput> | null
+  activityRecords?: Prisma.ActivityRecordTagListRelationFilter
 }, "id">
 
 export type TagOrderByWithAggregationInput = {
@@ -289,6 +292,7 @@ export type TagCreateInput = {
   deletedAt?: Date | string | null
   user?: Prisma.UserCreateNestedOneWithoutTagsInput
   company?: Prisma.CompanyCreateNestedOneWithoutTagsInput
+  activityRecords?: Prisma.ActivityRecordTagCreateNestedManyWithoutTagInput
 }
 
 export type TagUncheckedCreateInput = {
@@ -301,6 +305,7 @@ export type TagUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  activityRecords?: Prisma.ActivityRecordTagUncheckedCreateNestedManyWithoutTagInput
 }
 
 export type TagUpdateInput = {
@@ -313,6 +318,7 @@ export type TagUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneWithoutTagsNestedInput
   company?: Prisma.CompanyUpdateOneWithoutTagsNestedInput
+  activityRecords?: Prisma.ActivityRecordTagUpdateManyWithoutTagNestedInput
 }
 
 export type TagUncheckedUpdateInput = {
@@ -325,6 +331,7 @@ export type TagUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activityRecords?: Prisma.ActivityRecordTagUncheckedUpdateManyWithoutTagNestedInput
 }
 
 export type TagCreateManyInput = {
@@ -405,6 +412,11 @@ export type TagMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
+}
+
+export type TagScalarRelationFilter = {
+  is?: Prisma.TagWhereInput
+  isNot?: Prisma.TagWhereInput
 }
 
 export type TagCreateNestedManyWithoutUserInput = {
@@ -491,6 +503,20 @@ export type TagUncheckedUpdateManyWithoutCompanyNestedInput = {
   deleteMany?: Prisma.TagScalarWhereInput | Prisma.TagScalarWhereInput[]
 }
 
+export type TagCreateNestedOneWithoutActivityRecordsInput = {
+  create?: Prisma.XOR<Prisma.TagCreateWithoutActivityRecordsInput, Prisma.TagUncheckedCreateWithoutActivityRecordsInput>
+  connectOrCreate?: Prisma.TagCreateOrConnectWithoutActivityRecordsInput
+  connect?: Prisma.TagWhereUniqueInput
+}
+
+export type TagUpdateOneRequiredWithoutActivityRecordsNestedInput = {
+  create?: Prisma.XOR<Prisma.TagCreateWithoutActivityRecordsInput, Prisma.TagUncheckedCreateWithoutActivityRecordsInput>
+  connectOrCreate?: Prisma.TagCreateOrConnectWithoutActivityRecordsInput
+  upsert?: Prisma.TagUpsertWithoutActivityRecordsInput
+  connect?: Prisma.TagWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TagUpdateToOneWithWhereWithoutActivityRecordsInput, Prisma.TagUpdateWithoutActivityRecordsInput>, Prisma.TagUncheckedUpdateWithoutActivityRecordsInput>
+}
+
 export type TagCreateWithoutUserInput = {
   id?: string
   name: string
@@ -500,6 +526,7 @@ export type TagCreateWithoutUserInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   company?: Prisma.CompanyCreateNestedOneWithoutTagsInput
+  activityRecords?: Prisma.ActivityRecordTagCreateNestedManyWithoutTagInput
 }
 
 export type TagUncheckedCreateWithoutUserInput = {
@@ -511,6 +538,7 @@ export type TagUncheckedCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  activityRecords?: Prisma.ActivityRecordTagUncheckedCreateNestedManyWithoutTagInput
 }
 
 export type TagCreateOrConnectWithoutUserInput = {
@@ -563,6 +591,7 @@ export type TagCreateWithoutCompanyInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   user?: Prisma.UserCreateNestedOneWithoutTagsInput
+  activityRecords?: Prisma.ActivityRecordTagCreateNestedManyWithoutTagInput
 }
 
 export type TagUncheckedCreateWithoutCompanyInput = {
@@ -574,6 +603,7 @@ export type TagUncheckedCreateWithoutCompanyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
+  activityRecords?: Prisma.ActivityRecordTagUncheckedCreateNestedManyWithoutTagInput
 }
 
 export type TagCreateOrConnectWithoutCompanyInput = {
@@ -602,6 +632,70 @@ export type TagUpdateManyWithWhereWithoutCompanyInput = {
   data: Prisma.XOR<Prisma.TagUpdateManyMutationInput, Prisma.TagUncheckedUpdateManyWithoutCompanyInput>
 }
 
+export type TagCreateWithoutActivityRecordsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  color: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  user?: Prisma.UserCreateNestedOneWithoutTagsInput
+  company?: Prisma.CompanyCreateNestedOneWithoutTagsInput
+}
+
+export type TagUncheckedCreateWithoutActivityRecordsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  color: string
+  userId?: string | null
+  companyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+}
+
+export type TagCreateOrConnectWithoutActivityRecordsInput = {
+  where: Prisma.TagWhereUniqueInput
+  create: Prisma.XOR<Prisma.TagCreateWithoutActivityRecordsInput, Prisma.TagUncheckedCreateWithoutActivityRecordsInput>
+}
+
+export type TagUpsertWithoutActivityRecordsInput = {
+  update: Prisma.XOR<Prisma.TagUpdateWithoutActivityRecordsInput, Prisma.TagUncheckedUpdateWithoutActivityRecordsInput>
+  create: Prisma.XOR<Prisma.TagCreateWithoutActivityRecordsInput, Prisma.TagUncheckedCreateWithoutActivityRecordsInput>
+  where?: Prisma.TagWhereInput
+}
+
+export type TagUpdateToOneWithWhereWithoutActivityRecordsInput = {
+  where?: Prisma.TagWhereInput
+  data: Prisma.XOR<Prisma.TagUpdateWithoutActivityRecordsInput, Prisma.TagUncheckedUpdateWithoutActivityRecordsInput>
+}
+
+export type TagUpdateWithoutActivityRecordsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  user?: Prisma.UserUpdateOneWithoutTagsNestedInput
+  company?: Prisma.CompanyUpdateOneWithoutTagsNestedInput
+}
+
+export type TagUncheckedUpdateWithoutActivityRecordsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
 export type TagCreateManyUserInput = {
   id?: string
   name: string
@@ -622,6 +716,7 @@ export type TagUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   company?: Prisma.CompanyUpdateOneWithoutTagsNestedInput
+  activityRecords?: Prisma.ActivityRecordTagUpdateManyWithoutTagNestedInput
 }
 
 export type TagUncheckedUpdateWithoutUserInput = {
@@ -633,6 +728,7 @@ export type TagUncheckedUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activityRecords?: Prisma.ActivityRecordTagUncheckedUpdateManyWithoutTagNestedInput
 }
 
 export type TagUncheckedUpdateManyWithoutUserInput = {
@@ -666,6 +762,7 @@ export type TagUpdateWithoutCompanyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneWithoutTagsNestedInput
+  activityRecords?: Prisma.ActivityRecordTagUpdateManyWithoutTagNestedInput
 }
 
 export type TagUncheckedUpdateWithoutCompanyInput = {
@@ -677,6 +774,7 @@ export type TagUncheckedUpdateWithoutCompanyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  activityRecords?: Prisma.ActivityRecordTagUncheckedUpdateManyWithoutTagNestedInput
 }
 
 export type TagUncheckedUpdateManyWithoutCompanyInput = {
@@ -691,6 +789,35 @@ export type TagUncheckedUpdateManyWithoutCompanyInput = {
 }
 
 
+/**
+ * Count Type TagCountOutputType
+ */
+
+export type TagCountOutputType = {
+  activityRecords: number
+}
+
+export type TagCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  activityRecords?: boolean | TagCountOutputTypeCountActivityRecordsArgs
+}
+
+/**
+ * TagCountOutputType without action
+ */
+export type TagCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TagCountOutputType
+   */
+  select?: Prisma.TagCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * TagCountOutputType without action
+ */
+export type TagCountOutputTypeCountActivityRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ActivityRecordTagWhereInput
+}
+
 
 export type TagSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -704,6 +831,8 @@ export type TagSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   deletedAt?: boolean
   user?: boolean | Prisma.Tag$userArgs<ExtArgs>
   company?: boolean | Prisma.Tag$companyArgs<ExtArgs>
+  activityRecords?: boolean | Prisma.Tag$activityRecordsArgs<ExtArgs>
+  _count?: boolean | Prisma.TagCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tag"]>
 
 export type TagSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -750,6 +879,8 @@ export type TagOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
 export type TagInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Tag$userArgs<ExtArgs>
   company?: boolean | Prisma.Tag$companyArgs<ExtArgs>
+  activityRecords?: boolean | Prisma.Tag$activityRecordsArgs<ExtArgs>
+  _count?: boolean | Prisma.TagCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TagIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.Tag$userArgs<ExtArgs>
@@ -765,6 +896,7 @@ export type $TagPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   objects: {
     user: Prisma.$UserPayload<ExtArgs> | null
     company: Prisma.$CompanyPayload<ExtArgs> | null
+    activityRecords: Prisma.$ActivityRecordTagPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1172,6 +1304,7 @@ export interface Prisma__TagClient<T, Null = never, ExtArgs extends runtime.Type
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.Tag$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tag$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   company<T extends Prisma.Tag$companyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tag$companyArgs<ExtArgs>>): Prisma.Prisma__CompanyClient<runtime.Types.Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  activityRecords<T extends Prisma.Tag$activityRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tag$activityRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityRecordTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1646,6 +1779,30 @@ export type Tag$companyArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    */
   include?: Prisma.CompanyInclude<ExtArgs> | null
   where?: Prisma.CompanyWhereInput
+}
+
+/**
+ * Tag.activityRecords
+ */
+export type Tag$activityRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ActivityRecordTag
+   */
+  select?: Prisma.ActivityRecordTagSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ActivityRecordTag
+   */
+  omit?: Prisma.ActivityRecordTagOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityRecordTagInclude<ExtArgs> | null
+  where?: Prisma.ActivityRecordTagWhereInput
+  orderBy?: Prisma.ActivityRecordTagOrderByWithRelationInput | Prisma.ActivityRecordTagOrderByWithRelationInput[]
+  cursor?: Prisma.ActivityRecordTagWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ActivityRecordTagScalarFieldEnum | Prisma.ActivityRecordTagScalarFieldEnum[]
 }
 
 /**

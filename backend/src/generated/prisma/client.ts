@@ -66,3 +66,13 @@ export type Session = Prisma.SessionModel
  * 
  */
 export type Tag = Prisma.TagModel
+/**
+ * Model ActivityRecord
+ * 
+ */
+export type ActivityRecord = Prisma.ActivityRecordModel
+/**
+ * Model ActivityRecordTag
+ * 
+ */
+export type ActivityRecordTag = Prisma.ActivityRecordTagModel

@@ -25,3 +25,13 @@ export const MembershipStatus = {
 } as const
 
 export type MembershipStatus = (typeof MembershipStatus)[keyof typeof MembershipStatus]
+
+
+export const ActivityRecordStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELED: 'CANCELED'
+} as const
+
+export type ActivityRecordStatus = (typeof ActivityRecordStatus)[keyof typeof ActivityRecordStatus]

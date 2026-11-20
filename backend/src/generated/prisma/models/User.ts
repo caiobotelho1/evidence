@@ -202,6 +202,7 @@ export type UserWhereInput = {
   decidedMemberships?: Prisma.CompanyMembershipListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   tags?: Prisma.TagListRelationFilter
+  activityRecords?: Prisma.ActivityRecordListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -216,6 +217,7 @@ export type UserOrderByWithRelationInput = {
   decidedMemberships?: Prisma.CompanyMembershipOrderByRelationAggregateInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   tags?: Prisma.TagOrderByRelationAggregateInput
+  activityRecords?: Prisma.ActivityRecordOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -233,6 +235,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   decidedMemberships?: Prisma.CompanyMembershipListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
   tags?: Prisma.TagListRelationFilter
+  activityRecords?: Prisma.ActivityRecordListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -273,6 +276,7 @@ export type UserCreateInput = {
   decidedMemberships?: Prisma.CompanyMembershipCreateNestedManyWithoutDecidedByInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   tags?: Prisma.TagCreateNestedManyWithoutUserInput
+  activityRecords?: Prisma.ActivityRecordCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -287,6 +291,7 @@ export type UserUncheckedCreateInput = {
   decidedMemberships?: Prisma.CompanyMembershipUncheckedCreateNestedManyWithoutDecidedByInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput
+  activityRecords?: Prisma.ActivityRecordUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUpdateInput = {
@@ -301,6 +306,7 @@ export type UserUpdateInput = {
   decidedMemberships?: Prisma.CompanyMembershipUpdateManyWithoutDecidedByNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   tags?: Prisma.TagUpdateManyWithoutUserNestedInput
+  activityRecords?: Prisma.ActivityRecordUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -315,6 +321,7 @@ export type UserUncheckedUpdateInput = {
   decidedMemberships?: Prisma.CompanyMembershipUncheckedUpdateManyWithoutDecidedByNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput
+  activityRecords?: Prisma.ActivityRecordUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -455,6 +462,20 @@ export type UserUpdateOneWithoutTagsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTagsInput, Prisma.UserUpdateWithoutTagsInput>, Prisma.UserUncheckedUpdateWithoutTagsInput>
 }
 
+export type UserCreateNestedOneWithoutActivityRecordsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutActivityRecordsInput, Prisma.UserUncheckedCreateWithoutActivityRecordsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutActivityRecordsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutActivityRecordsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutActivityRecordsInput, Prisma.UserUncheckedCreateWithoutActivityRecordsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutActivityRecordsInput
+  upsert?: Prisma.UserUpsertWithoutActivityRecordsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutActivityRecordsInput, Prisma.UserUpdateWithoutActivityRecordsInput>, Prisma.UserUncheckedUpdateWithoutActivityRecordsInput>
+}
+
 export type UserCreateWithoutMembershipsInput = {
   id?: string
   name: string
@@ -466,6 +487,7 @@ export type UserCreateWithoutMembershipsInput = {
   decidedMemberships?: Prisma.CompanyMembershipCreateNestedManyWithoutDecidedByInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   tags?: Prisma.TagCreateNestedManyWithoutUserInput
+  activityRecords?: Prisma.ActivityRecordCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -479,6 +501,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   decidedMemberships?: Prisma.CompanyMembershipUncheckedCreateNestedManyWithoutDecidedByInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput
+  activityRecords?: Prisma.ActivityRecordUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -497,6 +520,7 @@ export type UserCreateWithoutDecidedMembershipsInput = {
   memberships?: Prisma.CompanyMembershipCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   tags?: Prisma.TagCreateNestedManyWithoutUserInput
+  activityRecords?: Prisma.ActivityRecordCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutDecidedMembershipsInput = {
@@ -510,6 +534,7 @@ export type UserUncheckedCreateWithoutDecidedMembershipsInput = {
   memberships?: Prisma.CompanyMembershipUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput
+  activityRecords?: Prisma.ActivityRecordUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutDecidedMembershipsInput = {
@@ -539,6 +564,7 @@ export type UserUpdateWithoutMembershipsInput = {
   decidedMemberships?: Prisma.CompanyMembershipUpdateManyWithoutDecidedByNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   tags?: Prisma.TagUpdateManyWithoutUserNestedInput
+  activityRecords?: Prisma.ActivityRecordUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -552,6 +578,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   decidedMemberships?: Prisma.CompanyMembershipUncheckedUpdateManyWithoutDecidedByNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput
+  activityRecords?: Prisma.ActivityRecordUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUpsertWithoutDecidedMembershipsInput = {
@@ -576,6 +603,7 @@ export type UserUpdateWithoutDecidedMembershipsInput = {
   memberships?: Prisma.CompanyMembershipUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   tags?: Prisma.TagUpdateManyWithoutUserNestedInput
+  activityRecords?: Prisma.ActivityRecordUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDecidedMembershipsInput = {
@@ -589,6 +617,7 @@ export type UserUncheckedUpdateWithoutDecidedMembershipsInput = {
   memberships?: Prisma.CompanyMembershipUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput
+  activityRecords?: Prisma.ActivityRecordUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -602,6 +631,7 @@ export type UserCreateWithoutSessionsInput = {
   memberships?: Prisma.CompanyMembershipCreateNestedManyWithoutUserInput
   decidedMemberships?: Prisma.CompanyMembershipCreateNestedManyWithoutDecidedByInput
   tags?: Prisma.TagCreateNestedManyWithoutUserInput
+  activityRecords?: Prisma.ActivityRecordCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -615,6 +645,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   memberships?: Prisma.CompanyMembershipUncheckedCreateNestedManyWithoutUserInput
   decidedMemberships?: Prisma.CompanyMembershipUncheckedCreateNestedManyWithoutDecidedByInput
   tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput
+  activityRecords?: Prisma.ActivityRecordUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -644,6 +675,7 @@ export type UserUpdateWithoutSessionsInput = {
   memberships?: Prisma.CompanyMembershipUpdateManyWithoutUserNestedInput
   decidedMemberships?: Prisma.CompanyMembershipUpdateManyWithoutDecidedByNestedInput
   tags?: Prisma.TagUpdateManyWithoutUserNestedInput
+  activityRecords?: Prisma.ActivityRecordUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -657,6 +689,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   memberships?: Prisma.CompanyMembershipUncheckedUpdateManyWithoutUserNestedInput
   decidedMemberships?: Prisma.CompanyMembershipUncheckedUpdateManyWithoutDecidedByNestedInput
   tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput
+  activityRecords?: Prisma.ActivityRecordUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserCreateWithoutTagsInput = {
@@ -670,6 +703,7 @@ export type UserCreateWithoutTagsInput = {
   memberships?: Prisma.CompanyMembershipCreateNestedManyWithoutUserInput
   decidedMemberships?: Prisma.CompanyMembershipCreateNestedManyWithoutDecidedByInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  activityRecords?: Prisma.ActivityRecordCreateNestedManyWithoutAuthorInput
 }
 
 export type UserUncheckedCreateWithoutTagsInput = {
@@ -683,6 +717,7 @@ export type UserUncheckedCreateWithoutTagsInput = {
   memberships?: Prisma.CompanyMembershipUncheckedCreateNestedManyWithoutUserInput
   decidedMemberships?: Prisma.CompanyMembershipUncheckedCreateNestedManyWithoutDecidedByInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  activityRecords?: Prisma.ActivityRecordUncheckedCreateNestedManyWithoutAuthorInput
 }
 
 export type UserCreateOrConnectWithoutTagsInput = {
@@ -712,6 +747,7 @@ export type UserUpdateWithoutTagsInput = {
   memberships?: Prisma.CompanyMembershipUpdateManyWithoutUserNestedInput
   decidedMemberships?: Prisma.CompanyMembershipUpdateManyWithoutDecidedByNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  activityRecords?: Prisma.ActivityRecordUpdateManyWithoutAuthorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTagsInput = {
@@ -725,6 +761,79 @@ export type UserUncheckedUpdateWithoutTagsInput = {
   memberships?: Prisma.CompanyMembershipUncheckedUpdateManyWithoutUserNestedInput
   decidedMemberships?: Prisma.CompanyMembershipUncheckedUpdateManyWithoutDecidedByNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  activityRecords?: Prisma.ActivityRecordUncheckedUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserCreateWithoutActivityRecordsInput = {
+  id?: string
+  name: string
+  email: string
+  phone: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.CompanyMembershipCreateNestedManyWithoutUserInput
+  decidedMemberships?: Prisma.CompanyMembershipCreateNestedManyWithoutDecidedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  tags?: Prisma.TagCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutActivityRecordsInput = {
+  id?: string
+  name: string
+  email: string
+  phone: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.CompanyMembershipUncheckedCreateNestedManyWithoutUserInput
+  decidedMemberships?: Prisma.CompanyMembershipUncheckedCreateNestedManyWithoutDecidedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutActivityRecordsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutActivityRecordsInput, Prisma.UserUncheckedCreateWithoutActivityRecordsInput>
+}
+
+export type UserUpsertWithoutActivityRecordsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutActivityRecordsInput, Prisma.UserUncheckedUpdateWithoutActivityRecordsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutActivityRecordsInput, Prisma.UserUncheckedCreateWithoutActivityRecordsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutActivityRecordsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutActivityRecordsInput, Prisma.UserUncheckedUpdateWithoutActivityRecordsInput>
+}
+
+export type UserUpdateWithoutActivityRecordsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.CompanyMembershipUpdateManyWithoutUserNestedInput
+  decidedMemberships?: Prisma.CompanyMembershipUpdateManyWithoutDecidedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  tags?: Prisma.TagUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutActivityRecordsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.CompanyMembershipUncheckedUpdateManyWithoutUserNestedInput
+  decidedMemberships?: Prisma.CompanyMembershipUncheckedUpdateManyWithoutDecidedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -737,6 +846,7 @@ export type UserCountOutputType = {
   decidedMemberships: number
   sessions: number
   tags: number
+  activityRecords: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -744,6 +854,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   decidedMemberships?: boolean | UserCountOutputTypeCountDecidedMembershipsArgs
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   tags?: boolean | UserCountOutputTypeCountTagsArgs
+  activityRecords?: boolean | UserCountOutputTypeCountActivityRecordsArgs
 }
 
 /**
@@ -784,6 +895,13 @@ export type UserCountOutputTypeCountTagsArgs<ExtArgs extends runtime.Types.Exten
   where?: Prisma.TagWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountActivityRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ActivityRecordWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -797,6 +915,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   decidedMemberships?: boolean | Prisma.User$decidedMembershipsArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   tags?: boolean | Prisma.User$tagsArgs<ExtArgs>
+  activityRecords?: boolean | Prisma.User$activityRecordsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -836,6 +955,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   decidedMemberships?: boolean | Prisma.User$decidedMembershipsArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   tags?: boolean | Prisma.User$tagsArgs<ExtArgs>
+  activityRecords?: boolean | Prisma.User$activityRecordsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -848,6 +968,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     decidedMemberships: Prisma.$CompanyMembershipPayload<ExtArgs>[]
     sessions: Prisma.$SessionPayload<ExtArgs>[]
     tags: Prisma.$TagPayload<ExtArgs>[]
+    activityRecords: Prisma.$ActivityRecordPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1255,6 +1376,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   decidedMemberships<T extends Prisma.User$decidedMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$decidedMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CompanyMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tags<T extends Prisma.User$tagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  activityRecords<T extends Prisma.User$activityRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$activityRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1777,6 +1899,30 @@ export type User$tagsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   take?: number
   skip?: number
   distinct?: Prisma.TagScalarFieldEnum | Prisma.TagScalarFieldEnum[]
+}
+
+/**
+ * User.activityRecords
+ */
+export type User$activityRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ActivityRecord
+   */
+  select?: Prisma.ActivityRecordSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ActivityRecord
+   */
+  omit?: Prisma.ActivityRecordOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityRecordInclude<ExtArgs> | null
+  where?: Prisma.ActivityRecordWhereInput
+  orderBy?: Prisma.ActivityRecordOrderByWithRelationInput | Prisma.ActivityRecordOrderByWithRelationInput[]
+  cursor?: Prisma.ActivityRecordWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ActivityRecordScalarFieldEnum | Prisma.ActivityRecordScalarFieldEnum[]
 }
 
 /**
