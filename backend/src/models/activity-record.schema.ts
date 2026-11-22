@@ -25,10 +25,39 @@ export const createActivityRecordSchema = z
   })
   .strict();
 
-export const listActivityRecordsQuerySchema = z.object({
-  limit: z.coerce.number().int().min(1).max(100).default(50),
-  cursor: z.string().min(1).optional(),
-});
+const queryStringArray = <T extends string>(itemSchema: z.ZodType<T>) =>
+  z
+    .union([itemSchema, z.array(itemSchema)])
+    .optional()
+    .transform((values): T[] =>
+      values === undefined ? [] : Array.isArray(values) ? values : [values],
+    )
+    .transform((values) => [...new Set(values)]);
+
+export const listActivityRecordsQuerySchema = z
+  .object({
+    limit: z.coerce.number().int().min(1).max(100).default(50),
+    cursor: z.string().min(1).optional(),
+    search: z.string().trim().max(200).optional().transform((value) => value || undefined),
+    tagIds: queryStringArray(z.uuid("Tag inválida.")).pipe(z.array(z.uuid()).max(50)),
+    statuses: queryStringArray(z.enum(ActivityRecordStatus, "Status inválido.")),
+    dateFrom: z.iso.datetime({ offset: true }).optional(),
+    dateTo: z.iso.datetime({ offset: true }).optional(),
+    employeeIds: queryStringArray(z.uuid("Funcionário inválido.")).pipe(z.array(z.uuid()).max(100)),
+  })
+  .superRefine((query, context) => {
+    if (
+      query.dateFrom &&
+      query.dateTo &&
+      new Date(query.dateFrom).getTime() > new Date(query.dateTo).getTime()
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["dateTo"],
+        message: "A data final deve ser igual ou posterior à data inicial.",
+      });
+    }
+  });
 
 export type CreateActivityRecordInput = z.infer<typeof createActivityRecordSchema>;
 export type ListActivityRecordsQuery = z.infer<typeof listActivityRecordsQuerySchema>;
