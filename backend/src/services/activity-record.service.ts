@@ -7,6 +7,7 @@ import type {
 } from "../models/activity-record.schema.js";
 import {
   buildActivityRecordDetailWhere,
+  buildActivityRecordListWhere,
   buildActivityRecordScope,
   type ActivityRecordListContext,
 } from "./activity-record.scope.js";
@@ -104,7 +105,7 @@ export async function listActivityRecords(
   query: ListActivityRecordsQuery,
 ) {
   const rows = await prisma.activityRecord.findMany({
-    where: buildActivityRecordScope(context),
+    where: buildActivityRecordListWhere(context, query),
     select: activityRecordSelect,
     orderBy: [{ createdAt: "desc" }, { id: "desc" }],
     take: query.limit + 1,

@@ -54,6 +54,10 @@ export const listPersonalActivityRecordsController: RequestHandler = async (req,
   const { user } = getAuth(req);
   const query = listActivityRecordsQuerySchema.parse(req.query);
 
+  if (query.employeeIds.length > 0) {
+    throw badRequest("O filtro por funcionário está disponível apenas no ambiente empresarial.");
+  }
+
   const result = await listActivityRecords({ type: "personal", userId: user.id }, query);
 
   res.status(200).json(result);
@@ -72,6 +76,10 @@ export const listCompanyActivityRecordsController: RequestHandler = async (req, 
 
   if (!membership) {
     throw forbidden();
+  }
+
+  if (query.employeeIds.length > 0 && membership.role !== "OWNER") {
+    throw forbidden("Somente o proprietário pode filtrar registros por funcionário.");
   }
 
   const context: ActivityRecordListContext = {
