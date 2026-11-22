@@ -140,6 +140,13 @@ function RegistrosContent() {
 
       <div className={styles.content}>
         <div className={styles.pageTitle}>
+          <nav className={styles.breadcrumb} aria-label="Localização">
+            <span>{isCompanyEnvironment ? "Empresa" : "Pessoal"}</span>
+            <span className={styles.separator} aria-hidden="true">/</span>
+            <span className={styles.currentPage} aria-current="page">
+              Registros
+            </span>
+          </nav>
           <h1>Registros</h1>
           <p>
             {isCompanyEnvironment

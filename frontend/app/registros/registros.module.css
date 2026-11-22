@@ -69,13 +69,33 @@
   margin-bottom: 28px;
 }
 
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 12px;
+  color: #4a6a41;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.separator {
+  color: #9cae8f;
+}
+
+.currentPage {
+  color: #1f3d2e;
+  font-weight: 500;
+}
+
 .pageTitle h1 {
   margin: 0;
   color: #1f3d2e;
   font-family: "DM Serif Display", serif;
-  font-size: 32px;
+  font-size: clamp(32px, 3vw, 40px);
   font-style: italic;
   font-weight: 400;
+  line-height: 1.2;
 }
 
 .pageTitle p {
