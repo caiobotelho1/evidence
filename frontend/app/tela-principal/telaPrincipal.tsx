@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuthUser } from "@/features/auth/components/AuthGate";
 import Link from "next/link";
 import Image from "next/image";
@@ -362,17 +362,21 @@ const recordCreationMessage = isPessoal
     return () => window.clearTimeout(timeoutId);
   }, [recordSearchQuery]);
 
-  useEffect(() => {
-    let cancelled = false;
+  const recordListFilters = useMemo(() => {
     const criteria = JSON.parse(recordFilterCriteriaKey) as ActivityRecordFilterCriteria;
-    const listFilters: ActivityRecordListFilters = {
+
+    return {
       search: debouncedRecordSearchQuery,
       tagIds: criteria.tagIds,
       statuses: criteria.statuses,
       dateFrom: criteria.dateFrom,
       dateTo: criteria.dateTo,
       employeeIds: isCompanyOwner ? criteria.employeeIds : [],
-    };
+    } satisfies ActivityRecordListFilters;
+  }, [recordFilterCriteriaKey, debouncedRecordSearchQuery, isCompanyOwner]);
+
+  useEffect(() => {
+    let cancelled = false;
 
     async function loadRecords() {
       const canLoad = isPessoal || Boolean(companyId);
@@ -384,8 +388,8 @@ const recordCreationMessage = isPessoal
 
       try {
         const result = isPessoal
-          ? await getPersonalRecords(listFilters)
-          : await getCompanyRecords(companyId!, listFilters);
+          ? await getPersonalRecords(recordListFilters)
+          : await getCompanyRecords(companyId!, recordListFilters);
 
         if (!cancelled) {
           setRecordResults({ scopeKey: recordScopeKey, items: result });
@@ -414,9 +418,7 @@ const recordCreationMessage = isPessoal
     isPessoal,
     companyId,
     recordScopeKey,
-    isCompanyOwner,
-    debouncedRecordSearchQuery,
-    recordFilterCriteriaKey,
+    recordListFilters,
   ]);
 
   const registrosTimeline: RegistroTimeline[] = records.map((record) => ({
@@ -448,25 +450,33 @@ const recordCreationMessage = isPessoal
       tagIds: data.tagIds,
     };
 
-    let record: ActivityRecord;
-
     if (isPessoal) {
-      record = await createPersonalRecord(payload);
+      await createPersonalRecord(payload);
     } else {
       if (!companyId) {
         throw new Error("Nenhuma empresa selecionada.");
       }
 
-      record = await createCompanyRecord(companyId, payload);
+      await createCompanyRecord(companyId, payload);
     }
 
-    setRecordResults((previous) => ({
-      scopeKey: recordScopeKey,
-      items: [
-        record,
-        ...(previous.scopeKey === recordScopeKey ? previous.items : []),
-      ],
-    }));
+    const currentFilters = {
+      ...recordListFilters,
+      search: recordSearchQuery.trim(),
+    };
+
+    try {
+      const refreshedRecords = isPessoal
+        ? await getPersonalRecords(currentFilters)
+        : await getCompanyRecords(companyId!, currentFilters);
+
+      setRecordResults({ scopeKey: recordScopeKey, items: refreshedRecords });
+    } catch (error) {
+      const reason = error instanceof Error ? `: ${error.message}` : ".";
+      setRecordsError(
+        `Registro salvo, mas não foi possível atualizar a listagem${reason}`,
+      );
+    }
   }
 
   return (
