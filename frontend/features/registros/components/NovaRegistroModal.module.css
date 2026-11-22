@@ -251,6 +251,7 @@
 }
 
 .statusTrigger {
+  position: relative;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -258,7 +259,7 @@
 
   width: 100%;
   min-height: 44px;
-  padding: 12px 14px;
+  padding: 12px 36px 12px 14px;
 
   border: 1px solid #9CAE8F;
   border-radius: 10px;
@@ -298,8 +299,15 @@
 }
 
 .statusChevron {
-  color: #1F3D2E;
-  font-size: 18px;
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  transform: rotate(0deg);
+  transform-origin: center center;
   transition: transform 0.2s ease;
 }
 
@@ -451,6 +459,7 @@
 }
 
 .tagsTrigger {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -464,7 +473,6 @@
   background: transparent;
   color: #1F3D2E;
 
-  font-size: 20px;
   cursor: pointer;
   list-style: none;
 }
@@ -477,7 +485,20 @@
   background: #E3E8DC;
 }
 
-.tagsDropdown[open] .tagsTrigger {
+.tagsChevron {
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  transform: rotate(0deg);
+  transform-origin: center center;
+  transition: transform 0.2s ease;
+}
+
+.tagsDropdown[open] .tagsChevron {
   transform: rotate(180deg);
 }
 

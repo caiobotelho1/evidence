@@ -12,6 +12,7 @@ export type ActivityRecord = {
   description: string;
   status: ActivityRecordStatus;
   createdAt: string;
+  updatedAt: string;
   companyId: string | null;
   author: { id: string; name: string };
   tags: {
@@ -28,6 +29,8 @@ export type CreateActivityRecordPayload = {
   status: ActivityRecordStatus;
   tagIds: string[];
 };
+
+export type UpdateActivityRecordPayload = Partial<CreateActivityRecordPayload>;
 
 type ActivityRecordPage = {
   items: ActivityRecord[];
@@ -166,5 +169,29 @@ export async function getCompanyRecordById(
 ): Promise<ActivityRecord> {
   return apiFetch<ActivityRecord>(
     `/api/companies/${encodeURIComponent(companyId)}/records/${encodeURIComponent(recordId)}`,
+  );
+}
+
+export async function updatePersonalRecord(
+  recordId: string,
+  payload: UpdateActivityRecordPayload,
+): Promise<ActivityRecord> {
+  return apiFetch<ActivityRecord>(`/api/records/${encodeURIComponent(recordId)}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateCompanyRecord(
+  companyId: string,
+  recordId: string,
+  payload: UpdateActivityRecordPayload,
+): Promise<ActivityRecord> {
+  return apiFetch<ActivityRecord>(
+    `/api/companies/${encodeURIComponent(companyId)}/records/${encodeURIComponent(recordId)}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    },
   );
 }
