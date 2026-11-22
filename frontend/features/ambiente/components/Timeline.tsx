@@ -267,7 +267,10 @@ export default function Timeline({ registros, onOpenDetails }: TimelineProps) {
                             Por {registro.autor} -{" "}
                             {formatarData(registro.data)}
                           </p>
-                          <span className={styles.statusPreview}>
+                          <span
+                            className={styles.statusPreview}
+                            data-status={registro.status}
+                          >
                             {STATUS_LABELS[registro.status]}
                           </span>
                         </div>

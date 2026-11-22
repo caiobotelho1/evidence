@@ -74,24 +74,27 @@ const EMPTY_RECORD_FILTERS: ActivityRecordFilterCriteria = {
 
 export default function DashboardClient() {
   const tagListDropdownRef = useRef<HTMLDetailsElement>(null);
+  const menuDropdownRef = useRef<HTMLDetailsElement>(null);
   const user = useAuthUser();
   const searchParams = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
-    function closeTagListOnOutsidePointer(event: PointerEvent) {
+    function closeDropdownsOnOutsidePointer(event: PointerEvent) {
       const target = event.target;
-      if (
-        target instanceof Node &&
-        tagListDropdownRef.current &&
-        !tagListDropdownRef.current.contains(target)
-      ) {
+      if (!(target instanceof Node)) return;
+
+      if (tagListDropdownRef.current && !tagListDropdownRef.current.contains(target)) {
         tagListDropdownRef.current.open = false;
+      }
+
+      if (menuDropdownRef.current && !menuDropdownRef.current.contains(target)) {
+        menuDropdownRef.current.open = false;
       }
     }
 
-    document.addEventListener("pointerdown", closeTagListOnOutsidePointer);
-    return () => document.removeEventListener("pointerdown", closeTagListOnOutsidePointer);
+    document.addEventListener("pointerdown", closeDropdownsOnOutsidePointer);
+    return () => document.removeEventListener("pointerdown", closeDropdownsOnOutsidePointer);
   }, []);
 
   const ambienteAtual: Ambiente =
@@ -544,7 +547,7 @@ const recordCreationMessage = isPessoal
             </button>
           </div>
 
-          <details className={styles.menu}>
+          <details ref={menuDropdownRef} className={styles.menu}>
             <summary className={styles.menuButton}>
               <Image
                 src={iconMenu}

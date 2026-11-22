@@ -55,11 +55,11 @@
 .title {
   margin: 0;
 
-  color: #1f3d2f;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 28px;
+  color: #1F3D2E;
+  font-family: "DM Serif Display", serif;
+  font-size: 30px;
   font-style: italic;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.2;
 }
 
@@ -356,7 +356,7 @@
   }
 
   .title {
-    font-size: 25px;
+    font-size: 26px;
   }
 
   .form {
