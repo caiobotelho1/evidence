@@ -351,6 +351,7 @@ const recordCreationMessage = isPessoal
     : [];
   const [recordsLoading, setRecordsLoading] = useState(false);
   const [recordsError, setRecordsError] = useState("");
+  const [recordRefreshKey, setRecordRefreshKey] = useState(0);
   const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -419,6 +420,7 @@ const recordCreationMessage = isPessoal
     companyId,
     recordScopeKey,
     recordListFilters,
+    recordRefreshKey,
   ]);
 
   const registrosTimeline: RegistroTimeline[] = records.map((record) => ({
@@ -760,6 +762,7 @@ const recordCreationMessage = isPessoal
           isPersonal={isPessoal}
           companyId={companyId}
           onClose={() => setSelectedRecordId(null)}
+          onUpdated={() => setRecordRefreshKey((current) => current + 1)}
         />
       )}
       <TagModal

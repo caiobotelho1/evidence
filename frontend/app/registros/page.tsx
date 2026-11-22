@@ -50,16 +50,23 @@ function RegistrosContent() {
   const isCompanyEnvironment = searchParams.get("ambiente") === "empresa";
   const companyId = searchParams.get("companyId") ?? "";
   const [records, setRecords] = useState<ActivityRecord[]>([]);
-  const [selectedRecordId, setSelectedRecordId] = useState("");
+  const [selectedRecord, setSelectedRecord] = useState<{
+    id: string;
+    scopeKey: string;
+  } | null>(null);
+  const [recordRefreshKey, setRecordRefreshKey] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const scopeKey = `${isCompanyEnvironment ? "company" : "personal"}:${companyId}`;
+  const selectedRecordId = selectedRecord?.scopeKey === scopeKey
+    ? selectedRecord.id
+    : "";
 
   useEffect(() => {
     let cancelled = false;
 
     async function loadRecords() {
       setRecords([]);
-      setSelectedRecordId("");
       setError("");
 
       if (isCompanyEnvironment && !companyId) {
@@ -101,7 +108,7 @@ function RegistrosContent() {
     return () => {
       cancelled = true;
     };
-  }, [companyId, isCompanyEnvironment]);
+  }, [companyId, isCompanyEnvironment, recordRefreshKey]);
 
   const dashboardHref = isCompanyEnvironment
     ? "/tela-principal?ambiente=empresa"
@@ -163,7 +170,7 @@ function RegistrosContent() {
                 key={record.id}
                 className={styles.record}
                 type="button"
-                onClick={() => setSelectedRecordId(record.id)}
+                onClick={() => setSelectedRecord({ id: record.id, scopeKey })}
                 aria-label={`Ver detalhes de ${record.title}`}
               >
                 <span className={styles.recordHeader}>
@@ -209,7 +216,8 @@ function RegistrosContent() {
             recordId={selectedRecordId}
             isPersonal={!isCompanyEnvironment}
             companyId={companyId || undefined}
-            onClose={() => setSelectedRecordId("")}
+            onClose={() => setSelectedRecord(null)}
+            onUpdated={() => setRecordRefreshKey((current) => current + 1)}
           />
         )}
       </div>

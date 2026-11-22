@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useId, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import styles from "./NovaRegistroModal.module.css";
 import type { Tag } from "@/services/tag.service";
+import { REGISTRO_STATUS_OPTIONS, type RegistroStatus } from "../status-options";
 
 export type CreateRegistroDraft = {
   title: string;
@@ -11,19 +12,6 @@ export type CreateRegistroDraft = {
   tagIds: string[];
   files: File[];
 };
-
-export type RegistroStatus = "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELED";
-
-export const REGISTRO_STATUS_OPTIONS: {
-  value: RegistroStatus;
-  label: string;
-  color: string;
-}[] = [
-  { value: "PENDING", label: "Pendente", color: "#1F3D2E" },
-  { value: "IN_PROGRESS", label: "Em andamento", color: "#004F93" },
-  { value: "COMPLETED", label: "Concluído", color: "#5E944E" },
-  { value: "CANCELED", label: "Cancelado", color: "#900B09" },
-];
 
 type NovaRegistroModalProps = {
   isOpen: boolean;
@@ -305,9 +293,20 @@ export default function NovaRegistroModal({
                     {selectedStatus.label}
                   </span>
 
-                  <span className={styles.statusChevron} aria-hidden="true">
-                    ⌄
-                  </span>
+                  <svg
+                    className={styles.statusChevron}
+                    viewBox="0 0 16 16"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="m4 6 4 4 4-4"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
                 </summary>
 
                 <div className={styles.statusOptions} role="group" aria-label="Opções de status">
@@ -382,7 +381,20 @@ export default function NovaRegistroModal({
                       className={styles.tagsTrigger}
                       aria-label="Abrir opções de tags"
                     >
-                      <span aria-hidden="true">⌄</span>
+                      <svg
+                        className={styles.tagsChevron}
+                        viewBox="0 0 16 16"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="m4 6 4 4 4-4"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
                     </summary>
 
                     <div className={styles.tagsOptions}>
