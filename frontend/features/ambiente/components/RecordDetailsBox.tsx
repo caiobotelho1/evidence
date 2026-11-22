@@ -451,7 +451,10 @@ export default function RecordDetailsBox({
         <article className={`${styles.content} ${styles.viewContent}`}>
           <div className={styles.titleRow}>
             <h3>{record.title}</h3>
-            <span className={styles.recordStatus}>
+            <span
+              className={styles.recordStatus}
+              data-status={record.status}
+            >
               {REGISTRO_STATUS_OPTIONS.find((option) => option.value === record.status)?.label}
             </span>
           </div>

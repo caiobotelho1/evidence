@@ -86,10 +86,28 @@
   flex-shrink: 0;
   padding: 6px 10px;
   border-radius: 999px;
-  background: #DAE5D2;
-  color: #1F3D2E;
   font-size: 12px;
   font-weight: 600;
+}
+
+.recordStatus[data-status="PENDING"] {
+  background: #f5e8c8;
+  color: #70551c;
+}
+
+.recordStatus[data-status="IN_PROGRESS"] {
+  background: #dce8f2;
+  color: #31536c;
+}
+
+.recordStatus[data-status="COMPLETED"] {
+  background: #dae5d2;
+  color: #1f3d2e;
+}
+
+.recordStatus[data-status="CANCELED"] {
+  background: #f2ddda;
+  color: #8a3f35;
 }
 
 .metadata {

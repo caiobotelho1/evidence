@@ -107,11 +107,32 @@ export default function NovaRegistroModal({
       }
     }
 
+    function closeSelectorsOnOutsidePointer(event: PointerEvent) {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+
+      if (
+        statusDropdownRef.current &&
+        !statusDropdownRef.current.contains(target)
+      ) {
+        statusDropdownRef.current.open = false;
+      }
+
+      if (
+        tagsDropdownRef.current &&
+        !tagsDropdownRef.current.contains(target)
+      ) {
+        tagsDropdownRef.current.open = false;
+      }
+    }
+
     document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("pointerdown", closeSelectorsOnOutsidePointer);
 
     return () => {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("pointerdown", closeSelectorsOnOutsidePointer);
     };
   }, [isOpen, handleClose]);
 
