@@ -101,7 +101,10 @@ export default function Timeline({ registros, onOpenDetails }: TimelineProps) {
     getRecordsPerPage,
     getServerRecordsPerPage,
   );
-  const [inicio, setInicio] = useState(0);
+  const [navegacao, setNavegacao] = useState<{
+    registrosKey: string;
+    inicio: number | null;
+  }>({ registrosKey: "", inicio: null });
   const [registroAberto, setRegistroAberto] = useState<string | null>(null);
 
   const detalhesRef = useRef<HTMLDivElement>(null);
@@ -121,7 +124,22 @@ export default function Timeline({ registros, onOpenDetails }: TimelineProps) {
     registrosOrdenados.length - registrosPorPagina
   );
 
-  const inicioAtual = Math.min(inicio, maxInicio);
+  const registrosKey = registrosOrdenados.map((registro) => registro.id).join("|");
+  const inicioSalvo = navegacao.registrosKey === registrosKey
+    ? navegacao.inicio
+    : null;
+  const inicioAtual = inicioSalvo === null || inicioSalvo >= maxInicio
+    ? maxInicio
+    : inicioSalvo;
+
+  function navegarPara(inicioSolicitado: number) {
+    const proximoInicio = Math.max(0, Math.min(maxInicio, inicioSolicitado));
+
+    setNavegacao({
+      registrosKey,
+      inicio: proximoInicio >= maxInicio ? null : proximoInicio,
+    });
+  }
 
   const registrosVisiveis = registrosOrdenados.slice(
     inicioAtual,
@@ -193,7 +211,7 @@ export default function Timeline({ registros, onOpenDetails }: TimelineProps) {
           className={styles.seta}
           onClick={() => {
             setDirecao("esquerda");
-            setInicio(Math.max(0, inicioAtual - passoNavegacao));
+            navegarPara(inicioAtual - passoNavegacao);
             setRegistroAberto(null);
           }}
           disabled={inicioAtual === 0}
@@ -318,7 +336,7 @@ export default function Timeline({ registros, onOpenDetails }: TimelineProps) {
           className={styles.seta}
           onClick={() => {
             setDirecao("direita");
-            setInicio(Math.min(maxInicio, inicioAtual + passoNavegacao));
+            navegarPara(inicioAtual + passoNavegacao);
             setRegistroAberto(null);
           }}
           disabled={inicioAtual >= maxInicio}
