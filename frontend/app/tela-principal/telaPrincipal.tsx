@@ -1,12 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuthUser } from "@/features/auth/components/AuthGate";
 import Link from "next/link";
 import Image from "next/image";
 import { DM_Serif_Display, Inter } from "next/font/google";
 import { useSearchParams, useRouter } from "next/navigation";
-import {getMyCompanies, type MyCompany,} from "@/services/company.service";
+import {
+  getCompanyMembers,
+  getMyCompanies,
+  type CompanyMember,
+  type MyCompany,
+} from "@/services/company.service";
 
 import iconUser from "../../imgs/icon_user.png";
 import iconMenu from "../../imgs/icon_menu.png";
@@ -17,7 +22,8 @@ import NovaRegistroModal, {
   type CreateRegistroDraft,
 } from "@/features/registros/components/NovaRegistroModal";
 import MenuAmbiente from "../../features/ambiente/components/MenuAmbiente";
-import MenuTags from "../../features/ambiente/components/MenuTags";
+import MenuTags from "@/features/ambiente/components/MenuTags";
+import RecordFilters from "@/features/ambiente/components/RecordFilters";
 import Timeline, {
   type RegistroTimeline,
 } from "@/features/ambiente/components/Timeline";
@@ -40,10 +46,12 @@ import {
   createCompanyRecord,
   getPersonalRecords,
   getCompanyRecords,
+  type ActivityRecordListFilters,
   type ActivityRecord,
 } from "@/services/activity-record.service";
 
 import type { Tag } from "@/services/tag.service";
+import type { ActivityRecordFilterCriteria } from "@/features/ambiente/filters/record-filters";
 import styles from "./telaPrincipal.module.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -56,10 +64,35 @@ const dmSerif = DM_Serif_Display({
 
 type Ambiente = "pessoal" | "empresa";
 
+const EMPTY_RECORD_FILTERS: ActivityRecordFilterCriteria = {
+  tagIds: [],
+  statuses: [],
+  dateFrom: "",
+  dateTo: "",
+  employeeIds: [],
+};
+
 export default function DashboardClient() {
+  const tagListDropdownRef = useRef<HTMLDetailsElement>(null);
   const user = useAuthUser();
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  useEffect(() => {
+    function closeTagListOnOutsidePointer(event: PointerEvent) {
+      const target = event.target;
+      if (
+        target instanceof Node &&
+        tagListDropdownRef.current &&
+        !tagListDropdownRef.current.contains(target)
+      ) {
+        tagListDropdownRef.current.open = false;
+      }
+    }
+
+    document.addEventListener("pointerdown", closeTagListOnOutsidePointer);
+    return () => document.removeEventListener("pointerdown", closeTagListOnOutsidePointer);
+  }, []);
 
   const ambienteAtual: Ambiente =
     searchParams.get("ambiente") === "empresa"
@@ -119,6 +152,7 @@ const selectedCompany = companies.find(
   (company) => company.id === selectedCompanyId
 ); 
 const companyId = selectedCompany?.id;
+const isCompanyOwner = !isPessoal && selectedCompany?.role === "OWNER";
 
 const companyName =
   selectedCompany?.tradeName ??
@@ -247,10 +281,99 @@ const recordCreationMessage = isPessoal
     cor: tag.color,
   }));
 
-  const [records, setRecords] = useState<ActivityRecord[]>([]);
+  const recordScopeKey = `${isPessoal ? "personal" : "company"}:${companyId ?? ""}`;
+  const [recordControls, setRecordControls] = useState({
+    scopeKey: "",
+    query: "",
+    criteria: EMPTY_RECORD_FILTERS,
+  });
+  const activeRecordControls = recordControls.scopeKey === recordScopeKey
+    ? recordControls
+    : { scopeKey: recordScopeKey, query: "", criteria: EMPTY_RECORD_FILTERS };
+  const recordSearchQuery = activeRecordControls.query;
+  const recordFilterCriteria = activeRecordControls.criteria;
+  const recordFilterCriteriaKey = JSON.stringify(recordFilterCriteria);
+  const [debouncedRecordSearchQuery, setDebouncedRecordSearchQuery] = useState("");
+  const setRecordSearchQuery = (query: string) => {
+    setRecordControls({ ...activeRecordControls, scopeKey: recordScopeKey, query });
+  };
+  const setRecordFilterCriteria = (criteria: ActivityRecordFilterCriteria) => {
+    setRecordControls({ ...activeRecordControls, scopeKey: recordScopeKey, criteria });
+  };
+
+  const [companyMembers, setCompanyMembers] = useState<CompanyMember[]>([]);
+  const [companyMembersLoading, setCompanyMembersLoading] = useState(false);
+  const [companyMembersError, setCompanyMembersError] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadCompanyMembers() {
+      setCompanyMembers([]);
+      setCompanyMembersError("");
+
+      if (!companyId || !isCompanyOwner) {
+        setCompanyMembersLoading(false);
+        return;
+      }
+
+      setCompanyMembersLoading(true);
+
+      try {
+        const members = await getCompanyMembers(companyId);
+        if (!cancelled) setCompanyMembers(members);
+      } catch (error) {
+        if (!cancelled) {
+          setCompanyMembersError(
+            error instanceof Error
+              ? error.message
+              : "Não foi possível carregar os funcionários.",
+          );
+        }
+      } finally {
+        if (!cancelled) setCompanyMembersLoading(false);
+      }
+    }
+
+    void loadCompanyMembers();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [companyId, isCompanyOwner]);
+
+  const [recordResults, setRecordResults] = useState<{
+    scopeKey: string;
+    items: ActivityRecord[];
+  }>({ scopeKey: "", items: [] });
+  const records = recordResults.scopeKey === recordScopeKey
+    ? recordResults.items
+    : [];
   const [recordsLoading, setRecordsLoading] = useState(false);
   const [recordsError, setRecordsError] = useState("");
   const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(
+      () => setDebouncedRecordSearchQuery(recordSearchQuery),
+      300,
+    );
+
+    return () => window.clearTimeout(timeoutId);
+  }, [recordSearchQuery]);
+
+  const recordListFilters = useMemo(() => {
+    const criteria = JSON.parse(recordFilterCriteriaKey) as ActivityRecordFilterCriteria;
+
+    return {
+      search: debouncedRecordSearchQuery,
+      tagIds: criteria.tagIds,
+      statuses: criteria.statuses,
+      dateFrom: criteria.dateFrom,
+      dateTo: criteria.dateTo,
+      employeeIds: isCompanyOwner ? criteria.employeeIds : [],
+    } satisfies ActivityRecordListFilters;
+  }, [recordFilterCriteriaKey, debouncedRecordSearchQuery, isCompanyOwner]);
 
   useEffect(() => {
     let cancelled = false;
@@ -258,7 +381,6 @@ const recordCreationMessage = isPessoal
     async function loadRecords() {
       const canLoad = isPessoal || Boolean(companyId);
 
-      setRecords([]);
       setRecordsError("");
       setRecordsLoading(canLoad);
 
@@ -266,11 +388,11 @@ const recordCreationMessage = isPessoal
 
       try {
         const result = isPessoal
-          ? await getPersonalRecords()
-          : await getCompanyRecords(companyId!);
+          ? await getPersonalRecords(recordListFilters)
+          : await getCompanyRecords(companyId!, recordListFilters);
 
         if (!cancelled) {
-          setRecords(result);
+          setRecordResults({ scopeKey: recordScopeKey, items: result });
         }
       } catch (error) {
         if (!cancelled) {
@@ -292,7 +414,12 @@ const recordCreationMessage = isPessoal
     return () => {
       cancelled = true;
     };
-  }, [isPessoal, companyId]);
+  }, [
+    isPessoal,
+    companyId,
+    recordScopeKey,
+    recordListFilters,
+  ]);
 
   const registrosTimeline: RegistroTimeline[] = records.map((record) => ({
     id: record.id,
@@ -323,19 +450,33 @@ const recordCreationMessage = isPessoal
       tagIds: data.tagIds,
     };
 
-    let record: ActivityRecord;
-
     if (isPessoal) {
-      record = await createPersonalRecord(payload);
+      await createPersonalRecord(payload);
     } else {
       if (!companyId) {
         throw new Error("Nenhuma empresa selecionada.");
       }
 
-      record = await createCompanyRecord(companyId, payload);
+      await createCompanyRecord(companyId, payload);
     }
 
-    setRecords((previousRecords) => [record, ...previousRecords]);
+    const currentFilters = {
+      ...recordListFilters,
+      search: recordSearchQuery.trim(),
+    };
+
+    try {
+      const refreshedRecords = isPessoal
+        ? await getPersonalRecords(currentFilters)
+        : await getCompanyRecords(companyId!, currentFilters);
+
+      setRecordResults({ scopeKey: recordScopeKey, items: refreshedRecords });
+    } catch (error) {
+      const reason = error instanceof Error ? `: ${error.message}` : ".";
+      setRecordsError(
+        `Registro salvo, mas não foi possível atualizar a listagem${reason}`,
+      );
+    }
   }
 
   return (
@@ -519,34 +660,47 @@ const recordCreationMessage = isPessoal
           )}
         </section>
 
-        <section className={styles.searchSection}>
+        <section className={styles.searchSection} aria-label="Busca e filtros de registros">
           <input
             type="search"
-            placeholder="Digite aqui"
-            aria-label="Buscar registros"
+            placeholder="Buscar por título ou conteúdo"
+            aria-label="Buscar por título ou conteúdo"
             className={styles.searchInput}
+            value={recordSearchQuery}
+            onChange={(event) => setRecordSearchQuery(event.target.value)}
           />
 
-          <details className={styles.tagsDropdown}>
+          <RecordFilters
+            tags={menuTags}
+            tagsLoading={tagsLoading}
+            tagsError={tagsError}
+            employees={companyMembers.map((member) => ({
+              id: member.user.id,
+              name: member.user.name,
+            }))}
+            employeesLoading={companyMembersLoading}
+            employeesError={companyMembersError}
+            showEmployeeFilter={Boolean(isCompanyOwner)}
+            criteria={recordFilterCriteria}
+            onChange={setRecordFilterCriteria}
+          />
+
+          <details ref={tagListDropdownRef} className={styles.tagsDropdown}>
             <summary className={styles.filterButton}>
               <span>Tags</span>
-
-              <Image
-                src={iconSeta}
-                alt=""
-                width={18}
-                height={18}
-              />
+              <Image src={iconSeta} alt="" width={18} height={18} />
             </summary>
-
             <div className={styles.tagsDropdownContent}>
               {tagsError ? (
                 <p role="alert">{tagsError}</p>
+              ) : tagsLoading ? (
+                <p role="status">Carregando tags...</p>
               ) : (
                 <MenuTags tags={menuTags} />
               )}
             </div>
           </details>
+
           <button
             type="button"
             className={styles.newRecordButton}
@@ -627,4 +781,4 @@ const recordCreationMessage = isPessoal
     </div>
   );
 }
-  
+
