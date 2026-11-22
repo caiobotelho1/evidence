@@ -34,6 +34,15 @@ type ActivityRecordPage = {
   nextCursor: string | null;
 };
 
+export type ActivityRecordListFilters = {
+  search: string;
+  tagIds: string[];
+  statuses: ActivityRecordStatus[];
+  dateFrom: string;
+  dateTo: string;
+  employeeIds: string[];
+};
+
 const PAGE_SIZE = 100;
 const MAX_PAGES = 20;
 
@@ -60,12 +69,38 @@ async function createRecord(
   }
 }
 
-async function listAllRecords(path: string): Promise<ActivityRecord[]> {
+function toLocalDayBoundary(value: string, endOfDay: boolean): string | undefined {
+  if (!value) return undefined;
+
+  const [year, month, day] = value.split("-").map(Number);
+  const date = endOfDay
+    ? new Date(year!, month! - 1, day!, 23, 59, 59, 999)
+    : new Date(year!, month! - 1, day!, 0, 0, 0, 0);
+
+  return date.toISOString();
+}
+
+async function listAllRecords(
+  path: string,
+  filters: ActivityRecordListFilters,
+): Promise<ActivityRecord[]> {
   const records: ActivityRecord[] = [];
   let cursor: string | null = null;
 
   for (let page = 0; page < MAX_PAGES; page += 1) {
     const query = new URLSearchParams({ limit: String(PAGE_SIZE) });
+
+    if (filters.search.trim()) query.set("search", filters.search.trim());
+    filters.tagIds.forEach((tagId) => query.append("tagIds", tagId));
+    filters.statuses.forEach((status) => query.append("statuses", status));
+    filters.employeeIds.forEach((employeeId) =>
+      query.append("employeeIds", employeeId),
+    );
+
+    const dateFrom = toLocalDayBoundary(filters.dateFrom, false);
+    const dateTo = toLocalDayBoundary(filters.dateTo, true);
+    if (dateFrom) query.set("dateFrom", dateFrom);
+    if (dateTo) query.set("dateTo", dateTo);
 
     if (cursor) {
       query.set("cursor", cursor);
@@ -101,15 +136,19 @@ export async function createCompanyRecord(
   );
 }
 
-export async function getPersonalRecords(): Promise<ActivityRecord[]> {
-  return listAllRecords("/api/records");
+export async function getPersonalRecords(
+  filters: ActivityRecordListFilters,
+): Promise<ActivityRecord[]> {
+  return listAllRecords("/api/records", filters);
 }
 
 export async function getCompanyRecords(
-  companyId: string
+  companyId: string,
+  filters: ActivityRecordListFilters,
 ): Promise<ActivityRecord[]> {
   return listAllRecords(
-    `/api/companies/${encodeURIComponent(companyId)}/records`
+    `/api/companies/${encodeURIComponent(companyId)}/records`,
+    filters,
   );
 }
 
