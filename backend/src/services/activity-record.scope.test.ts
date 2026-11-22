@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { buildActivityRecordScope } from "./activity-record.scope.js";
+import {
+  buildActivityRecordDetailWhere,
+  buildActivityRecordScope,
+} from "./activity-record.scope.js";
 
 test("usuário consulta somente os próprios registros pessoais", () => {
   const scope = buildActivityRecordScope({
@@ -78,4 +81,56 @@ test("funcionário permanece limitado à empresa do próprio contexto", () => {
 
   assert.equal(scopeA.companyId, "company-a");
   assert.equal(scopeB.companyId, "company-b");
+});
+
+test("detalhe pessoal combina o registro com o autor e ambiente pessoal", () => {
+  assert.deepEqual(
+    buildActivityRecordDetailWhere(
+      { type: "personal", userId: "user-a" },
+      "record-a",
+    ),
+    {
+      AND: [
+        { id: "record-a" },
+        { authorId: "user-a", companyId: null },
+      ],
+    },
+  );
+});
+
+test("detalhe empresarial do proprietário permanece na própria empresa", () => {
+  assert.deepEqual(
+    buildActivityRecordDetailWhere(
+      {
+        type: "company",
+        userId: "owner-a",
+        companyId: "company-a",
+        role: "OWNER",
+      },
+      "record-a",
+    ),
+    {
+      AND: [{ id: "record-a" }, { companyId: "company-a" }],
+    },
+  );
+});
+
+test("detalhe empresarial do funcionário também exige autoria própria", () => {
+  assert.deepEqual(
+    buildActivityRecordDetailWhere(
+      {
+        type: "company",
+        userId: "employee-a",
+        companyId: "company-a",
+        role: "EMPLOYEE",
+      },
+      "record-a",
+    ),
+    {
+      AND: [
+        { id: "record-a" },
+        { companyId: "company-a", authorId: "employee-a" },
+      ],
+    },
+  );
 });
