@@ -565,6 +565,7 @@ const recordCreationMessage = isPessoal
               <MenuAmbiente
                 ambiente={ambienteAtual}
                 papelEmpresa={papelEmpresa}
+                companyId={companyId}
                 onCriarTag={() =>
                   setIsTagModalOpen(true)
                 }

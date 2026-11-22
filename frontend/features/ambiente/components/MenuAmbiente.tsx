@@ -15,29 +15,32 @@ type PapelEmpresa = "proprietario" | "funcionario";
 interface MenuAmbienteProps {
   ambiente: Ambiente;
   papelEmpresa?: PapelEmpresa;
-}
-
-interface MenuAmbienteProps {
-  ambiente: "pessoal" | "empresa";
-  papelEmpresa?: "proprietario" | "funcionario";
+  companyId?: string;
   onCriarTag: () => void;
 }
 
 export default function MenuAmbiente({
   ambiente,
   papelEmpresa,
+  companyId,
   onCriarTag,
 }: MenuAmbienteProps) {
   const isPessoal = ambiente === "pessoal";
   const isProprietario =
     ambiente === "empresa" && papelEmpresa === "proprietario";
 
+  const recordsHref = isPessoal
+    ? "/registros?ambiente=pessoal"
+    : companyId
+      ? `/registros?ambiente=empresa&companyId=${encodeURIComponent(companyId)}`
+      : "/registros?ambiente=empresa";
+
   return (
     <nav
       className={styles.menu}
       aria-label="Menu do ambiente atual"
     >
-      <Link href="/registro" className={styles.menuItem}>
+      <Link href={recordsHref} className={styles.menuItem}>
         <Image src={iconRegistro} alt="" width={20} height={20} />
         <span>Registros</span>
       </Link>
