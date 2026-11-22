@@ -112,3 +112,20 @@ export async function getCompanyRecords(
     `/api/companies/${encodeURIComponent(companyId)}/records`
   );
 }
+
+export async function getPersonalRecordById(
+  recordId: string,
+): Promise<ActivityRecord> {
+  return apiFetch<ActivityRecord>(
+    `/api/records/${encodeURIComponent(recordId)}`,
+  );
+}
+
+export async function getCompanyRecordById(
+  companyId: string,
+  recordId: string,
+): Promise<ActivityRecord> {
+  return apiFetch<ActivityRecord>(
+    `/api/companies/${encodeURIComponent(companyId)}/records/${encodeURIComponent(recordId)}`,
+  );
+}
