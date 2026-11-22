@@ -4,6 +4,7 @@ import { prisma } from "../lib/prisma.js";
 import type {
   CreateActivityRecordInput,
   ListActivityRecordsQuery,
+  UpdateActivityRecordInput,
 } from "../models/activity-record.schema.js";
 import {
   buildActivityRecordDetailWhere,
@@ -29,6 +30,7 @@ const activityRecordSelect = {
   description: true,
   status: true,
   createdAt: true,
+  updatedAt: true,
   companyId: true,
   author: { select: { id: true, name: true } },
   tags: {
@@ -63,10 +65,11 @@ function availableTagsWhere(context: ActivityRecordContext): Prisma.TagWhereInpu
 async function assertTagsAvailable(
   context: ActivityRecordContext,
   tagIds: string[],
+  database: Pick<typeof prisma, "tag"> = prisma,
 ): Promise<void> {
   if (tagIds.length === 0) return;
 
-  const count = await prisma.tag.count({
+  const count = await database.tag.count({
     where: { id: { in: tagIds }, ...availableTagsWhere(context) },
   });
 
@@ -128,6 +131,54 @@ export async function getActivityRecord(
   const row = await prisma.activityRecord.findFirst({
     where: buildActivityRecordDetailWhere(context, recordId),
     select: activityRecordSelect,
+  });
+
+  return row ? toActivityRecord(row) : null;
+}
+
+export async function updateActivityRecord(
+  context: ActivityRecordListContext,
+  recordId: string,
+  input: UpdateActivityRecordInput,
+) {
+  const where = buildActivityRecordDetailWhere(context, recordId);
+
+  const row = await prisma.$transaction(async (transaction) => {
+    const result = await transaction.activityRecord.updateMany({
+      where,
+      data: {
+        ...(input.title !== undefined ? { title: input.title } : {}),
+        ...(input.description !== undefined
+          ? { description: input.description }
+          : {}),
+        ...(input.status !== undefined ? { status: input.status } : {}),
+        updatedAt: new Date(),
+      },
+    });
+
+    if (result.count === 0) return null;
+
+    if (input.tagIds !== undefined) {
+      await assertTagsAvailable(context, input.tagIds, transaction);
+
+      await transaction.activityRecordTag.deleteMany({
+        where: { activityRecordId: recordId },
+      });
+
+      if (input.tagIds.length > 0) {
+        await transaction.activityRecordTag.createMany({
+          data: input.tagIds.map((tagId) => ({
+            activityRecordId: recordId,
+            tagId,
+          })),
+        });
+      }
+    }
+
+    return transaction.activityRecord.findFirst({
+      where,
+      select: activityRecordSelect,
+    });
   });
 
   return row ? toActivityRecord(row) : null;

@@ -32,6 +32,7 @@ export type ActivityRecordMinAggregateOutputType = {
   authorId: string | null
   companyId: string | null
   createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type ActivityRecordMaxAggregateOutputType = {
@@ -42,6 +43,7 @@ export type ActivityRecordMaxAggregateOutputType = {
   authorId: string | null
   companyId: string | null
   createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type ActivityRecordCountAggregateOutputType = {
@@ -52,6 +54,7 @@ export type ActivityRecordCountAggregateOutputType = {
   authorId: number
   companyId: number
   createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -64,6 +67,7 @@ export type ActivityRecordMinAggregateInputType = {
   authorId?: true
   companyId?: true
   createdAt?: true
+  updatedAt?: true
 }
 
 export type ActivityRecordMaxAggregateInputType = {
@@ -74,6 +78,7 @@ export type ActivityRecordMaxAggregateInputType = {
   authorId?: true
   companyId?: true
   createdAt?: true
+  updatedAt?: true
 }
 
 export type ActivityRecordCountAggregateInputType = {
@@ -84,6 +89,7 @@ export type ActivityRecordCountAggregateInputType = {
   authorId?: true
   companyId?: true
   createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -167,6 +173,7 @@ export type ActivityRecordGroupByOutputType = {
   authorId: string
   companyId: string | null
   createdAt: Date
+  updatedAt: Date
   _count: ActivityRecordCountAggregateOutputType | null
   _min: ActivityRecordMinAggregateOutputType | null
   _max: ActivityRecordMaxAggregateOutputType | null
@@ -198,6 +205,7 @@ export type ActivityRecordWhereInput = {
   authorId?: Prisma.StringFilter<"ActivityRecord"> | string
   companyId?: Prisma.StringNullableFilter<"ActivityRecord"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ActivityRecord"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ActivityRecord"> | Date | string
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   company?: Prisma.XOR<Prisma.CompanyNullableScalarRelationFilter, Prisma.CompanyWhereInput> | null
   tags?: Prisma.ActivityRecordTagListRelationFilter
@@ -211,6 +219,7 @@ export type ActivityRecordOrderByWithRelationInput = {
   authorId?: Prisma.SortOrder
   companyId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   author?: Prisma.UserOrderByWithRelationInput
   company?: Prisma.CompanyOrderByWithRelationInput
   tags?: Prisma.ActivityRecordTagOrderByRelationAggregateInput
@@ -227,6 +236,7 @@ export type ActivityRecordWhereUniqueInput = Prisma.AtLeast<{
   authorId?: Prisma.StringFilter<"ActivityRecord"> | string
   companyId?: Prisma.StringNullableFilter<"ActivityRecord"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ActivityRecord"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ActivityRecord"> | Date | string
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   company?: Prisma.XOR<Prisma.CompanyNullableScalarRelationFilter, Prisma.CompanyWhereInput> | null
   tags?: Prisma.ActivityRecordTagListRelationFilter
@@ -240,6 +250,7 @@ export type ActivityRecordOrderByWithAggregationInput = {
   authorId?: Prisma.SortOrder
   companyId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.ActivityRecordCountOrderByAggregateInput
   _max?: Prisma.ActivityRecordMaxOrderByAggregateInput
   _min?: Prisma.ActivityRecordMinOrderByAggregateInput
@@ -256,6 +267,7 @@ export type ActivityRecordScalarWhereWithAggregatesInput = {
   authorId?: Prisma.StringWithAggregatesFilter<"ActivityRecord"> | string
   companyId?: Prisma.StringNullableWithAggregatesFilter<"ActivityRecord"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ActivityRecord"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ActivityRecord"> | Date | string
 }
 
 export type ActivityRecordCreateInput = {
@@ -264,6 +276,7 @@ export type ActivityRecordCreateInput = {
   description: string
   status?: $Enums.ActivityRecordStatus
   createdAt?: Date | string
+  updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutActivityRecordsInput
   company?: Prisma.CompanyCreateNestedOneWithoutActivityRecordsInput
   tags?: Prisma.ActivityRecordTagCreateNestedManyWithoutActivityRecordInput
@@ -277,6 +290,7 @@ export type ActivityRecordUncheckedCreateInput = {
   authorId: string
   companyId?: string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
   tags?: Prisma.ActivityRecordTagUncheckedCreateNestedManyWithoutActivityRecordInput
 }
 
@@ -286,6 +300,7 @@ export type ActivityRecordUpdateInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumActivityRecordStatusFieldUpdateOperationsInput | $Enums.ActivityRecordStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutActivityRecordsNestedInput
   company?: Prisma.CompanyUpdateOneWithoutActivityRecordsNestedInput
   tags?: Prisma.ActivityRecordTagUpdateManyWithoutActivityRecordNestedInput
@@ -299,6 +314,7 @@ export type ActivityRecordUncheckedUpdateInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   companyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tags?: Prisma.ActivityRecordTagUncheckedUpdateManyWithoutActivityRecordNestedInput
 }
 
@@ -310,6 +326,7 @@ export type ActivityRecordCreateManyInput = {
   authorId: string
   companyId?: string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ActivityRecordUpdateManyMutationInput = {
@@ -318,6 +335,7 @@ export type ActivityRecordUpdateManyMutationInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumActivityRecordStatusFieldUpdateOperationsInput | $Enums.ActivityRecordStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ActivityRecordUncheckedUpdateManyInput = {
@@ -328,6 +346,7 @@ export type ActivityRecordUncheckedUpdateManyInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   companyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ActivityRecordListRelationFilter = {
@@ -348,6 +367,7 @@ export type ActivityRecordCountOrderByAggregateInput = {
   authorId?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ActivityRecordMaxOrderByAggregateInput = {
@@ -358,6 +378,7 @@ export type ActivityRecordMaxOrderByAggregateInput = {
   authorId?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ActivityRecordMinOrderByAggregateInput = {
@@ -368,6 +389,7 @@ export type ActivityRecordMinOrderByAggregateInput = {
   authorId?: Prisma.SortOrder
   companyId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type ActivityRecordScalarRelationFilter = {
@@ -483,6 +505,7 @@ export type ActivityRecordCreateWithoutAuthorInput = {
   description: string
   status?: $Enums.ActivityRecordStatus
   createdAt?: Date | string
+  updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutActivityRecordsInput
   tags?: Prisma.ActivityRecordTagCreateNestedManyWithoutActivityRecordInput
 }
@@ -494,6 +517,7 @@ export type ActivityRecordUncheckedCreateWithoutAuthorInput = {
   status?: $Enums.ActivityRecordStatus
   companyId?: string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
   tags?: Prisma.ActivityRecordTagUncheckedCreateNestedManyWithoutActivityRecordInput
 }
 
@@ -534,6 +558,7 @@ export type ActivityRecordScalarWhereInput = {
   authorId?: Prisma.StringFilter<"ActivityRecord"> | string
   companyId?: Prisma.StringNullableFilter<"ActivityRecord"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ActivityRecord"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ActivityRecord"> | Date | string
 }
 
 export type ActivityRecordCreateWithoutCompanyInput = {
@@ -542,6 +567,7 @@ export type ActivityRecordCreateWithoutCompanyInput = {
   description: string
   status?: $Enums.ActivityRecordStatus
   createdAt?: Date | string
+  updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutActivityRecordsInput
   tags?: Prisma.ActivityRecordTagCreateNestedManyWithoutActivityRecordInput
 }
@@ -553,6 +579,7 @@ export type ActivityRecordUncheckedCreateWithoutCompanyInput = {
   status?: $Enums.ActivityRecordStatus
   authorId: string
   createdAt?: Date | string
+  updatedAt?: Date | string
   tags?: Prisma.ActivityRecordTagUncheckedCreateNestedManyWithoutActivityRecordInput
 }
 
@@ -588,6 +615,7 @@ export type ActivityRecordCreateWithoutTagsInput = {
   description: string
   status?: $Enums.ActivityRecordStatus
   createdAt?: Date | string
+  updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutActivityRecordsInput
   company?: Prisma.CompanyCreateNestedOneWithoutActivityRecordsInput
 }
@@ -600,6 +628,7 @@ export type ActivityRecordUncheckedCreateWithoutTagsInput = {
   authorId: string
   companyId?: string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ActivityRecordCreateOrConnectWithoutTagsInput = {
@@ -624,6 +653,7 @@ export type ActivityRecordUpdateWithoutTagsInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumActivityRecordStatusFieldUpdateOperationsInput | $Enums.ActivityRecordStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutActivityRecordsNestedInput
   company?: Prisma.CompanyUpdateOneWithoutActivityRecordsNestedInput
 }
@@ -636,6 +666,7 @@ export type ActivityRecordUncheckedUpdateWithoutTagsInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   companyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ActivityRecordCreateManyAuthorInput = {
@@ -645,6 +676,7 @@ export type ActivityRecordCreateManyAuthorInput = {
   status?: $Enums.ActivityRecordStatus
   companyId?: string | null
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ActivityRecordUpdateWithoutAuthorInput = {
@@ -653,6 +685,7 @@ export type ActivityRecordUpdateWithoutAuthorInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumActivityRecordStatusFieldUpdateOperationsInput | $Enums.ActivityRecordStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutActivityRecordsNestedInput
   tags?: Prisma.ActivityRecordTagUpdateManyWithoutActivityRecordNestedInput
 }
@@ -664,6 +697,7 @@ export type ActivityRecordUncheckedUpdateWithoutAuthorInput = {
   status?: Prisma.EnumActivityRecordStatusFieldUpdateOperationsInput | $Enums.ActivityRecordStatus
   companyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tags?: Prisma.ActivityRecordTagUncheckedUpdateManyWithoutActivityRecordNestedInput
 }
 
@@ -674,6 +708,7 @@ export type ActivityRecordUncheckedUpdateManyWithoutAuthorInput = {
   status?: Prisma.EnumActivityRecordStatusFieldUpdateOperationsInput | $Enums.ActivityRecordStatus
   companyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ActivityRecordCreateManyCompanyInput = {
@@ -683,6 +718,7 @@ export type ActivityRecordCreateManyCompanyInput = {
   status?: $Enums.ActivityRecordStatus
   authorId: string
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ActivityRecordUpdateWithoutCompanyInput = {
@@ -691,6 +727,7 @@ export type ActivityRecordUpdateWithoutCompanyInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumActivityRecordStatusFieldUpdateOperationsInput | $Enums.ActivityRecordStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutActivityRecordsNestedInput
   tags?: Prisma.ActivityRecordTagUpdateManyWithoutActivityRecordNestedInput
 }
@@ -702,6 +739,7 @@ export type ActivityRecordUncheckedUpdateWithoutCompanyInput = {
   status?: Prisma.EnumActivityRecordStatusFieldUpdateOperationsInput | $Enums.ActivityRecordStatus
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tags?: Prisma.ActivityRecordTagUncheckedUpdateManyWithoutActivityRecordNestedInput
 }
 
@@ -712,6 +750,7 @@ export type ActivityRecordUncheckedUpdateManyWithoutCompanyInput = {
   status?: Prisma.EnumActivityRecordStatusFieldUpdateOperationsInput | $Enums.ActivityRecordStatus
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -753,6 +792,7 @@ export type ActivityRecordSelect<ExtArgs extends runtime.Types.Extensions.Intern
   authorId?: boolean
   companyId?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   company?: boolean | Prisma.ActivityRecord$companyArgs<ExtArgs>
   tags?: boolean | Prisma.ActivityRecord$tagsArgs<ExtArgs>
@@ -767,6 +807,7 @@ export type ActivityRecordSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   authorId?: boolean
   companyId?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   company?: boolean | Prisma.ActivityRecord$companyArgs<ExtArgs>
 }, ExtArgs["result"]["activityRecord"]>
@@ -779,6 +820,7 @@ export type ActivityRecordSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   authorId?: boolean
   companyId?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   company?: boolean | Prisma.ActivityRecord$companyArgs<ExtArgs>
 }, ExtArgs["result"]["activityRecord"]>
@@ -791,9 +833,10 @@ export type ActivityRecordSelectScalar = {
   authorId?: boolean
   companyId?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type ActivityRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "status" | "authorId" | "companyId" | "createdAt", ExtArgs["result"]["activityRecord"]>
+export type ActivityRecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "status" | "authorId" | "companyId" | "createdAt" | "updatedAt", ExtArgs["result"]["activityRecord"]>
 export type ActivityRecordInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   company?: boolean | Prisma.ActivityRecord$companyArgs<ExtArgs>
@@ -824,6 +867,7 @@ export type $ActivityRecordPayload<ExtArgs extends runtime.Types.Extensions.Inte
     authorId: string
     companyId: string | null
     createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["activityRecord"]>
   composites: {}
 }
@@ -1257,6 +1301,7 @@ export interface ActivityRecordFieldRefs {
   readonly authorId: Prisma.FieldRef<"ActivityRecord", 'String'>
   readonly companyId: Prisma.FieldRef<"ActivityRecord", 'String'>
   readonly createdAt: Prisma.FieldRef<"ActivityRecord", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"ActivityRecord", 'DateTime'>
 }
     
 

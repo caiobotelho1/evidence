@@ -9,7 +9,7 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "postinstall": "prisma skills sync || exit 0",
-    "test": "node --import tsx --test src/lib/*.test.ts src/services/*.test.ts"
+    "test": "node --import tsx --test src/lib/*.test.ts src/models/*.test.ts src/services/*.test.ts"
   },
   "keywords": [],
   "author": "",

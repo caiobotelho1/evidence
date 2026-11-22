@@ -1,29 +1,45 @@
 import { z } from "zod";
 import { ActivityRecordStatus } from "../generated/prisma/enums.js";
 
+const titleSchema = z
+  .string("O título é obrigatório.")
+  .trim()
+  .min(1, "O título é obrigatório.")
+  .max(150, "O título deve ter no máximo 150 caracteres.");
+
+const descriptionSchema = z
+  .string("A descrição é obrigatória.")
+  .trim()
+  .min(1, "A descrição é obrigatória.")
+  .max(20000, "A descrição deve ter no máximo 20000 caracteres.");
+
+const statusSchema = z.enum(ActivityRecordStatus, "Status inválido.");
+
+const tagIdsSchema = z
+  .array(z.uuid("Tag inválida."), "As tags devem ser uma lista.")
+  .max(50, "Selecione no máximo 50 tags.")
+  .transform((ids) => [...new Set(ids)]);
+
 export const createActivityRecordSchema = z
   .object({
-    title: z
-      .string("O título é obrigatório.")
-      .trim()
-      .min(1, "O título é obrigatório.")
-      .max(150, "O título deve ter no máximo 150 caracteres."),
-
-    description: z
-      .string("A descrição é obrigatória.")
-      .trim()
-      .min(1, "A descrição é obrigatória.")
-      .max(20000, "A descrição deve ter no máximo 20000 caracteres."),
-
-    status: z.enum(ActivityRecordStatus, "Status inválido.").default("PENDING"),
-
-    tagIds: z
-      .array(z.uuid("Tag inválida."), "As tags devem ser uma lista.")
-      .max(50, "Selecione no máximo 50 tags.")
-      .default([])
-      .transform((ids) => [...new Set(ids)]),
+    title: titleSchema,
+    description: descriptionSchema,
+    status: statusSchema.default("PENDING"),
+    tagIds: tagIdsSchema.default([]),
   })
   .strict();
+
+export const updateActivityRecordSchema = z
+  .object({
+    title: titleSchema.optional(),
+    description: descriptionSchema.optional(),
+    status: statusSchema.optional(),
+    tagIds: tagIdsSchema.optional(),
+  })
+  .strict()
+  .refine((input) => Object.values(input).some((value) => value !== undefined), {
+    message: "Informe ao menos um campo para atualizar.",
+  });
 
 const queryStringArray = <T extends string>(itemSchema: z.ZodType<T>) =>
   z
@@ -60,4 +76,5 @@ export const listActivityRecordsQuerySchema = z
   });
 
 export type CreateActivityRecordInput = z.infer<typeof createActivityRecordSchema>;
+export type UpdateActivityRecordInput = z.infer<typeof updateActivityRecordSchema>;
 export type ListActivityRecordsQuery = z.infer<typeof listActivityRecordsQuerySchema>;
