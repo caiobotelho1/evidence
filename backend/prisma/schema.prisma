@@ -137,6 +137,7 @@ model ActivityRecord {
   tags ActivityRecordTag[]
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([authorId, createdAt])
   @@index([companyId, createdAt])

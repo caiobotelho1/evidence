@@ -153,7 +153,8 @@ export const ActivityRecordScalarFieldEnum = {
   status: 'status',
   authorId: 'authorId',
   companyId: 'companyId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type ActivityRecordScalarFieldEnum = (typeof ActivityRecordScalarFieldEnum)[keyof typeof ActivityRecordScalarFieldEnum]

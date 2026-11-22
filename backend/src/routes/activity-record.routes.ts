@@ -6,6 +6,8 @@ import {
   getPersonalActivityRecordController,
   listCompanyActivityRecordsController,
   listPersonalActivityRecordsController,
+  updateCompanyActivityRecordController,
+  updatePersonalActivityRecordController,
 } from "../controllers/activity-record.controller.js";
 import { requireAuth, requirePermission } from "../middlewares/authenticate.js";
 
@@ -16,6 +18,10 @@ personalActivityRecordRouter.use(requireAuth);
 personalActivityRecordRouter.post("/", createPersonalActivityRecordController);
 personalActivityRecordRouter.get("/", listPersonalActivityRecordsController);
 personalActivityRecordRouter.get("/:recordId", getPersonalActivityRecordController);
+personalActivityRecordRouter.patch(
+  "/:recordId",
+  updatePersonalActivityRecordController,
+);
 
 export const companyActivityRecordRouter = Router({
   mergeParams: true,
@@ -37,4 +43,9 @@ companyActivityRecordRouter.get(
   "/:recordId",
   requirePermission("record:read", { companyParam: "companyId" }),
   getCompanyActivityRecordController,
+);
+companyActivityRecordRouter.patch(
+  "/:recordId",
+  requirePermission("record:write", { companyParam: "companyId" }),
+  updateCompanyActivityRecordController,
 );
