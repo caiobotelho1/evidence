@@ -71,6 +71,30 @@ function formatarData(data: string) {
     .toUpperCase();
 }
 
+function formatarMesVisivel(registros: RegistroTimeline[]) {
+  const primeiroRegistro = registros[0];
+  const ultimoRegistro = registros[registros.length - 1];
+
+  if (!primeiroRegistro || !ultimoRegistro) return "";
+
+  const primeiraData = new Date(primeiroRegistro.data);
+  const ultimaData = new Date(ultimoRegistro.data);
+  const formatador = new Intl.DateTimeFormat("pt-BR", {
+    month: "long",
+    year: "numeric",
+  });
+  const primeiroMes = formatador.format(primeiraData);
+
+  if (
+    primeiraData.getFullYear() === ultimaData.getFullYear() &&
+    primeiraData.getMonth() === ultimaData.getMonth()
+  ) {
+    return primeiroMes;
+  }
+
+  return `${primeiroMes} – ${formatador.format(ultimaData)}`;
+}
+
 export default function Timeline({ registros, onOpenDetails }: TimelineProps) {
   const registrosPorPagina = useSyncExternalStore(
     subscribeToScreenSize,
@@ -154,12 +178,8 @@ export default function Timeline({ registros, onOpenDetails }: TimelineProps) {
       />
     )}
       <div className={styles.cabecalho}>
-        {/* Integrar com o filtro de data futuramente */}
         <h2 className={styles.mes}>
-          {new Intl.DateTimeFormat("pt-BR", {
-            month: "long",
-            year: "numeric",
-          }).format(new Date())}
+          {formatarMesVisivel(registrosVisiveis)}
         </h2>
 
         <span className={styles.contador}>
