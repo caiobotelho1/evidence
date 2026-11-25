@@ -7,6 +7,9 @@ const envSchema = z.object({
   DATABASE_URL: z.string().min(1),
   FRONTEND_ORIGIN: z.string().url(),
   SESSION_TTL_DAYS: z.coerce.number().int().positive().default(7),
+  ATTACHMENT_MAX_FILE_SIZE_MB: z.coerce.number().positive().max(50).default(10),
+  ATTACHMENT_MAX_FILES_PER_UPLOAD: z.coerce.number().int().min(1).max(20).default(10),
+  ATTACHMENT_MAX_FILES_PER_RECORD: z.coerce.number().int().min(1).max(100).default(20),
 });
 
 const parsed = envSchema.safeParse(process.env);

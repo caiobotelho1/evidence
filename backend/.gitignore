@@ -3,6 +3,6 @@ node_modules
 .env
 
 /generated/prisma
-
+backend/src/generated/prisma
 #cookies
 cookies.txt

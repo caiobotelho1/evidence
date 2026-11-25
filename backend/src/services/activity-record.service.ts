@@ -33,6 +33,10 @@ const activityRecordSelect = {
   updatedAt: true,
   companyId: true,
   author: { select: { id: true, name: true } },
+  attachments: {
+    orderBy: { createdAt: "asc" },
+    select: { id: true, fileName: true, mimeType: true, sizeBytes: true, createdAt: true },
+  },
   tags: {
     orderBy: { tag: { name: "asc" } },
     select: {

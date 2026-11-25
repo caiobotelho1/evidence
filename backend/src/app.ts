@@ -9,7 +9,13 @@ export const app = express();
 
 app.disable("x-powered-by");
 
-app.use(cors({ origin: env.FRONTEND_ORIGIN, credentials: true }));
+app.use(
+  cors({
+    origin: env.FRONTEND_ORIGIN,
+    credentials: true,
+    exposedHeaders: ["Content-Disposition"],
+  }),
+);
 app.use(express.json({ limit: "100kb" }));
 app.use(cookieParser());
 
