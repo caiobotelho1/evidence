@@ -1,1 +1,10 @@
-{}
+{
+  "name": "evidence",
+  "private": true,
+  "scripts": {
+    "test:e2e": "playwright test --config e2e/playwright.config.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}
