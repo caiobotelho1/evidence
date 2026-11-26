@@ -33,6 +33,7 @@ model User {
   sessions           Session[]
   tags               Tag[]
   activityRecords    ActivityRecord[]
+  uploadedAttachments ActivityRecordAttachment[]
 
   @@map("users")
 }
@@ -134,7 +135,8 @@ model ActivityRecord {
   author  User     @relation(fields: [authorId], references: [id], onDelete: Restrict)
   company Company? @relation(fields: [companyId], references: [id], onDelete: Restrict)
 
-  tags ActivityRecordTag[]
+  tags        ActivityRecordTag[]
+  attachments ActivityRecordAttachment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -154,4 +156,32 @@ model ActivityRecordTag {
   @@id([activityRecordId, tagId])
   @@index([tagId])
   @@map("activity_record_tags")
+}
+
+model ActivityRecordAttachment {
+  id               String @id @default(uuid())
+  fileName         String
+  mimeType         String
+  sizeBytes        Int
+  sha256           String
+  activityRecordId String
+  uploadedById     String
+
+  activityRecord ActivityRecord @relation(fields: [activityRecordId], references: [id], onDelete: Restrict)
+  uploadedBy     User           @relation(fields: [uploadedById], references: [id], onDelete: Restrict)
+  content        ActivityRecordAttachmentContent?
+
+  createdAt DateTime @default(now())
+
+  @@index([activityRecordId, createdAt])
+  @@map("activity_record_attachments")
+}
+
+model ActivityRecordAttachmentContent {
+  attachmentId String @id
+  data         Bytes
+
+  attachment ActivityRecordAttachment @relation(fields: [attachmentId], references: [id], onDelete: Cascade)
+
+  @@map("activity_record_attachment_contents")
 }

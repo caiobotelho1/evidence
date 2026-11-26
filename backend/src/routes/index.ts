@@ -7,6 +7,10 @@ import {
   personalActivityRecordRouter,
   companyActivityRecordRouter,
 } from "./activity-record.routes.js";
+import {
+  personalAttachmentRouter,
+  companyAttachmentRouter,
+} from "./attachment.routes.js";
 import { listMyCompaniesController } from "../controllers/company.controller.js";
 import { requireAuth } from "../middlewares/authenticate.js";
 
@@ -18,5 +22,7 @@ apiRouter.use("/companies", companyRouter);
 apiRouter.use("/tags", personalTagRouter);
 apiRouter.use("/companies/:companyId/tags",companyTagRouter);
 apiRouter.use("/records", personalActivityRecordRouter);
+apiRouter.use("/records/:recordId/attachments", personalAttachmentRouter);
 apiRouter.use("/companies/:companyId/records", companyActivityRecordRouter);
+apiRouter.use("/companies/:companyId/records/:recordId/attachments", companyAttachmentRouter);
 companyRouter.get("/mine",requireAuth,listMyCompaniesController);

@@ -31,3 +31,11 @@ export const conflict = (message = "Conflito com o estado atual do recurso.", fi
 
 export const unprocessable = (message = "Dados semanticamente inválidos.", fields?: ErrorFields) =>
   new AppError(422, "UNPROCESSABLE", message, fields);
+
+export const payloadTooLarge = (message = "Arquivo muito grande.", fields?: ErrorFields) =>
+  new AppError(413, "PAYLOAD_TOO_LARGE", message, fields);
+
+export const unsupportedMediaType = (
+  message = "Tipo de arquivo não suportado.",
+  fields?: ErrorFields,
+) => new AppError(415, "UNSUPPORTED_MEDIA_TYPE", message, fields);
