@@ -1,11 +1,13 @@
-import type { RequestHandler } from "express";
+import type { Request, RequestHandler, Response } from "express";
 import type { ActivityRecordListContext } from "../services/activity-record.scope.js";
+import { receiveRecordWithFiles, type UploadedFile } from "../lib/attachment-upload.js";
 import { badRequest, forbidden, notFound } from "../lib/errors.js";
 import { getAuth } from "../middlewares/authenticate.js";
 import {
   createActivityRecordSchema,
   listActivityRecordsQuerySchema,
   updateActivityRecordSchema,
+  type CreateActivityRecordInput,
 } from "../models/activity-record.schema.js";
 import {
   createActivityRecord,
@@ -30,11 +32,23 @@ function getRecordId(value: string | string[] | undefined): string {
   return value;
 }
 
+async function readCreateRequest(
+  req: Request,
+  res: Response,
+): Promise<{ input: CreateActivityRecordInput; files: UploadedFile[] }> {
+  if (req.is("multipart/form-data")) {
+    const { payload, files } = await receiveRecordWithFiles(req, res);
+    return { input: createActivityRecordSchema.parse(payload), files };
+  }
+
+  return { input: createActivityRecordSchema.parse(req.body), files: [] };
+}
+
 export const createPersonalActivityRecordController: RequestHandler = async (req, res) => {
   const { user } = getAuth(req);
-  const input = createActivityRecordSchema.parse(req.body);
+  const { input, files } = await readCreateRequest(req, res);
 
-  const record = await createActivityRecord({ type: "personal", userId: user.id }, input);
+  const record = await createActivityRecord({ type: "personal", userId: user.id }, input, files);
 
   res.status(201).json(record);
 };
@@ -42,11 +56,12 @@ export const createPersonalActivityRecordController: RequestHandler = async (req
 export const createCompanyActivityRecordController: RequestHandler = async (req, res) => {
   const { user } = getAuth(req);
   const companyId = getCompanyId(req.params.companyId);
-  const input = createActivityRecordSchema.parse(req.body);
+  const { input, files } = await readCreateRequest(req, res);
 
   const record = await createActivityRecord(
     { type: "company", userId: user.id, companyId },
     input,
+    files,
   );
 
   res.status(201).json(record);

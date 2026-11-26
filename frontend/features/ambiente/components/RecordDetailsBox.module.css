@@ -458,3 +458,180 @@
     width: 100%;
   }
 }
+
+
+.attachmentList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.attachmentItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid #EADFCF;
+  border-radius: 9px;
+  background: #FFFFFF;
+}
+
+.attachmentInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.attachmentName {
+  color: #1F3D2E;
+  font-size: 13px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.attachmentMeta {
+  color: #4A6A41;
+  font-size: 11px;
+}
+
+.attachmentDownload,
+.removeFileButton {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.attachmentDownload {
+  color: #1F3D2E;
+}
+
+.attachmentDownload:hover:not(:disabled) {
+  background: #DAE5D2;
+}
+
+.removeFileButton {
+  color: #900B09;
+}
+
+.removeFileButton:hover:not(:disabled) {
+  background: rgba(144, 11, 9, 0.08);
+}
+
+.attachmentDownload:disabled,
+.removeFileButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.attachmentDownload:focus-visible,
+.removeFileButton:focus-visible {
+  outline: 2px solid #4A6A41;
+  outline-offset: 2px;
+}
+
+.attachBox {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 16px;
+  border: 1px dashed #9CAE8F;
+  border-radius: 12px;
+  background: #FFFFFF;
+}
+
+.attachBox .attachmentList {
+  width: 100%;
+}
+
+.attachHint {
+  margin: 0;
+  color: #4A6A41;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.fileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.fileInput:focus-visible + .filePicker {
+  outline: 2px solid #4A6A41;
+  outline-offset: 3px;
+}
+
+.filePicker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 16px;
+  border: 1px solid #1F3D2E;
+  border-radius: 9px;
+  background: transparent;
+  color: #1F3D2E;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.filePicker:hover {
+  background: #E3E8DC;
+}
+
+.filePickerDisabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.inlineError {
+  margin: 0;
+  color: #9B2C2C;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.editStatusLocked {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 14px;
+  border: 1px solid #DAE5D2;
+  border-radius: 10px;
+  background: #F0F4EC;
+  color: #1F3D2E;
+  font-size: 14px;
+}
+
+@media (max-width: 520px) {
+  .attachBox .saveButton {
+    width: 100%;
+  }
+}

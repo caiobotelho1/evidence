@@ -24,7 +24,7 @@ export const createActivityRecordSchema = z
   .object({
     title: titleSchema,
     description: descriptionSchema,
-    status: statusSchema.default("PENDING"),
+    status: statusSchema.optional(),
     tagIds: tagIdsSchema.default([]),
   })
   .strict();

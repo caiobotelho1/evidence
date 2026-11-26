@@ -1,6 +1,8 @@
 import type { Prisma } from "../generated/prisma/client.js";
-import { badRequest } from "../lib/errors.js";
+import type { UploadedFile } from "../lib/attachment-upload.js";
+import { badRequest, conflict, unprocessable } from "../lib/errors.js";
 import { prisma } from "../lib/prisma.js";
+import { checkStatusChange, resolveCreateStatus } from "../lib/record-status.js";
 import type {
   CreateActivityRecordInput,
   ListActivityRecordsQuery,
@@ -12,6 +14,11 @@ import {
   buildActivityRecordScope,
   type ActivityRecordListContext,
 } from "./activity-record.scope.js";
+import {
+  assertWithinRecordLimit,
+  toAttachmentCreateData,
+  validateAttachmentFiles,
+} from "./attachment.service.js";
 
 export type ActivityRecordContext =
   | {
@@ -87,18 +94,31 @@ async function assertTagsAvailable(
 export async function createActivityRecord(
   context: ActivityRecordContext,
   input: CreateActivityRecordInput,
+  files: UploadedFile[] = [],
 ) {
+  const status = resolveCreateStatus(input.status, files.length > 0);
+
+  if (!status.ok) {
+    throw unprocessable(status.message, { status: [status.message] });
+  }
+
+  const validFiles = validateAttachmentFiles(files);
+  assertWithinRecordLimit(0, validFiles.length);
+
   await assertTagsAvailable(context, input.tagIds);
 
   const row = await prisma.activityRecord.create({
     data: {
       title: input.title,
       description: input.description,
-      status: input.status,
+      status: status.value,
       authorId: context.userId,
       companyId: context.type === "company" ? context.companyId : null,
       tags: {
         create: input.tagIds.map((tagId) => ({ tagId })),
+      },
+      attachments: {
+        create: validFiles.map((file) => toAttachmentCreateData(file, context.userId)),
       },
     },
     select: activityRecordSelect,
@@ -148,8 +168,20 @@ export async function updateActivityRecord(
   const where = buildActivityRecordDetailWhere(context, recordId);
 
   const row = await prisma.$transaction(async (transaction) => {
-    const result = await transaction.activityRecord.updateMany({
+    const current = await transaction.activityRecord.findFirst({
       where,
+      select: { status: true },
+    });
+
+    if (!current) return null;
+
+    const change = checkStatusChange(current.status, input.status);
+    if (!change.ok) {
+      throw unprocessable(change.message, { status: [change.message] });
+    }
+
+    const result = await transaction.activityRecord.updateMany({
+      where: { AND: [where, { status: current.status }] },
       data: {
         ...(input.title !== undefined ? { title: input.title } : {}),
         ...(input.description !== undefined
@@ -160,7 +192,9 @@ export async function updateActivityRecord(
       },
     });
 
-    if (result.count === 0) return null;
+    if (result.count === 0) {
+      throw conflict("O registro foi alterado por outra ação. Recarregue e tente novamente.");
+    }
 
     if (input.tagIds !== undefined) {
       await assertTagsAvailable(context, input.tagIds, transaction);

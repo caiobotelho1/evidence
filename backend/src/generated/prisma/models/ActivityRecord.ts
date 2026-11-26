@@ -209,6 +209,7 @@ export type ActivityRecordWhereInput = {
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   company?: Prisma.XOR<Prisma.CompanyNullableScalarRelationFilter, Prisma.CompanyWhereInput> | null
   tags?: Prisma.ActivityRecordTagListRelationFilter
+  attachments?: Prisma.ActivityRecordAttachmentListRelationFilter
 }
 
 export type ActivityRecordOrderByWithRelationInput = {
@@ -223,6 +224,7 @@ export type ActivityRecordOrderByWithRelationInput = {
   author?: Prisma.UserOrderByWithRelationInput
   company?: Prisma.CompanyOrderByWithRelationInput
   tags?: Prisma.ActivityRecordTagOrderByRelationAggregateInput
+  attachments?: Prisma.ActivityRecordAttachmentOrderByRelationAggregateInput
 }
 
 export type ActivityRecordWhereUniqueInput = Prisma.AtLeast<{
@@ -240,6 +242,7 @@ export type ActivityRecordWhereUniqueInput = Prisma.AtLeast<{
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   company?: Prisma.XOR<Prisma.CompanyNullableScalarRelationFilter, Prisma.CompanyWhereInput> | null
   tags?: Prisma.ActivityRecordTagListRelationFilter
+  attachments?: Prisma.ActivityRecordAttachmentListRelationFilter
 }, "id">
 
 export type ActivityRecordOrderByWithAggregationInput = {
@@ -280,6 +283,7 @@ export type ActivityRecordCreateInput = {
   author: Prisma.UserCreateNestedOneWithoutActivityRecordsInput
   company?: Prisma.CompanyCreateNestedOneWithoutActivityRecordsInput
   tags?: Prisma.ActivityRecordTagCreateNestedManyWithoutActivityRecordInput
+  attachments?: Prisma.ActivityRecordAttachmentCreateNestedManyWithoutActivityRecordInput
 }
 
 export type ActivityRecordUncheckedCreateInput = {
@@ -292,6 +296,7 @@ export type ActivityRecordUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tags?: Prisma.ActivityRecordTagUncheckedCreateNestedManyWithoutActivityRecordInput
+  attachments?: Prisma.ActivityRecordAttachmentUncheckedCreateNestedManyWithoutActivityRecordInput
 }
 
 export type ActivityRecordUpdateInput = {
@@ -304,6 +309,7 @@ export type ActivityRecordUpdateInput = {
   author?: Prisma.UserUpdateOneRequiredWithoutActivityRecordsNestedInput
   company?: Prisma.CompanyUpdateOneWithoutActivityRecordsNestedInput
   tags?: Prisma.ActivityRecordTagUpdateManyWithoutActivityRecordNestedInput
+  attachments?: Prisma.ActivityRecordAttachmentUpdateManyWithoutActivityRecordNestedInput
 }
 
 export type ActivityRecordUncheckedUpdateInput = {
@@ -316,6 +322,7 @@ export type ActivityRecordUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tags?: Prisma.ActivityRecordTagUncheckedUpdateManyWithoutActivityRecordNestedInput
+  attachments?: Prisma.ActivityRecordAttachmentUncheckedUpdateManyWithoutActivityRecordNestedInput
 }
 
 export type ActivityRecordCreateManyInput = {
@@ -499,6 +506,20 @@ export type ActivityRecordUpdateOneRequiredWithoutTagsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ActivityRecordUpdateToOneWithWhereWithoutTagsInput, Prisma.ActivityRecordUpdateWithoutTagsInput>, Prisma.ActivityRecordUncheckedUpdateWithoutTagsInput>
 }
 
+export type ActivityRecordCreateNestedOneWithoutAttachmentsInput = {
+  create?: Prisma.XOR<Prisma.ActivityRecordCreateWithoutAttachmentsInput, Prisma.ActivityRecordUncheckedCreateWithoutAttachmentsInput>
+  connectOrCreate?: Prisma.ActivityRecordCreateOrConnectWithoutAttachmentsInput
+  connect?: Prisma.ActivityRecordWhereUniqueInput
+}
+
+export type ActivityRecordUpdateOneRequiredWithoutAttachmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ActivityRecordCreateWithoutAttachmentsInput, Prisma.ActivityRecordUncheckedCreateWithoutAttachmentsInput>
+  connectOrCreate?: Prisma.ActivityRecordCreateOrConnectWithoutAttachmentsInput
+  upsert?: Prisma.ActivityRecordUpsertWithoutAttachmentsInput
+  connect?: Prisma.ActivityRecordWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ActivityRecordUpdateToOneWithWhereWithoutAttachmentsInput, Prisma.ActivityRecordUpdateWithoutAttachmentsInput>, Prisma.ActivityRecordUncheckedUpdateWithoutAttachmentsInput>
+}
+
 export type ActivityRecordCreateWithoutAuthorInput = {
   id?: string
   title: string
@@ -508,6 +529,7 @@ export type ActivityRecordCreateWithoutAuthorInput = {
   updatedAt?: Date | string
   company?: Prisma.CompanyCreateNestedOneWithoutActivityRecordsInput
   tags?: Prisma.ActivityRecordTagCreateNestedManyWithoutActivityRecordInput
+  attachments?: Prisma.ActivityRecordAttachmentCreateNestedManyWithoutActivityRecordInput
 }
 
 export type ActivityRecordUncheckedCreateWithoutAuthorInput = {
@@ -519,6 +541,7 @@ export type ActivityRecordUncheckedCreateWithoutAuthorInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tags?: Prisma.ActivityRecordTagUncheckedCreateNestedManyWithoutActivityRecordInput
+  attachments?: Prisma.ActivityRecordAttachmentUncheckedCreateNestedManyWithoutActivityRecordInput
 }
 
 export type ActivityRecordCreateOrConnectWithoutAuthorInput = {
@@ -570,6 +593,7 @@ export type ActivityRecordCreateWithoutCompanyInput = {
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutActivityRecordsInput
   tags?: Prisma.ActivityRecordTagCreateNestedManyWithoutActivityRecordInput
+  attachments?: Prisma.ActivityRecordAttachmentCreateNestedManyWithoutActivityRecordInput
 }
 
 export type ActivityRecordUncheckedCreateWithoutCompanyInput = {
@@ -581,6 +605,7 @@ export type ActivityRecordUncheckedCreateWithoutCompanyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tags?: Prisma.ActivityRecordTagUncheckedCreateNestedManyWithoutActivityRecordInput
+  attachments?: Prisma.ActivityRecordAttachmentUncheckedCreateNestedManyWithoutActivityRecordInput
 }
 
 export type ActivityRecordCreateOrConnectWithoutCompanyInput = {
@@ -618,6 +643,7 @@ export type ActivityRecordCreateWithoutTagsInput = {
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutActivityRecordsInput
   company?: Prisma.CompanyCreateNestedOneWithoutActivityRecordsInput
+  attachments?: Prisma.ActivityRecordAttachmentCreateNestedManyWithoutActivityRecordInput
 }
 
 export type ActivityRecordUncheckedCreateWithoutTagsInput = {
@@ -629,6 +655,7 @@ export type ActivityRecordUncheckedCreateWithoutTagsInput = {
   companyId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  attachments?: Prisma.ActivityRecordAttachmentUncheckedCreateNestedManyWithoutActivityRecordInput
 }
 
 export type ActivityRecordCreateOrConnectWithoutTagsInput = {
@@ -656,6 +683,7 @@ export type ActivityRecordUpdateWithoutTagsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutActivityRecordsNestedInput
   company?: Prisma.CompanyUpdateOneWithoutActivityRecordsNestedInput
+  attachments?: Prisma.ActivityRecordAttachmentUpdateManyWithoutActivityRecordNestedInput
 }
 
 export type ActivityRecordUncheckedUpdateWithoutTagsInput = {
@@ -667,6 +695,71 @@ export type ActivityRecordUncheckedUpdateWithoutTagsInput = {
   companyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  attachments?: Prisma.ActivityRecordAttachmentUncheckedUpdateManyWithoutActivityRecordNestedInput
+}
+
+export type ActivityRecordCreateWithoutAttachmentsInput = {
+  id?: string
+  title: string
+  description: string
+  status?: $Enums.ActivityRecordStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  author: Prisma.UserCreateNestedOneWithoutActivityRecordsInput
+  company?: Prisma.CompanyCreateNestedOneWithoutActivityRecordsInput
+  tags?: Prisma.ActivityRecordTagCreateNestedManyWithoutActivityRecordInput
+}
+
+export type ActivityRecordUncheckedCreateWithoutAttachmentsInput = {
+  id?: string
+  title: string
+  description: string
+  status?: $Enums.ActivityRecordStatus
+  authorId: string
+  companyId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tags?: Prisma.ActivityRecordTagUncheckedCreateNestedManyWithoutActivityRecordInput
+}
+
+export type ActivityRecordCreateOrConnectWithoutAttachmentsInput = {
+  where: Prisma.ActivityRecordWhereUniqueInput
+  create: Prisma.XOR<Prisma.ActivityRecordCreateWithoutAttachmentsInput, Prisma.ActivityRecordUncheckedCreateWithoutAttachmentsInput>
+}
+
+export type ActivityRecordUpsertWithoutAttachmentsInput = {
+  update: Prisma.XOR<Prisma.ActivityRecordUpdateWithoutAttachmentsInput, Prisma.ActivityRecordUncheckedUpdateWithoutAttachmentsInput>
+  create: Prisma.XOR<Prisma.ActivityRecordCreateWithoutAttachmentsInput, Prisma.ActivityRecordUncheckedCreateWithoutAttachmentsInput>
+  where?: Prisma.ActivityRecordWhereInput
+}
+
+export type ActivityRecordUpdateToOneWithWhereWithoutAttachmentsInput = {
+  where?: Prisma.ActivityRecordWhereInput
+  data: Prisma.XOR<Prisma.ActivityRecordUpdateWithoutAttachmentsInput, Prisma.ActivityRecordUncheckedUpdateWithoutAttachmentsInput>
+}
+
+export type ActivityRecordUpdateWithoutAttachmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumActivityRecordStatusFieldUpdateOperationsInput | $Enums.ActivityRecordStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.UserUpdateOneRequiredWithoutActivityRecordsNestedInput
+  company?: Prisma.CompanyUpdateOneWithoutActivityRecordsNestedInput
+  tags?: Prisma.ActivityRecordTagUpdateManyWithoutActivityRecordNestedInput
+}
+
+export type ActivityRecordUncheckedUpdateWithoutAttachmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumActivityRecordStatusFieldUpdateOperationsInput | $Enums.ActivityRecordStatus
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  companyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tags?: Prisma.ActivityRecordTagUncheckedUpdateManyWithoutActivityRecordNestedInput
 }
 
 export type ActivityRecordCreateManyAuthorInput = {
@@ -688,6 +781,7 @@ export type ActivityRecordUpdateWithoutAuthorInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   company?: Prisma.CompanyUpdateOneWithoutActivityRecordsNestedInput
   tags?: Prisma.ActivityRecordTagUpdateManyWithoutActivityRecordNestedInput
+  attachments?: Prisma.ActivityRecordAttachmentUpdateManyWithoutActivityRecordNestedInput
 }
 
 export type ActivityRecordUncheckedUpdateWithoutAuthorInput = {
@@ -699,6 +793,7 @@ export type ActivityRecordUncheckedUpdateWithoutAuthorInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tags?: Prisma.ActivityRecordTagUncheckedUpdateManyWithoutActivityRecordNestedInput
+  attachments?: Prisma.ActivityRecordAttachmentUncheckedUpdateManyWithoutActivityRecordNestedInput
 }
 
 export type ActivityRecordUncheckedUpdateManyWithoutAuthorInput = {
@@ -730,6 +825,7 @@ export type ActivityRecordUpdateWithoutCompanyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutActivityRecordsNestedInput
   tags?: Prisma.ActivityRecordTagUpdateManyWithoutActivityRecordNestedInput
+  attachments?: Prisma.ActivityRecordAttachmentUpdateManyWithoutActivityRecordNestedInput
 }
 
 export type ActivityRecordUncheckedUpdateWithoutCompanyInput = {
@@ -741,6 +837,7 @@ export type ActivityRecordUncheckedUpdateWithoutCompanyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tags?: Prisma.ActivityRecordTagUncheckedUpdateManyWithoutActivityRecordNestedInput
+  attachments?: Prisma.ActivityRecordAttachmentUncheckedUpdateManyWithoutActivityRecordNestedInput
 }
 
 export type ActivityRecordUncheckedUpdateManyWithoutCompanyInput = {
@@ -760,10 +857,12 @@ export type ActivityRecordUncheckedUpdateManyWithoutCompanyInput = {
 
 export type ActivityRecordCountOutputType = {
   tags: number
+  attachments: number
 }
 
 export type ActivityRecordCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tags?: boolean | ActivityRecordCountOutputTypeCountTagsArgs
+  attachments?: boolean | ActivityRecordCountOutputTypeCountAttachmentsArgs
 }
 
 /**
@@ -783,6 +882,13 @@ export type ActivityRecordCountOutputTypeCountTagsArgs<ExtArgs extends runtime.T
   where?: Prisma.ActivityRecordTagWhereInput
 }
 
+/**
+ * ActivityRecordCountOutputType without action
+ */
+export type ActivityRecordCountOutputTypeCountAttachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ActivityRecordAttachmentWhereInput
+}
+
 
 export type ActivityRecordSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -796,6 +902,7 @@ export type ActivityRecordSelect<ExtArgs extends runtime.Types.Extensions.Intern
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   company?: boolean | Prisma.ActivityRecord$companyArgs<ExtArgs>
   tags?: boolean | Prisma.ActivityRecord$tagsArgs<ExtArgs>
+  attachments?: boolean | Prisma.ActivityRecord$attachmentsArgs<ExtArgs>
   _count?: boolean | Prisma.ActivityRecordCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["activityRecord"]>
 
@@ -841,6 +948,7 @@ export type ActivityRecordInclude<ExtArgs extends runtime.Types.Extensions.Inter
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   company?: boolean | Prisma.ActivityRecord$companyArgs<ExtArgs>
   tags?: boolean | Prisma.ActivityRecord$tagsArgs<ExtArgs>
+  attachments?: boolean | Prisma.ActivityRecord$attachmentsArgs<ExtArgs>
   _count?: boolean | Prisma.ActivityRecordCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ActivityRecordIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -858,6 +966,7 @@ export type $ActivityRecordPayload<ExtArgs extends runtime.Types.Extensions.Inte
     author: Prisma.$UserPayload<ExtArgs>
     company: Prisma.$CompanyPayload<ExtArgs> | null
     tags: Prisma.$ActivityRecordTagPayload<ExtArgs>[]
+    attachments: Prisma.$ActivityRecordAttachmentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1265,6 +1374,7 @@ export interface Prisma__ActivityRecordClient<T, Null = never, ExtArgs extends r
   author<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   company<T extends Prisma.ActivityRecord$companyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityRecord$companyArgs<ExtArgs>>): Prisma.Prisma__CompanyClient<runtime.Types.Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   tags<T extends Prisma.ActivityRecord$tagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityRecord$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityRecordTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  attachments<T extends Prisma.ActivityRecord$attachmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityRecord$attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityRecordAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1743,6 +1853,30 @@ export type ActivityRecord$tagsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.ActivityRecordTagScalarFieldEnum | Prisma.ActivityRecordTagScalarFieldEnum[]
+}
+
+/**
+ * ActivityRecord.attachments
+ */
+export type ActivityRecord$attachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ActivityRecordAttachment
+   */
+  select?: Prisma.ActivityRecordAttachmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ActivityRecordAttachment
+   */
+  omit?: Prisma.ActivityRecordAttachmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityRecordAttachmentInclude<ExtArgs> | null
+  where?: Prisma.ActivityRecordAttachmentWhereInput
+  orderBy?: Prisma.ActivityRecordAttachmentOrderByWithRelationInput | Prisma.ActivityRecordAttachmentOrderByWithRelationInput[]
+  cursor?: Prisma.ActivityRecordAttachmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ActivityRecordAttachmentScalarFieldEnum | Prisma.ActivityRecordAttachmentScalarFieldEnum[]
 }
 
 /**

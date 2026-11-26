@@ -52,3 +52,13 @@ export type ActivityRecord = Prisma.ActivityRecordModel
  * 
  */
 export type ActivityRecordTag = Prisma.ActivityRecordTagModel
+/**
+ * Model ActivityRecordAttachment
+ * 
+ */
+export type ActivityRecordAttachment = Prisma.ActivityRecordAttachmentModel
+/**
+ * Model ActivityRecordAttachmentContent
+ * 
+ */
+export type ActivityRecordAttachmentContent = Prisma.ActivityRecordAttachmentContentModel

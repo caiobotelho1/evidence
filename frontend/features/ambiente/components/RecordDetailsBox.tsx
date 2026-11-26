@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+} from "react";
 import { useAuthUser } from "@/features/auth/components/AuthGate";
 import {
   getCompanyRecordById,
@@ -15,7 +22,21 @@ import {
   getPersonalTags,
   type Tag,
 } from "@/services/tag.service";
-import { REGISTRO_STATUS_OPTIONS } from "@/features/registros/status-options";
+import {
+  downloadAttachment,
+  uploadAttachments,
+} from "@/services/attachment.service";
+import {
+  COMPLETED_STATUS_OPTION,
+  MANUAL_STATUS_OPTIONS,
+  REGISTRO_STATUS_OPTIONS,
+  canAttachToStatus,
+} from "@/features/registros/status-options";
+import {
+  ATTACHMENT_ACCEPT,
+  formatFileSize,
+  mergeFiles,
+} from "@/features/registros/file-utils";
 import styles from "./RecordDetailsBox.module.css";
 
 interface RecordDetailsBoxProps {
@@ -60,6 +81,12 @@ export default function RecordDetailsBox({
   const [tagsError, setTagsError] = useState("");
   const [saveError, setSaveError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const attachmentInputId = useId();
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [downloadError, setDownloadError] = useState("");
 
   const membership = user.memberships.find(
     (item) =>
@@ -76,6 +103,11 @@ export default function RecordDetailsBox({
   const selectedStatus = REGISTRO_STATUS_OPTIONS.find(
     (option) => option.value === draft?.status,
   ) ?? REGISTRO_STATUS_OPTIONS[0];
+  const canAttachFiles = Boolean(
+    record && canEditRecord && canAttachToStatus(record.status),
+  );
+  const isBusy = isSaving || isUploading;
+  const attachmentScope = record ? { recordId: record.id, companyId } : null;
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -253,6 +285,73 @@ export default function RecordDetailsBox({
     }
   }
 
+  function handleFilesSelected(event: ChangeEvent<HTMLInputElement>) {
+    const input = event.currentTarget;
+    const files = Array.from(input.files ?? []);
+
+    if (files.length > 0) {
+      setPendingFiles((current) => mergeFiles(current, files));
+      setUploadError("");
+    }
+
+    input.value = "";
+  }
+
+  async function handleAttach() {
+    if (!record || !attachmentScope || pendingFiles.length === 0 || isUploading) return;
+
+    setUploadError("");
+    setIsUploading(true);
+
+    try {
+      const attachments = await uploadAttachments(attachmentScope, pendingFiles);
+
+      let updatedRecord: ActivityRecord;
+      try {
+        updatedRecord = isPersonal
+          ? await getPersonalRecordById(record.id)
+          : await getCompanyRecordById(companyId!, record.id);
+      } catch {
+        updatedRecord = {
+          ...record,
+          status: "COMPLETED",
+          attachments: [...record.attachments, ...attachments],
+        };
+      }
+
+      setRecord(updatedRecord);
+      setPendingFiles([]);
+      onUpdated?.(updatedRecord);
+    } catch (attachError) {
+      setUploadError(
+        attachError instanceof Error
+          ? attachError.message
+          : "Não foi possível anexar os arquivos.",
+      );
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
+  async function handleDownload(attachmentId: string, fileName: string) {
+    if (!attachmentScope || downloadingId) return;
+
+    setDownloadError("");
+    setDownloadingId(attachmentId);
+
+    try {
+      await downloadAttachment(attachmentScope, { id: attachmentId, fileName });
+    } catch (downloadFailure) {
+      setDownloadError(
+        downloadFailure instanceof Error
+          ? downloadFailure.message
+          : "Não foi possível baixar o arquivo.",
+      );
+    } finally {
+      setDownloadingId(null);
+    }
+  }
+
   const wasUpdated = Boolean(
     record &&
       new Date(record.updatedAt).getTime() >
@@ -265,8 +364,11 @@ export default function RecordDetailsBox({
       className={styles.dialog}
       aria-labelledby="record-details-title"
       onClose={onClose}
+      onCancel={(event) => {
+        if (isBusy) event.preventDefault();
+      }}
       onClick={(event) => {
-        if (event.target === event.currentTarget && !isSaving) {
+        if (event.target === event.currentTarget && !isBusy) {
           dialogRef.current?.close();
         }
       }}
@@ -279,7 +381,7 @@ export default function RecordDetailsBox({
           type="button"
           className={styles.close}
           onClick={() => dialogRef.current?.close()}
-          disabled={isSaving}
+          disabled={isBusy}
           aria-label="Fechar detalhes"
         >
           ×
@@ -329,59 +431,82 @@ export default function RecordDetailsBox({
 
           <div className={styles.editField}>
             <label htmlFor="record-edit-status">Status</label>
-            <details
-              ref={statusDropdownRef}
-              className={styles.editStatusDropdown}
-            >
-              <summary className={styles.editStatusTrigger}>
-                <span className={styles.editStatusValue}>
-                  <span
-                    className={styles.editStatusDot}
-                    style={{ backgroundColor: selectedStatus.color }}
-                  />
-                  {selectedStatus.label}
-                </span>
-                <svg
-                  className={styles.editStatusChevron}
-                  viewBox="0 0 16 16"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="m4 6 4 4 4-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </summary>
-              <div className={styles.editStatusOptions} role="group" aria-label="Opções de status">
-                {REGISTRO_STATUS_OPTIONS.map((option) => (
-                  <button
-                    key={option.value}
-                    type="button"
-                    className={`${styles.editStatusOption} ${
-                      draft.status === option.value ? styles.editStatusOptionSelected : ""
-                    }`}
-                    onClick={() => {
-                      setDraft((current) =>
-                        current ? { ...current, status: option.value } : current,
-                      );
-                      statusDropdownRef.current?.removeAttribute("open");
-                    }}
-                    disabled={isSaving}
-                    aria-pressed={draft.status === option.value}
-                  >
+
+            {record.status === "COMPLETED" ? (
+              <>
+                <div className={styles.editStatusLocked} id="record-edit-status">
+                  <span className={styles.editStatusValue}>
                     <span
                       className={styles.editStatusDot}
-                      style={{ backgroundColor: option.color }}
+                      style={{ backgroundColor: COMPLETED_STATUS_OPTION.color }}
                     />
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            </details>
+                    {COMPLETED_STATUS_OPTION.label}
+                  </span>
+                </div>
+                <p className={styles.tagHint}>
+                  Registros concluídos não podem mudar de status.
+                </p>
+              </>
+            ) : (
+              <>
+                <details
+                  ref={statusDropdownRef}
+                  className={styles.editStatusDropdown}
+                >
+                  <summary className={styles.editStatusTrigger} id="record-edit-status">
+                    <span className={styles.editStatusValue}>
+                      <span
+                        className={styles.editStatusDot}
+                        style={{ backgroundColor: selectedStatus.color }}
+                      />
+                      {selectedStatus.label}
+                    </span>
+                    <svg
+                      className={styles.editStatusChevron}
+                      viewBox="0 0 16 16"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="m4 6 4 4 4-4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </summary>
+                  <div className={styles.editStatusOptions} role="group" aria-label="Opções de status">
+                    {MANUAL_STATUS_OPTIONS.map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        className={`${styles.editStatusOption} ${
+                          draft.status === option.value ? styles.editStatusOptionSelected : ""
+                        }`}
+                        onClick={() => {
+                          setDraft((current) =>
+                            current ? { ...current, status: option.value } : current,
+                          );
+                          statusDropdownRef.current?.removeAttribute("open");
+                        }}
+                        disabled={isSaving}
+                        aria-pressed={draft.status === option.value}
+                      >
+                        <span
+                          className={styles.editStatusDot}
+                          style={{ backgroundColor: option.color }}
+                        />
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </details>
+                <p className={styles.tagHint}>
+                  Para concluir, anexe um arquivo nos detalhes do registro.
+                </p>
+              </>
+            )}
           </div>
 
           <fieldset className={styles.editFieldset}>
@@ -493,12 +618,127 @@ export default function RecordDetailsBox({
             )}
           </section>
 
+          {(record.attachments.length > 0 || record.status === "COMPLETED") && (
+            <section className={styles.section} aria-labelledby="record-attachments">
+              <h4 id="record-attachments">Anexos</h4>
+              {record.attachments.length ? (
+                <ul className={styles.attachmentList}>
+                  {record.attachments.map((attachment) => (
+                    <li key={attachment.id} className={styles.attachmentItem}>
+                      <div className={styles.attachmentInfo}>
+                        <span className={styles.attachmentName} title={attachment.fileName}>
+                          {attachment.fileName}
+                        </span>
+                        <span className={styles.attachmentMeta}>
+                          {formatFileSize(attachment.sizeBytes)}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        className={styles.attachmentDownload}
+                        onClick={() => void handleDownload(attachment.id, attachment.fileName)}
+                        disabled={downloadingId !== null}
+                        aria-label={`Baixar ${attachment.fileName}`}
+                      >
+                        {downloadingId === attachment.id ? "Baixando…" : "Baixar"}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className={styles.emptyTags}>Nenhum anexo encontrado.</p>
+              )}
+              {downloadError && (
+                <p role="alert" className={styles.inlineError}>{downloadError}</p>
+              )}
+            </section>
+          )}
+
+          {canAttachFiles && (
+            <section className={styles.section} aria-labelledby="record-attach">
+              <h4 id="record-attach">Anexar arquivo</h4>
+              <div className={styles.attachBox}>
+                <p className={styles.attachHint}>
+                  Ao anexar um arquivo, este registro será marcado como concluído.
+                </p>
+
+                <input
+                  id={attachmentInputId}
+                  className={styles.fileInput}
+                  type="file"
+                  multiple
+                  accept={ATTACHMENT_ACCEPT}
+                  disabled={isUploading}
+                  onChange={handleFilesSelected}
+                  aria-label="Selecionar arquivos para anexar"
+                />
+                <label
+                  htmlFor={attachmentInputId}
+                  className={`${styles.filePicker} ${
+                    isUploading ? styles.filePickerDisabled : ""
+                  }`}
+                >
+                  Selecionar arquivos
+                </label>
+
+                {pendingFiles.length > 0 && (
+                  <ul className={styles.attachmentList} aria-label="Arquivos selecionados">
+                    {pendingFiles.map((file, index) => (
+                      <li
+                        key={`${file.name}-${file.lastModified}-${file.size}`}
+                        className={styles.attachmentItem}
+                      >
+                        <div className={styles.attachmentInfo}>
+                          <span className={styles.attachmentName} title={file.name}>
+                            {file.name}
+                          </span>
+                          <span className={styles.attachmentMeta}>
+                            {formatFileSize(file.size)}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          className={styles.removeFileButton}
+                          onClick={() =>
+                            setPendingFiles((current) =>
+                              current.filter((_, fileIndex) => fileIndex !== index),
+                            )
+                          }
+                          disabled={isUploading}
+                          aria-label={`Remover arquivo ${file.name}`}
+                        >
+                          Remover
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {uploadError && (
+                  <p role="alert" className={styles.inlineError}>{uploadError}</p>
+                )}
+
+                {pendingFiles.length > 0 && (
+                  <button
+                    type="button"
+                    className={styles.saveButton}
+                    onClick={() => void handleAttach()}
+                    disabled={isUploading}
+                  >
+                    {isUploading ? "Anexando…" : "Anexar e concluir registro"}
+                  </button>
+                )}
+              </div>
+            </section>
+          )}
+
           {canEditRecord && (
             <div className={styles.viewActions}>
               <button
                 type="button"
                 className={styles.saveButton}
                 onClick={startEditing}
+                disabled={isUploading}
               >
                 Editar registro
               </button>

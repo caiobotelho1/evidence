@@ -10,14 +10,22 @@ export type UploadedFile = {
   buffer: Buffer;
 };
 
-const receiver = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-    fileSize: MAX_FILE_SIZE_BYTES,
-    files: env.ATTACHMENT_MAX_FILES_PER_UPLOAD,
-    fields: 0,
-  },
-}).array("files", env.ATTACHMENT_MAX_FILES_PER_UPLOAD);
+const MAX_PAYLOAD_FIELD_BYTES = 256 * 1024;
+
+function buildReceiver(maxFields: number) {
+  return multer({
+    storage: multer.memoryStorage(),
+    limits: {
+      fileSize: MAX_FILE_SIZE_BYTES,
+      files: env.ATTACHMENT_MAX_FILES_PER_UPLOAD,
+      fields: maxFields,
+      fieldSize: MAX_PAYLOAD_FIELD_BYTES,
+    },
+  }).array("files", env.ATTACHMENT_MAX_FILES_PER_UPLOAD);
+}
+
+const receiver = buildReceiver(0);
+const recordReceiver = buildReceiver(1);
 
 function translateUploadError(error: unknown): unknown {
   if (!(error instanceof multer.MulterError)) return error;
@@ -33,6 +41,9 @@ function translateUploadError(error: unknown): unknown {
       );
     case "LIMIT_UNEXPECTED_FILE":
       return badRequest('Envie os arquivos no campo "files".');
+    case "LIMIT_FIELD_COUNT":
+    case "LIMIT_FIELD_VALUE":
+      return badRequest('Envie os dados do registro em um único campo "payload".');
     default:
       return badRequest("Não foi possível processar o envio dos arquivos.");
   }
@@ -53,6 +64,41 @@ export function receiveUploadedFiles(req: Request, res: Response): Promise<Uploa
       }
 
       resolve(files.map((file) => ({ originalName: file.originalname, buffer: file.buffer })));
+    });
+  });
+}
+
+export function receiveRecordWithFiles(
+  req: Request,
+  res: Response,
+): Promise<{ payload: unknown; files: UploadedFile[] }> {
+  return new Promise((resolve, reject) => {
+    recordReceiver(req, res, (error?: unknown) => {
+      if (error) {
+        reject(translateUploadError(error));
+        return;
+      }
+
+      const rawPayload: unknown = req.body?.payload;
+      if (typeof rawPayload !== "string") {
+        reject(badRequest('Envie os dados do registro no campo "payload" (JSON).'));
+        return;
+      }
+
+      let payload: unknown;
+      try {
+        payload = JSON.parse(rawPayload);
+      } catch {
+        reject(badRequest('O campo "payload" deve conter um JSON válido.'));
+        return;
+      }
+
+      const files = (req.files as Express.Multer.File[] | undefined) ?? [];
+
+      resolve({
+        payload,
+        files: files.map((file) => ({ originalName: file.originalname, buffer: file.buffer })),
+      });
     });
   });
 }

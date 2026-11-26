@@ -1,10 +1,18 @@
-import { ApiError, apiFetch } from "./api";
+import { apiFetch, describeApiError } from "./api";
 
 export type ActivityRecordStatus =
   | "PENDING"
   | "IN_PROGRESS"
   | "COMPLETED"
   | "CANCELED";
+
+export type ActivityRecordAttachment = {
+  id: string;
+  fileName: string;
+  mimeType: string;
+  sizeBytes: number;
+  createdAt: string;
+};
 
 export type ActivityRecord = {
   id: string;
@@ -15,6 +23,7 @@ export type ActivityRecord = {
   updatedAt: string;
   companyId: string | null;
   author: { id: string; name: string };
+  attachments: ActivityRecordAttachment[];
   tags: {
     id: string;
     name: string;
@@ -49,26 +58,26 @@ export type ActivityRecordListFilters = {
 const PAGE_SIZE = 100;
 const MAX_PAGES = 20;
 
-function firstFieldMessage(error: ApiError): string {
-  const messages = Object.values(error.fields ?? {}).flat();
-  return messages[0] ?? error.message;
-}
-
 async function createRecord(
   path: string,
-  payload: CreateActivityRecordPayload
+  payload: CreateActivityRecordPayload,
+  files: File[],
 ): Promise<ActivityRecord> {
   try {
-    return await apiFetch<ActivityRecord>(path, {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-  } catch (error) {
-    if (error instanceof ApiError && error.fields) {
-      throw new Error(firstFieldMessage(error));
+    if (files.length === 0) {
+      return await apiFetch<ActivityRecord>(path, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
     }
 
-    throw error;
+    const body = new FormData();
+    body.append("payload", JSON.stringify(payload));
+    files.forEach((file) => body.append("files", file, file.name));
+
+    return await apiFetch<ActivityRecord>(path, { method: "POST", body });
+  } catch (error) {
+    throw new Error(describeApiError(error, "Não foi possível criar o registro."));
   }
 }
 
@@ -124,18 +133,21 @@ async function listAllRecords(
 }
 
 export async function createPersonalRecord(
-  payload: CreateActivityRecordPayload
+  payload: CreateActivityRecordPayload,
+  files: File[] = [],
 ): Promise<ActivityRecord> {
-  return createRecord("/api/records", payload);
+  return createRecord("/api/records", payload, files);
 }
 
 export async function createCompanyRecord(
   companyId: string,
-  payload: CreateActivityRecordPayload
+  payload: CreateActivityRecordPayload,
+  files: File[] = [],
 ): Promise<ActivityRecord> {
   return createRecord(
     `/api/companies/${encodeURIComponent(companyId)}/records`,
-    payload
+    payload,
+    files,
   );
 }
 

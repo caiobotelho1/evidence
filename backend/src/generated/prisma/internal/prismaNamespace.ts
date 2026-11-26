@@ -403,7 +403,9 @@ export const ModelName = {
   Session: 'Session',
   Tag: 'Tag',
   ActivityRecord: 'ActivityRecord',
-  ActivityRecordTag: 'ActivityRecordTag'
+  ActivityRecordTag: 'ActivityRecordTag',
+  ActivityRecordAttachment: 'ActivityRecordAttachment',
+  ActivityRecordAttachmentContent: 'ActivityRecordAttachmentContent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -419,7 +421,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "company" | "companyMembership" | "session" | "tag" | "activityRecord" | "activityRecordTag"
+    modelProps: "user" | "company" | "companyMembership" | "session" | "tag" | "activityRecord" | "activityRecordTag" | "activityRecordAttachment" | "activityRecordAttachmentContent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -941,6 +943,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ActivityRecordAttachment: {
+      payload: Prisma.$ActivityRecordAttachmentPayload<ExtArgs>
+      fields: Prisma.ActivityRecordAttachmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ActivityRecordAttachmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ActivityRecordAttachmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentPayload>
+        }
+        findFirst: {
+          args: Prisma.ActivityRecordAttachmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ActivityRecordAttachmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentPayload>
+        }
+        findMany: {
+          args: Prisma.ActivityRecordAttachmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentPayload>[]
+        }
+        create: {
+          args: Prisma.ActivityRecordAttachmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentPayload>
+        }
+        createMany: {
+          args: Prisma.ActivityRecordAttachmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ActivityRecordAttachmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentPayload>[]
+        }
+        delete: {
+          args: Prisma.ActivityRecordAttachmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentPayload>
+        }
+        update: {
+          args: Prisma.ActivityRecordAttachmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.ActivityRecordAttachmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ActivityRecordAttachmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ActivityRecordAttachmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.ActivityRecordAttachmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentPayload>
+        }
+        aggregate: {
+          args: Prisma.ActivityRecordAttachmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateActivityRecordAttachment>
+        }
+        groupBy: {
+          args: Prisma.ActivityRecordAttachmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ActivityRecordAttachmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ActivityRecordAttachmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ActivityRecordAttachmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    ActivityRecordAttachmentContent: {
+      payload: Prisma.$ActivityRecordAttachmentContentPayload<ExtArgs>
+      fields: Prisma.ActivityRecordAttachmentContentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ActivityRecordAttachmentContentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentContentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ActivityRecordAttachmentContentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentContentPayload>
+        }
+        findFirst: {
+          args: Prisma.ActivityRecordAttachmentContentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentContentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ActivityRecordAttachmentContentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentContentPayload>
+        }
+        findMany: {
+          args: Prisma.ActivityRecordAttachmentContentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentContentPayload>[]
+        }
+        create: {
+          args: Prisma.ActivityRecordAttachmentContentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentContentPayload>
+        }
+        createMany: {
+          args: Prisma.ActivityRecordAttachmentContentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ActivityRecordAttachmentContentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentContentPayload>[]
+        }
+        delete: {
+          args: Prisma.ActivityRecordAttachmentContentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentContentPayload>
+        }
+        update: {
+          args: Prisma.ActivityRecordAttachmentContentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentContentPayload>
+        }
+        deleteMany: {
+          args: Prisma.ActivityRecordAttachmentContentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ActivityRecordAttachmentContentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ActivityRecordAttachmentContentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentContentPayload>[]
+        }
+        upsert: {
+          args: Prisma.ActivityRecordAttachmentContentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ActivityRecordAttachmentContentPayload>
+        }
+        aggregate: {
+          args: Prisma.ActivityRecordAttachmentContentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateActivityRecordAttachmentContent>
+        }
+        groupBy: {
+          args: Prisma.ActivityRecordAttachmentContentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ActivityRecordAttachmentContentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ActivityRecordAttachmentContentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ActivityRecordAttachmentContentCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1072,6 +1222,28 @@ export const ActivityRecordTagScalarFieldEnum = {
 export type ActivityRecordTagScalarFieldEnum = (typeof ActivityRecordTagScalarFieldEnum)[keyof typeof ActivityRecordTagScalarFieldEnum]
 
 
+export const ActivityRecordAttachmentScalarFieldEnum = {
+  id: 'id',
+  fileName: 'fileName',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  sha256: 'sha256',
+  activityRecordId: 'activityRecordId',
+  uploadedById: 'uploadedById',
+  createdAt: 'createdAt'
+} as const
+
+export type ActivityRecordAttachmentScalarFieldEnum = (typeof ActivityRecordAttachmentScalarFieldEnum)[keyof typeof ActivityRecordAttachmentScalarFieldEnum]
+
+
+export const ActivityRecordAttachmentContentScalarFieldEnum = {
+  attachmentId: 'attachmentId',
+  data: 'data'
+} as const
+
+export type ActivityRecordAttachmentContentScalarFieldEnum = (typeof ActivityRecordAttachmentContentScalarFieldEnum)[keyof typeof ActivityRecordAttachmentContentScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1183,6 +1355,34 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Bytes'
+ */
+export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
+    
+
+
+/**
+ * Reference to a field of type 'Bytes[]'
+ */
+export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -1343,6 +1543,8 @@ export type GlobalOmitConfig = {
   tag?: Prisma.TagOmit
   activityRecord?: Prisma.ActivityRecordOmit
   activityRecordTag?: Prisma.ActivityRecordTagOmit
+  activityRecordAttachment?: Prisma.ActivityRecordAttachmentOmit
+  activityRecordAttachmentContent?: Prisma.ActivityRecordAttachmentContentOmit
 }
 
 /* Types for Logging */
