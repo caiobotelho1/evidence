@@ -1,11 +1,16 @@
 .page {
   box-sizing: border-box;
+
   min-height: 100vh;
   min-height: 100dvh;
   width: 100%;
-  padding: 0 0 80px;
+
+  padding: 0 0 48px;
+  overflow-x: hidden;
+
   background: #FAF9F5;
   color: #1F3D2E;
+
   font-family: var(--font-inter), Arial, sans-serif;
   color-scheme: light;
 }
@@ -16,22 +21,33 @@
   box-sizing: border-box;
 }
 
+/* HEADER */
+
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 24px;
+
   width: 100%;
-  padding: 32px clamp(20px, 5.56vw, 80px);
+
+  padding-top: 32px;
+  padding-bottom: 32px;
+  padding-left: clamp(20px, 5.56vw, 80px);
+  padding-right: max(32px, calc((100% - 1200px) / 2 + 32px));
+
+  box-sizing: border-box;
 }
 
 .brand {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 12px;
+
+  flex-shrink: 0;
+
   color: #1F3D2E;
   text-decoration: none;
-  flex-shrink: 0;
 }
 
 .brand span {
@@ -44,92 +60,124 @@
 
 .brandIcon {
   display: block;
+
   width: 36px;
   height: 36px;
+
   object-fit: contain;
   flex-shrink: 0;
 }
 
 .backLink {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 10px;
+
   color: #1F3D2E;
   text-decoration: none;
+
   font-size: 16px;
   font-weight: 500;
-  line-height: 1.45;
+  line-height: 145%;
+
+  transition: opacity 0.2s ease;
+}
+
+.backLink span {
+  font-size: 20px;
 }
 
 .backLink:hover {
-  text-decoration: underline;
+  opacity: 0.7;
 }
 
 .brand:focus-visible,
 .backLink:focus-visible {
-  outline: 2px solid #1F3D2E;
-  outline-offset: 5px;
-  border-radius: 4px;
+  outline: 2px solid #4A6A41;
+  outline-offset: 3px;
 }
+
+/* CONTEÚDO PRINCIPAL */
 
 .card {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  width: calc(100% - 40px);
+  gap: 24px;
+
+  width: calc(100% - 64px);
   max-width: 860px;
-  margin: 80px auto 0;
-  padding: 40px;
-  gap: 28px;
+
+  margin: 24px auto 0;
+  padding: 32px;
+
   background: #FFFFFF;
   border: 1px solid #EADFCF;
-  border-radius: 24px;
+  border-radius: 16px;
 }
+
+/* TÍTULO E DESCRIÇÃO */
 
 .intro {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
+
   width: 100%;
 }
 
 .intro h1 {
   margin: 0;
+
   color: #1F3D2E;
+
   font-family: var(--font-dm-serif), Georgia, serif;
-  font-size: 42px;
+  font-size: 40px;
   font-style: italic;
   font-weight: 400;
-  line-height: 1.2;
+  line-height: 115%;
+
+  overflow-wrap: anywhere;
 }
 
 .intro p {
   margin: 0;
+
   color: #4A6A41;
-  font-size: 16px;
+
+  font-size: 15px;
   font-weight: 400;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
-@media (max-width: 768px) {
-  .page {
-    padding-bottom: 48px;
+/* RESPONSIVIDADE — TABLETS */
+
+@media (max-width: 900px) {
+  .header {
+    padding: 24px;
+    gap: 20px;
   }
 
   .card {
-    margin-top: 50px;
-    padding: 28px 24px;
-  }
-
-  .intro h1 {
-    font-size: 34px;
+    width: calc(100% - 48px);
+    padding: 28px;
   }
 }
 
+/* RESPONSIVIDADE — CELULARES */
+
 @media (max-width: 600px) {
+  .page {
+    padding-bottom: 36px;
+  }
+
   .header {
-    padding: 24px 20px;
+    display: flex;
     flex-wrap: wrap;
+
+    width: 100%;
+    padding: 24px 20px;
+    gap: 20px;
   }
 
   .brand {
@@ -140,36 +188,50 @@
     font-size: 28px;
   }
 
+  .brandIcon {
+    width: 32px;
+    height: 32px;
+  }
+
   .backLink {
     font-size: 14px;
+    gap: 8px;
   }
-}
 
-@media (max-width: 480px) {
-  .page {
-    padding-bottom: 40px;
+  .backLink span {
+    font-size: 18px;
   }
 
   .card {
     width: calc(100% - 32px);
-    margin-top: 32px;
-    padding: 24px 18px;
-    border-radius: 24px;
+    min-width: 0;
+
+    margin-top: 20px;
+    padding: 24px 20px;
+    gap: 20px;
+
+    border-radius: 14px;
   }
 
   .intro h1 {
-    font-size: 30px;
+    font-size: 34px;
   }
 
   .intro p {
-    font-size: 15px;
+    font-size: 14px;
   }
 }
 
+/* RESPONSIVIDADE — TELAS MENORES */
+
 @media (max-width: 380px) {
+  .page {
+    padding-bottom: 32px;
+  }
+
   .header {
-    padding: 20px 16px;
-    gap: 12px;
+    padding: 20px 12px;
+    gap: 16px;
   }
 
   .brand {
@@ -177,7 +239,7 @@
   }
 
   .brand span {
-    font-size: 24px;
+    font-size: 25px;
   }
 
   .brandIcon {
@@ -186,6 +248,23 @@
   }
 
   .backLink {
-    font-size: 12px;
+    font-size: 13px;
+    gap: 6px;
+  }
+
+  .card {
+    width: calc(100% - 24px);
+
+    margin-top: 16px;
+    padding: 20px 16px;
+    gap: 16px;
+  }
+
+  .intro h1 {
+    font-size: 30px;
+  }
+
+  .intro p {
+    font-size: 13px;
   }
 }

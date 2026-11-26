@@ -1,11 +1,26 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { DM_Serif_Display, Inter } from "next/font/google";
-import FuncionarioModal, {type Funcionario,} from "@/features/empresa/components/FuncionarioModal";
-import {getMyCompanies,getCompanyMembers,getCompanyMember,removeCompanyMember,type CompanyMember,type MyCompany,} from "@/services/company.service";
+
+import { AuthGate } from "@/features/auth/components/AuthGate";
+
+import FuncionarioModal, {
+  type Funcionario,
+} from "@/features/empresa/components/FuncionarioModal";
+
+import {
+  getMyCompanies,
+  getCompanyMembers,
+  getCompanyMember,
+  removeCompanyMember,
+  type CompanyMember,
+  type MyCompany,
+} from "@/services/company.service";
+
 import styles from "./gerenciarEmpresa.module.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -36,57 +51,168 @@ function converterFuncionario(member: CompanyMember): Funcionario {
   };
 }
 
-export default function GerenciarEmpresaPage() {
+function GerenciarEmpresaContent() {
+  const searchParams = useSearchParams();
+  const companyId = searchParams.get("companyId") ?? "";
+
+  return (
+    <GerenciarEmpresa
+      key={companyId}
+      companyId={companyId}
+    />
+  );
+}
+
+function GerenciarEmpresa({
+  companyId,
+}: {
+  companyId: string;
+}) {
   const [empresa, setEmpresa] = useState<MyCompany | null>(null);
-  const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
+
+  const [funcionarios, setFuncionarios] =
+    useState<Funcionario[]>([]);
+
   const [funcionarioSelecionado, setFuncionarioSelecionado] =
     useState<Funcionario | null>(null);
 
-  const [carregando, setCarregando] = useState(true);
-  const [carregandoDetalhes, setCarregandoDetalhes] = useState(false);
+  const [carregandoEmpresa, setCarregandoEmpresa] =
+    useState(true);
+
+  const [carregandoFuncionarios, setCarregandoFuncionarios] =
+    useState(true);
+
+  const [carregandoDetalhes, setCarregandoDetalhes] =
+    useState(false);
+
   const [removendo, setRemovendo] = useState(false);
-  const [erro, setErro] = useState<string | null>(null);
 
-  const carregarDados = useCallback(async () => {
-    setCarregando(true);
-    setErro(null);
+  const [erroEmpresa, setErroEmpresa] =
+    useState<string | null>(null);
 
-    try {
-      const empresas = await getMyCompanies();
+  const [erroFuncionarios, setErroFuncionarios] =
+    useState<string | null>(null);
 
-      const empresaProprietaria = empresas.find(
-        (item) => item.role === "OWNER"
-      );
+  const [erroOperacao, setErroOperacao] =
+    useState<string | null>(null);
 
-      if (!empresaProprietaria) {
-        setEmpresa(null);
-        setFuncionarios([]);
-        setErro("Nenhuma empresa disponível para gerenciamento.");
+  const dashboardHref = companyId
+    ? `/tela-principal?ambiente=empresa&companyId=${encodeURIComponent(companyId)}`
+    : "/tela-principal?ambiente=empresa";
+
+  // Identifica a empresa recebida pela URL e verifica
+  // se o usuário é proprietário dela.
+
+  useEffect(() => {
+    let cancelado = false;
+
+    async function carregarEmpresa() {
+      setEmpresa(null);
+      setErroEmpresa(null);
+
+      if (!companyId) {
+        setCarregandoEmpresa(false);
         return;
       }
 
-      setEmpresa(empresaProprietaria);
+      setCarregandoEmpresa(true);
 
-      const membros = await getCompanyMembers(empresaProprietaria.id);
+      try {
+        const empresas = await getMyCompanies();
 
-      setFuncionarios(membros.map(converterFuncionario));
-    } catch (error) {
-      console.error("Erro ao carregar empresa:", error);
-      setErro("Não foi possível carregar os dados da empresa.");
-    } finally {
-      setCarregando(false);
+        const empresaAtual = empresas.find(
+          (item) =>
+            item.id === companyId &&
+            item.role === "OWNER"
+        );
+
+        if (cancelado) return;
+
+        if (!empresaAtual) {
+          setErroEmpresa(
+            "Você não tem permissão para gerenciar esta empresa ou ela não está disponível."
+          );
+
+          return;
+        }
+
+        setEmpresa(empresaAtual);
+      } catch (error) {
+        if (!cancelado) {
+          setErroEmpresa(
+            error instanceof Error
+              ? error.message
+              : "Não foi possível carregar a empresa."
+          );
+        }
+      } finally {
+        if (!cancelado) {
+          setCarregandoEmpresa(false);
+        }
+      }
     }
-  }, []);
+
+    void carregarEmpresa();
+
+    return () => {
+      cancelado = true;
+    };
+  }, [companyId]);
+
+  // Carrega somente os funcionários da empresa atual.
+
+  const empresaId = empresa?.id;
 
   useEffect(() => {
-    void carregarDados();
-  }, [carregarDados]);
+    let cancelado = false;
+
+    async function carregarFuncionarios() {
+      setFuncionarios([]);
+      setErroFuncionarios(null);
+
+      if (!empresaId) {
+        return;
+      }
+
+      setCarregandoFuncionarios(true);
+
+      try {
+        const membros = await getCompanyMembers(empresaId);
+
+        if (!cancelado) {
+          setFuncionarios(
+            membros.map(converterFuncionario)
+          );
+        }
+      } catch (error) {
+        if (!cancelado) {
+          setErroFuncionarios(
+            error instanceof Error
+              ? error.message
+              : "Não foi possível carregar os funcionários."
+          );
+        }
+      } finally {
+        if (!cancelado) {
+          setCarregandoFuncionarios(false);
+        }
+      }
+    }
+
+    void carregarFuncionarios();
+
+    return () => {
+      cancelado = true;
+    };
+  }, [empresaId]);
+
+  // Carrega os detalhes do funcionário selecionado.
 
   async function abrirFuncionario(funcionario: Funcionario) {
-    if (!empresa || carregandoDetalhes) return;
+    if (!empresa || carregandoDetalhes || removendo) return;
 
     setCarregandoDetalhes(true);
-    setErro(null);
+    setErroOperacao(null);
 
     try {
       const member = await getCompanyMember(
@@ -94,14 +220,21 @@ export default function GerenciarEmpresaPage() {
         funcionario.id
       );
 
-      setFuncionarioSelecionado(converterFuncionario(member));
+      setFuncionarioSelecionado(
+        converterFuncionario(member)
+      );
     } catch (error) {
-      console.error("Erro ao consultar funcionário:", error);
-      setErro("Não foi possível carregar os detalhes do funcionário.");
+      setErroOperacao(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível carregar os detalhes do funcionário."
+      );
     } finally {
       setCarregandoDetalhes(false);
     }
   }
+
+  // Remove um funcionário da empresa.
 
   async function handleRemove(funcionario: Funcionario) {
     if (!empresa || removendo) return;
@@ -113,75 +246,130 @@ export default function GerenciarEmpresaPage() {
     if (!confirmado) return;
 
     setRemovendo(true);
-    setErro(null);
+    setErroOperacao(null);
 
     try {
-      await removeCompanyMember(empresa.id, funcionario.id);
+      await removeCompanyMember(
+        empresa.id,
+        funcionario.id
+      );
 
       setFuncionarios((atuais) =>
-        atuais.filter((item) => item.id !== funcionario.id)
+        atuais.filter(
+          (item) => item.id !== funcionario.id
+        )
       );
 
       setFuncionarioSelecionado(null);
     } catch (error) {
-      console.error("Erro ao remover funcionário:", error);
-      setErro("Não foi possível remover o funcionário.");
+      setErroOperacao(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível remover o funcionário."
+      );
     } finally {
       setRemovendo(false);
     }
   }
 
   const nomeEmpresa =
-    empresa?.tradeName || empresa?.legalName || "Gerenciar empresa";
+    empresa?.tradeName?.trim() ||
+    empresa?.legalName ||
+    "Gerenciar empresa";
 
   return (
     <div className={`${styles.page} ${inter.className}`}>
       <header className={styles.header}>
-          <Link
-            href="/"
-            className={styles.logo}
-            aria-label="Evidence — página inicial"
-          >
-            <Image
-              src="/evidence-simbolo.svg"
-              alt=""
-              width={36}
-              height={36}
-              className={styles.brandIcon}
-              priority
-            />
+        <Link
+          href={dashboardHref}
+          className={styles.logo}
+          aria-label="Evidence — página inicial"
+        >
+          <Image
+            src="/evidence-simbolo.svg"
+            alt=""
+            width={36}
+            height={36}
+            priority
+          />
 
-            <span className={dmSerif.className}>Evidence</span>
-          </Link>
+          <span className={dmSerif.className}>
+            Evidence
+          </span>
+        </Link>
 
         <Link
-          href="/tela-principal?ambiente=empresa"
+          href={dashboardHref}
           className={styles.backLink}
         >
           <span aria-hidden="true">←</span>
-          Voltar ao início
+          Voltar à timeline
         </Link>
       </header>
 
       <main className={styles.main}>
-        <div className={styles.breadcrumb}>
-          EMPRESA <span>/</span> GERENCIAR
+        <nav
+          className={styles.breadcrumb}
+          aria-label="Localização"
+        >
+          EMPRESA <span aria-hidden="true">/</span>
+          <span aria-current="page">GERENCIAR</span>
+        </nav>
+
+        <div className={styles.companyHeading}>
+          <h1 className={`${styles.title} ${dmSerif.className}`}>
+            {nomeEmpresa}
+          </h1>
+
+          {empresa && (
+            <p className={styles.companyCnpj}>
+              CNPJ: {empresa.cnpj.replace(
+                /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
+                "$1.$2.$3/$4-$5"
+              )}
+            </p>
+          )}
         </div>
 
-        <h1 className={`${styles.title} ${dmSerif.className}`}>
-          {carregando ? "Carregando..." : nomeEmpresa}
-        </h1>
-
-        {erro && (
-          <p role="alert" style={{ color: "#B65A46", marginBottom: 20 }}>
-            {erro}
+        {carregandoEmpresa ? (
+          <p role="status">
+            Carregando empresa...
           </p>
-        )}
+        ) : !companyId ? (
+          <div>
+            <p>
+              Volte à timeline e selecione uma empresa
+              para gerenciar seus funcionários.
+            </p>
 
-        {empresa && (
-          <>
             <Link
-              href="/receber-solicitacao"
+              href={dashboardHref}
+              className={styles.backLink}
+            >
+              Ir para o ambiente da empresa
+            </Link>
+          </div>
+        ) : erroEmpresa ? (
+          <p className={styles.error} role="alert">
+            {erroEmpresa}
+          </p>
+        ) : empresa ? (
+          <>
+            {erroOperacao && (
+              <p className={styles.error} role="alert">
+                {erroOperacao}
+              </p>
+            )}
+
+            {/* Solicitações de participação */}
+
+            <Link
+              href={{
+                pathname: "/receber-solicitacao",
+                query: {
+                  companyId: empresa.id,
+                },
+              }}
               className={styles.requestsSection}
             >
               <span className={styles.requestsLabel}>
@@ -194,6 +382,8 @@ export default function GerenciarEmpresaPage() {
               </span>
             </Link>
 
+            {/* Funcionários */}
+
             <section className={styles.employeesSection}>
               <div className={styles.sectionHeader}>
                 <h2
@@ -202,16 +392,32 @@ export default function GerenciarEmpresaPage() {
                   Funcionários
                 </h2>
 
-                <span className={styles.employeeCount}>
-                  {funcionarios.length}{" "}
-                  {funcionarios.length === 1 ? "pessoa" : "pessoas"}
-                </span>
+                {!carregandoFuncionarios &&
+                  !erroFuncionarios && (
+                    <span className={styles.employeeCount}>
+                      {funcionarios.length}{" "}
+                      {funcionarios.length === 1
+                        ? "pessoa"
+                        : "pessoas"}
+                    </span>
+                  )}
               </div>
 
-              {carregando ? (
-                <p>Carregando funcionários...</p>
+              {carregandoFuncionarios ? (
+                <p role="status">
+                  Carregando funcionários...
+                </p>
+              ) : erroFuncionarios ? (
+                <p
+                  className={styles.error}
+                  role="alert"
+                >
+                  {erroFuncionarios}
+                </p>
               ) : funcionarios.length === 0 ? (
-                <p>Nenhum funcionário ativo nesta empresa.</p>
+                <p>
+                  Nenhum funcionário ativo nesta empresa.
+                </p>
               ) : (
                 <div className={styles.employeesGrid}>
                   {funcionarios.map((funcionario, index) => (
@@ -220,7 +426,9 @@ export default function GerenciarEmpresaPage() {
                       key={funcionario.id}
                       className={styles.employeeCard}
                       disabled={carregandoDetalhes || removendo}
-                      onClick={() => void abrirFuncionario(funcionario)}
+                      onClick={() =>
+                        void abrirFuncionario(funcionario)
+                      }
                       aria-label={`Visualizar detalhes de ${funcionario.nome}`}
                     >
                       <span
@@ -243,7 +451,10 @@ export default function GerenciarEmpresaPage() {
                         </span>
                       </span>
 
-                      <span className={styles.cardArrow} aria-hidden="true">
+                      <span
+                        className={styles.cardArrow}
+                        aria-hidden="true"
+                      >
                         ›
                       </span>
                     </button>
@@ -252,17 +463,37 @@ export default function GerenciarEmpresaPage() {
               )}
             </section>
           </>
-        )}
+        ) : null}
       </main>
 
       <FuncionarioModal
         funcionario={funcionarioSelecionado}
         nomeEmpresa={nomeEmpresa}
         onClose={() => {
-          if (!removendo) setFuncionarioSelecionado(null);
+          if (!removendo) {
+            setFuncionarioSelecionado(null);
+          }
         }}
-        onRemove={(funcionario) => void handleRemove(funcionario)}
+        onRemove={(funcionario) =>
+          void handleRemove(funcionario)
+        }
       />
     </div>
+  );
+}
+
+export default function GerenciarEmpresaPage() {
+  return (
+    <AuthGate>
+      <Suspense
+        fallback={
+          <main className={styles.page}>
+            Carregando empresa...
+          </main>
+        }
+      >
+        <GerenciarEmpresaContent />
+      </Suspense>
+    </AuthGate>
   );
 }
