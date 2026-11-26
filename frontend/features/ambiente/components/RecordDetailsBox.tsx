@@ -107,7 +107,9 @@ export default function RecordDetailsBox({
     record && canEditRecord && canAttachToStatus(record.status),
   );
   const isBusy = isSaving || isUploading;
-  const attachmentScope = record ? { recordId: record.id, companyId } : null;
+ const attachmentScope = record
+   ? { recordId: record.id, companyId: isPersonal ? undefined : companyId }
+: null;
 
   useEffect(() => {
     const dialog = dialogRef.current;
