@@ -203,6 +203,7 @@ export type UserWhereInput = {
   sessions?: Prisma.SessionListRelationFilter
   tags?: Prisma.TagListRelationFilter
   activityRecords?: Prisma.ActivityRecordListRelationFilter
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -218,6 +219,7 @@ export type UserOrderByWithRelationInput = {
   sessions?: Prisma.SessionOrderByRelationAggregateInput
   tags?: Prisma.TagOrderByRelationAggregateInput
   activityRecords?: Prisma.ActivityRecordOrderByRelationAggregateInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -236,6 +238,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   sessions?: Prisma.SessionListRelationFilter
   tags?: Prisma.TagListRelationFilter
   activityRecords?: Prisma.ActivityRecordListRelationFilter
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -277,6 +280,7 @@ export type UserCreateInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   tags?: Prisma.TagCreateNestedManyWithoutUserInput
   activityRecords?: Prisma.ActivityRecordCreateNestedManyWithoutAuthorInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -292,6 +296,7 @@ export type UserUncheckedCreateInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput
   activityRecords?: Prisma.ActivityRecordUncheckedCreateNestedManyWithoutAuthorInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUpdateInput = {
@@ -307,6 +312,7 @@ export type UserUpdateInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   tags?: Prisma.TagUpdateManyWithoutUserNestedInput
   activityRecords?: Prisma.ActivityRecordUpdateManyWithoutAuthorNestedInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -322,6 +328,7 @@ export type UserUncheckedUpdateInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput
   activityRecords?: Prisma.ActivityRecordUncheckedUpdateManyWithoutAuthorNestedInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -476,6 +483,20 @@ export type UserUpdateOneRequiredWithoutActivityRecordsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutActivityRecordsInput, Prisma.UserUpdateWithoutActivityRecordsInput>, Prisma.UserUncheckedUpdateWithoutActivityRecordsInput>
 }
 
+export type UserCreateNestedOneWithoutUploadedAttachmentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedAttachmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedAttachmentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutUploadedAttachmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUploadedAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedAttachmentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUploadedAttachmentsInput
+  upsert?: Prisma.UserUpsertWithoutUploadedAttachmentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUploadedAttachmentsInput, Prisma.UserUpdateWithoutUploadedAttachmentsInput>, Prisma.UserUncheckedUpdateWithoutUploadedAttachmentsInput>
+}
+
 export type UserCreateWithoutMembershipsInput = {
   id?: string
   name: string
@@ -488,6 +509,7 @@ export type UserCreateWithoutMembershipsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   tags?: Prisma.TagCreateNestedManyWithoutUserInput
   activityRecords?: Prisma.ActivityRecordCreateNestedManyWithoutAuthorInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -502,6 +524,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput
   activityRecords?: Prisma.ActivityRecordUncheckedCreateNestedManyWithoutAuthorInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -521,6 +544,7 @@ export type UserCreateWithoutDecidedMembershipsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   tags?: Prisma.TagCreateNestedManyWithoutUserInput
   activityRecords?: Prisma.ActivityRecordCreateNestedManyWithoutAuthorInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutDecidedMembershipsInput = {
@@ -535,6 +559,7 @@ export type UserUncheckedCreateWithoutDecidedMembershipsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput
   activityRecords?: Prisma.ActivityRecordUncheckedCreateNestedManyWithoutAuthorInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutDecidedMembershipsInput = {
@@ -565,6 +590,7 @@ export type UserUpdateWithoutMembershipsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   tags?: Prisma.TagUpdateManyWithoutUserNestedInput
   activityRecords?: Prisma.ActivityRecordUpdateManyWithoutAuthorNestedInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -579,6 +605,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput
   activityRecords?: Prisma.ActivityRecordUncheckedUpdateManyWithoutAuthorNestedInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUpsertWithoutDecidedMembershipsInput = {
@@ -604,6 +631,7 @@ export type UserUpdateWithoutDecidedMembershipsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   tags?: Prisma.TagUpdateManyWithoutUserNestedInput
   activityRecords?: Prisma.ActivityRecordUpdateManyWithoutAuthorNestedInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDecidedMembershipsInput = {
@@ -618,6 +646,7 @@ export type UserUncheckedUpdateWithoutDecidedMembershipsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput
   activityRecords?: Prisma.ActivityRecordUncheckedUpdateManyWithoutAuthorNestedInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -632,6 +661,7 @@ export type UserCreateWithoutSessionsInput = {
   decidedMemberships?: Prisma.CompanyMembershipCreateNestedManyWithoutDecidedByInput
   tags?: Prisma.TagCreateNestedManyWithoutUserInput
   activityRecords?: Prisma.ActivityRecordCreateNestedManyWithoutAuthorInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -646,6 +676,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   decidedMemberships?: Prisma.CompanyMembershipUncheckedCreateNestedManyWithoutDecidedByInput
   tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput
   activityRecords?: Prisma.ActivityRecordUncheckedCreateNestedManyWithoutAuthorInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -676,6 +707,7 @@ export type UserUpdateWithoutSessionsInput = {
   decidedMemberships?: Prisma.CompanyMembershipUpdateManyWithoutDecidedByNestedInput
   tags?: Prisma.TagUpdateManyWithoutUserNestedInput
   activityRecords?: Prisma.ActivityRecordUpdateManyWithoutAuthorNestedInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -690,6 +722,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   decidedMemberships?: Prisma.CompanyMembershipUncheckedUpdateManyWithoutDecidedByNestedInput
   tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput
   activityRecords?: Prisma.ActivityRecordUncheckedUpdateManyWithoutAuthorNestedInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutTagsInput = {
@@ -704,6 +737,7 @@ export type UserCreateWithoutTagsInput = {
   decidedMemberships?: Prisma.CompanyMembershipCreateNestedManyWithoutDecidedByInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   activityRecords?: Prisma.ActivityRecordCreateNestedManyWithoutAuthorInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutTagsInput = {
@@ -718,6 +752,7 @@ export type UserUncheckedCreateWithoutTagsInput = {
   decidedMemberships?: Prisma.CompanyMembershipUncheckedCreateNestedManyWithoutDecidedByInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   activityRecords?: Prisma.ActivityRecordUncheckedCreateNestedManyWithoutAuthorInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutTagsInput = {
@@ -748,6 +783,7 @@ export type UserUpdateWithoutTagsInput = {
   decidedMemberships?: Prisma.CompanyMembershipUpdateManyWithoutDecidedByNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   activityRecords?: Prisma.ActivityRecordUpdateManyWithoutAuthorNestedInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTagsInput = {
@@ -762,6 +798,7 @@ export type UserUncheckedUpdateWithoutTagsInput = {
   decidedMemberships?: Prisma.CompanyMembershipUncheckedUpdateManyWithoutDecidedByNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   activityRecords?: Prisma.ActivityRecordUncheckedUpdateManyWithoutAuthorNestedInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutActivityRecordsInput = {
@@ -776,6 +813,7 @@ export type UserCreateWithoutActivityRecordsInput = {
   decidedMemberships?: Prisma.CompanyMembershipCreateNestedManyWithoutDecidedByInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   tags?: Prisma.TagCreateNestedManyWithoutUserInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutActivityRecordsInput = {
@@ -790,6 +828,7 @@ export type UserUncheckedCreateWithoutActivityRecordsInput = {
   decidedMemberships?: Prisma.CompanyMembershipUncheckedCreateNestedManyWithoutDecidedByInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutActivityRecordsInput = {
@@ -820,6 +859,7 @@ export type UserUpdateWithoutActivityRecordsInput = {
   decidedMemberships?: Prisma.CompanyMembershipUpdateManyWithoutDecidedByNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   tags?: Prisma.TagUpdateManyWithoutUserNestedInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivityRecordsInput = {
@@ -834,6 +874,83 @@ export type UserUncheckedUpdateWithoutActivityRecordsInput = {
   decidedMemberships?: Prisma.CompanyMembershipUncheckedUpdateManyWithoutDecidedByNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput
+  uploadedAttachments?: Prisma.ActivityRecordAttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+}
+
+export type UserCreateWithoutUploadedAttachmentsInput = {
+  id?: string
+  name: string
+  email: string
+  phone: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.CompanyMembershipCreateNestedManyWithoutUserInput
+  decidedMemberships?: Prisma.CompanyMembershipCreateNestedManyWithoutDecidedByInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  tags?: Prisma.TagCreateNestedManyWithoutUserInput
+  activityRecords?: Prisma.ActivityRecordCreateNestedManyWithoutAuthorInput
+}
+
+export type UserUncheckedCreateWithoutUploadedAttachmentsInput = {
+  id?: string
+  name: string
+  email: string
+  phone: string
+  passwordHash: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.CompanyMembershipUncheckedCreateNestedManyWithoutUserInput
+  decidedMemberships?: Prisma.CompanyMembershipUncheckedCreateNestedManyWithoutDecidedByInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  tags?: Prisma.TagUncheckedCreateNestedManyWithoutUserInput
+  activityRecords?: Prisma.ActivityRecordUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type UserCreateOrConnectWithoutUploadedAttachmentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadedAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedAttachmentsInput>
+}
+
+export type UserUpsertWithoutUploadedAttachmentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUploadedAttachmentsInput, Prisma.UserUncheckedUpdateWithoutUploadedAttachmentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUploadedAttachmentsInput, Prisma.UserUncheckedCreateWithoutUploadedAttachmentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUploadedAttachmentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUploadedAttachmentsInput, Prisma.UserUncheckedUpdateWithoutUploadedAttachmentsInput>
+}
+
+export type UserUpdateWithoutUploadedAttachmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.CompanyMembershipUpdateManyWithoutUserNestedInput
+  decidedMemberships?: Prisma.CompanyMembershipUpdateManyWithoutDecidedByNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  tags?: Prisma.TagUpdateManyWithoutUserNestedInput
+  activityRecords?: Prisma.ActivityRecordUpdateManyWithoutAuthorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUploadedAttachmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.CompanyMembershipUncheckedUpdateManyWithoutUserNestedInput
+  decidedMemberships?: Prisma.CompanyMembershipUncheckedUpdateManyWithoutDecidedByNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  tags?: Prisma.TagUncheckedUpdateManyWithoutUserNestedInput
+  activityRecords?: Prisma.ActivityRecordUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 
@@ -847,6 +964,7 @@ export type UserCountOutputType = {
   sessions: number
   tags: number
   activityRecords: number
+  uploadedAttachments: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -855,6 +973,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
   tags?: boolean | UserCountOutputTypeCountTagsArgs
   activityRecords?: boolean | UserCountOutputTypeCountActivityRecordsArgs
+  uploadedAttachments?: boolean | UserCountOutputTypeCountUploadedAttachmentsArgs
 }
 
 /**
@@ -902,6 +1021,13 @@ export type UserCountOutputTypeCountActivityRecordsArgs<ExtArgs extends runtime.
   where?: Prisma.ActivityRecordWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUploadedAttachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ActivityRecordAttachmentWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -916,6 +1042,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   tags?: boolean | Prisma.User$tagsArgs<ExtArgs>
   activityRecords?: boolean | Prisma.User$activityRecordsArgs<ExtArgs>
+  uploadedAttachments?: boolean | Prisma.User$uploadedAttachmentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -956,6 +1083,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   tags?: boolean | Prisma.User$tagsArgs<ExtArgs>
   activityRecords?: boolean | Prisma.User$activityRecordsArgs<ExtArgs>
+  uploadedAttachments?: boolean | Prisma.User$uploadedAttachmentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -969,6 +1097,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     sessions: Prisma.$SessionPayload<ExtArgs>[]
     tags: Prisma.$TagPayload<ExtArgs>[]
     activityRecords: Prisma.$ActivityRecordPayload<ExtArgs>[]
+    uploadedAttachments: Prisma.$ActivityRecordAttachmentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1377,6 +1506,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tags<T extends Prisma.User$tagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activityRecords<T extends Prisma.User$activityRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$activityRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  uploadedAttachments<T extends Prisma.User$uploadedAttachmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedAttachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityRecordAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1923,6 +2053,30 @@ export type User$activityRecordsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.ActivityRecordScalarFieldEnum | Prisma.ActivityRecordScalarFieldEnum[]
+}
+
+/**
+ * User.uploadedAttachments
+ */
+export type User$uploadedAttachmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ActivityRecordAttachment
+   */
+  select?: Prisma.ActivityRecordAttachmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ActivityRecordAttachment
+   */
+  omit?: Prisma.ActivityRecordAttachmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityRecordAttachmentInclude<ExtArgs> | null
+  where?: Prisma.ActivityRecordAttachmentWhereInput
+  orderBy?: Prisma.ActivityRecordAttachmentOrderByWithRelationInput | Prisma.ActivityRecordAttachmentOrderByWithRelationInput[]
+  cursor?: Prisma.ActivityRecordAttachmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ActivityRecordAttachmentScalarFieldEnum | Prisma.ActivityRecordAttachmentScalarFieldEnum[]
 }
 
 /**

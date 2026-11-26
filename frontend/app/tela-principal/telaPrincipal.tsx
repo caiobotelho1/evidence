@@ -442,12 +442,6 @@ const recordCreationMessage = isPessoal
   async function handleCreateRecord(
     data: CreateRegistroDraft
   ): Promise<void> {
-    if (data.files.length > 0) {
-      throw new Error(
-        "O anexo de arquivos ainda não está disponível. Remova os arquivos para salvar o registro."
-      );
-    }
-
     const payload = {
       title: data.title,
       description: data.description,
@@ -456,13 +450,13 @@ const recordCreationMessage = isPessoal
     };
 
     if (isPessoal) {
-      await createPersonalRecord(payload);
+      await createPersonalRecord(payload, data.files);
     } else {
       if (!companyId) {
         throw new Error("Nenhuma empresa selecionada.");
       }
 
-      await createCompanyRecord(companyId, payload);
+      await createCompanyRecord(companyId, payload, data.files);
     }
 
     const currentFilters = {

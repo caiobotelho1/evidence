@@ -3,7 +3,12 @@
 import { useCallback, useEffect, useId, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import styles from "./NovaRegistroModal.module.css";
 import type { Tag } from "@/services/tag.service";
-import { REGISTRO_STATUS_OPTIONS, type RegistroStatus } from "../status-options";
+import {
+  COMPLETED_STATUS_OPTION,
+  REGISTRO_STATUS_OPTIONS,
+  type RegistroStatus,
+} from "../status-options";
+import { ATTACHMENT_ACCEPT, formatFileSize, mergeFiles } from "../file-utils";
 
 export type CreateRegistroDraft = {
   title: string;
@@ -36,23 +41,6 @@ function getTagBackgroundColor(color: string): string {
   return `rgba(${red}, ${green}, ${blue}, 0.14)`;
 }
 
-function formatFileSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-
-  const units = ["KB", "MB", "GB", "TB"];
-  let size = bytes / 1024;
-  let unitIndex = 0;
-
-  while (size >= 1024 && unitIndex < units.length - 1) {
-    size /= 1024;
-    unitIndex += 1;
-  }
-
-  return `${new Intl.NumberFormat("pt-BR", {
-    maximumFractionDigits: 1,
-  }).format(size)} ${units[unitIndex]}`;
-}
-
 export default function NovaRegistroModal({
   isOpen,
   onClose,
@@ -79,8 +67,11 @@ export default function NovaRegistroModal({
     selectedTagIds.includes(tag.id)
   );
 
+  const hasFiles = selectedFiles.length > 0;
+  const effectiveStatus: RegistroStatus = hasFiles ? "COMPLETED" : status;
+
   const selectedStatus =
-    REGISTRO_STATUS_OPTIONS.find((option) => option.value === status) ??
+    REGISTRO_STATUS_OPTIONS.find((option) => option.value === effectiveStatus) ??
     REGISTRO_STATUS_OPTIONS[0];
 
   const handleClose = useCallback(() => {
@@ -142,24 +133,7 @@ export default function NovaRegistroModal({
 
     if (files.length === 0) return;
 
-    setSelectedFiles((previousFiles) => {
-      const nextFiles = [...previousFiles];
-
-      for (const file of files) {
-        const alreadySelected = nextFiles.some(
-          (selectedFile) =>
-            selectedFile.name === file.name &&
-            selectedFile.size === file.size &&
-            selectedFile.lastModified === file.lastModified
-        );
-
-        if (!alreadySelected) {
-          nextFiles.push(file);
-        }
-      }
-
-      return nextFiles;
-    });
+    setSelectedFiles((previousFiles) => mergeFiles(previousFiles, files));
 
     // Permite selecionar novamente o mesmo arquivo depois de removê-lo.
     input.value = "";
@@ -196,7 +170,7 @@ export default function NovaRegistroModal({
       await onSubmit({
         title: trimmedTitle,
         description: trimmedDescription,
-        status,
+        status: effectiveStatus,
         tagIds: selectedTagIds,
         files: selectedFiles,
       });
@@ -301,58 +275,98 @@ export default function NovaRegistroModal({
                 Status
               </label>
 
-              <details
-                ref={statusDropdownRef}
-                className={styles.statusDropdown}
-              >
-                <summary className={styles.statusTrigger}>
-                  <span className={styles.statusValue}>
-                    <span
-                      className={styles.statusDot}
-                      style={{ backgroundColor: selectedStatus.color }}
-                    />
-                    {selectedStatus.label}
-                  </span>
-
-                  <svg
-                    className={styles.statusChevron}
-                    viewBox="0 0 16 16"
-                    aria-hidden="true"
+              {hasFiles ? (
+                <>
+                  <div
+                    className={styles.statusLocked}
+                    aria-describedby="registro-status-hint"
                   >
-                    <path
-                      d="m4 6 4 4 4-4"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </summary>
-
-                <div className={styles.statusOptions} role="group" aria-label="Opções de status">
-                  {REGISTRO_STATUS_OPTIONS.map((option) => (
-                    <button
-                      key={option.value}
-                      type="button"
-                      className={`${styles.statusOption} ${
-                        status === option.value ? styles.statusOptionSelected : ""
-                      }`}
-                      onClick={() => {
-                        setStatus(option.value);
-                        statusDropdownRef.current?.removeAttribute("open");
-                      }}
-                      aria-pressed={status === option.value}
-                    >
+                    <span className={styles.statusValue}>
                       <span
                         className={styles.statusDot}
-                        style={{ backgroundColor: option.color }}
+                        style={{ backgroundColor: COMPLETED_STATUS_OPTION.color }}
                       />
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-              </details>
+                      {COMPLETED_STATUS_OPTION.label}
+                    </span>
+                  </div>
+
+                  <p id="registro-status-hint" className={styles.statusHint}>
+                    Com anexo, o registro é criado como concluído.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <details
+                    ref={statusDropdownRef}
+                    className={styles.statusDropdown}
+                  >
+                    <summary
+                      className={styles.statusTrigger}
+                      aria-describedby="registro-status-hint"
+                    >
+                      <span className={styles.statusValue}>
+                        <span
+                          className={styles.statusDot}
+                          style={{ backgroundColor: selectedStatus.color }}
+                        />
+                        {selectedStatus.label}
+                      </span>
+
+                      <svg
+                        className={styles.statusChevron}
+                        viewBox="0 0 16 16"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="m4 6 4 4 4-4"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </summary>
+
+                    <div className={styles.statusOptions} role="group" aria-label="Opções de status">
+                      {REGISTRO_STATUS_OPTIONS.map((option) => {
+                        const requiresAttachment = option.value === "COMPLETED";
+
+                        return (
+                          <button
+                            key={option.value}
+                            type="button"
+                            className={`${styles.statusOption} ${
+                              status === option.value ? styles.statusOptionSelected : ""
+                            }`}
+                            onClick={() => {
+                              setStatus(option.value);
+                              statusDropdownRef.current?.removeAttribute("open");
+                            }}
+                            disabled={requiresAttachment}
+                            title={
+                              requiresAttachment
+                                ? "Disponível apenas ao anexar um arquivo"
+                                : undefined
+                            }
+                            aria-pressed={status === option.value}
+                          >
+                            <span
+                              className={styles.statusDot}
+                              style={{ backgroundColor: option.color }}
+                            />
+                            {option.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </details>
+
+                  <p id="registro-status-hint" className={styles.statusHint}>
+                    Para criar como concluído, adicione um anexo.
+                  </p>
+                </>
+              )}
             </div>
 
             <div className={styles.field}>
@@ -519,6 +533,7 @@ export default function NovaRegistroModal({
 
               <p className={styles.attachmentDescription}>
                 Selecione um ou mais arquivos para acompanhar este registro.
+                Ao anexar, o registro é criado como concluído.
               </p>
 
               <input
@@ -526,6 +541,7 @@ export default function NovaRegistroModal({
                 className={styles.fileInput}
                 type="file"
                 multiple
+                accept={ATTACHMENT_ACCEPT}
                 disabled={isSubmitting}
                 onChange={handleFileSelection}
                 aria-label="Selecionar arquivos para o registro"

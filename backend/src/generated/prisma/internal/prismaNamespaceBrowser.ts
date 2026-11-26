@@ -57,7 +57,9 @@ export const ModelName = {
   Session: 'Session',
   Tag: 'Tag',
   ActivityRecord: 'ActivityRecord',
-  ActivityRecordTag: 'ActivityRecordTag'
+  ActivityRecordTag: 'ActivityRecordTag',
+  ActivityRecordAttachment: 'ActivityRecordAttachment',
+  ActivityRecordAttachmentContent: 'ActivityRecordAttachmentContent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -166,6 +168,28 @@ export const ActivityRecordTagScalarFieldEnum = {
 } as const
 
 export type ActivityRecordTagScalarFieldEnum = (typeof ActivityRecordTagScalarFieldEnum)[keyof typeof ActivityRecordTagScalarFieldEnum]
+
+
+export const ActivityRecordAttachmentScalarFieldEnum = {
+  id: 'id',
+  fileName: 'fileName',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  sha256: 'sha256',
+  activityRecordId: 'activityRecordId',
+  uploadedById: 'uploadedById',
+  createdAt: 'createdAt'
+} as const
+
+export type ActivityRecordAttachmentScalarFieldEnum = (typeof ActivityRecordAttachmentScalarFieldEnum)[keyof typeof ActivityRecordAttachmentScalarFieldEnum]
+
+
+export const ActivityRecordAttachmentContentScalarFieldEnum = {
+  attachmentId: 'attachmentId',
+  data: 'data'
+} as const
+
+export type ActivityRecordAttachmentContentScalarFieldEnum = (typeof ActivityRecordAttachmentContentScalarFieldEnum)[keyof typeof ActivityRecordAttachmentContentScalarFieldEnum]
 
 
 export const SortOrder = {
