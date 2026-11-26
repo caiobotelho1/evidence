@@ -1,34 +1,49 @@
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./page.module.css";
+import { DM_Serif_Display, Inter } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const dmSerifDisplay = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
+  variable: "--font-dm-serif",
+  display: "swap",
+});
 
 export default function Home() {
   return (
-    <main className={styles.page}>
-      <header className={styles.header}>
-        <Link href="/" className={styles.brand} aria-label="Evidence — início">
-          <svg
-            width="36"
-            height="36"
-            viewBox="0 0 40 40"
-            fill="none"
-            aria-hidden="true"
+    <main className={`${styles.page} ${inter.variable} ${dmSerifDisplay.variable}`}>
+        <header className={styles.header}>
+          <Link
+            href="/"
+            className={styles.brand}
+            aria-label="Evidence — início"
           >
-            <path
-              d="M8 21L26 6L21 32L8 21L35 28L21 32"
-              stroke="currentColor"
-              strokeWidth="1.5"
+            <Image
+              src="/evidence-simbolo.svg"
+              alt=""
+              width={36}
+              height={36}
+              className={styles.brandIcon}
+              priority
             />
-            <circle cx="8" cy="21" r="4" fill="#4D7046" />
-            <circle cx="26" cy="6" r="4" fill="#203F31" />
-            <circle cx="21" cy="32" r="5" fill="#203F31" />
-            <circle cx="35" cy="28" r="3.5" fill="#B85B44" />
-          </svg>
 
-          <span>Evidence</span>
-        </Link>
+            <span className={dmSerifDisplay.className}>
+              Evidence
+            </span>
+          </Link>
 
-        <p className={styles.tagline}>Registros que conectam</p>
-      </header>
+          <p className={styles.tagline}>
+            Registros que conectam
+          </p>
+        </header>
 
       <section className={styles.hero} aria-labelledby="hero-title">
         <h1 id="hero-title" className={styles.title}>

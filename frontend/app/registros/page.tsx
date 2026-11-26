@@ -118,7 +118,7 @@ function RegistrosContent() {
     <main className={`${styles.page} ${inter.className}`}>
       <header className={styles.header}>
         <Link
-          href="/"
+          href="/tela-principal"
           aria-label="Evidence — página inicial"
           className={styles.brand}
         >

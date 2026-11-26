@@ -92,7 +92,7 @@ export default function SolicitarParticipacaoForm() {
       });
 
       router.push(
-        `/cadastro/solicitar-participacao/sucesso?${parametros.toString()}`
+        `/solicitar-participacao/sucesso?${parametros.toString()}`
       );
     } catch (error) {
       setErro(mensagemDeErro(error, "solicitacao"));

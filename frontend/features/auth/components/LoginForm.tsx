@@ -25,7 +25,7 @@ export function LoginForm() {
 
     try {
       await login({ email, password });
-      router.replace("/login/escolher-ambiente");
+      router.replace("/escolher-ambiente");
     } catch (err) {
       setError(errorMessage(err));
       setSubmitting(false);
@@ -90,17 +90,6 @@ export function LoginForm() {
           </button>
         </div>
       </div>
-
-      <button
-        type="button"
-        className={styles.forgotPassword}
-        onClick={() => {
-          setError("");
-          setMessage("A recuperação de senha ainda não está disponível.");
-        }}
-      >
-        Esqueci minha senha
-      </button>
 
       {error && (
         <p className={styles.error} role="alert">

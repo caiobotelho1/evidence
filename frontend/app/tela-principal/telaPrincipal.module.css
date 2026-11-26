@@ -11,18 +11,104 @@
   gap: 24px;
 
   width: 100%;
-  max-width: 1440px;
-  min-height: 88px;
+  padding-top: 32px;
+  padding-bottom: 32px;
 
-  margin: 0 auto;
-  padding: 0 32px;
+  padding-left: clamp(20px, 5.56vw, 80px);
+  padding-right: max(32px, calc((100% - 1200px) / 2 + 32px));
+
   box-sizing: border-box;
+}
+
+.companyDropdown {
+  position: relative;
+  width: 296px;
+  max-width: 100%;
+}
+
+.companyDropdownButton {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 16px;
+  gap: 12px;
+  background: #FAF9F5;
+  border: 1px solid #EADFCF;
+  border-radius: 12px;
+  color: #1F3D2E;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  list-style: none;
+}
+
+.companyDropdownButton::-webkit-details-marker {
+  display: none;
+}
+
+.companyDropdownButton img {
+  transition: transform 0.2s ease;
+}
+
+.companyDropdown[open] .companyDropdownButton img {
+  transform: rotate(180deg);
+}
+
+.companyDropdownContent {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 20;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 10px 8px;
+  gap: 4px;
+  background: #FAF9F5;
+  border: 1px solid #EADFCF;
+  box-shadow: 0 8px 26px rgba(26, 38, 28, 0.15);
+  border-radius: 16px;
+}
+
+.companyDropdownItem {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 35px;
+  padding: 9px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #1F3D2E;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.companyDropdownItem:hover {
+  background: #E3E8DC;
+}
+
+.companyDropdownItem:focus-visible,
+.companyDropdownButton:focus-visible {
+  outline: 2px solid #4A6A41;
+  outline-offset: 2px;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   color: #1F3D2E;
   text-decoration: none;
 }
@@ -36,7 +122,7 @@
 }
 
 .logo span {
-  font-size: 30px;
+  font-size: 32px;
   font-style: italic;
   font-weight: 400;
   line-height: 1.2;
@@ -46,6 +132,7 @@
   display: flex;
   align-items: center;
   gap: 20px;
+  transform: translateX(24px);
 }
 
 .environmentSwitcher {
@@ -103,11 +190,11 @@
   justify-content: center;
   gap: 9px;
 
-  height: 42px;
+  height: 46px;
   min-width: 120px;
   padding: 0 14px;
 
-  border-radius: 9px;
+  border-radius: 12px;
   background-color: #E3E8DC;
   color: #1F3D2E;
 
@@ -454,57 +541,53 @@
 
 @media (max-width: 900px) {
   .header {
-    padding: 0 24px;
-    gap: 16px;
+    padding: 24px;
+    gap: 20px;
   }
 
   .headerActions {
+    transform: none;
     gap: 12px;
   }
 
   .main {
-    padding: 24px 24px 48px;
-  }
-
-  .title {
-    font-size: 38px;
-  }
-
-  .searchSection {
-    flex-wrap: wrap;
-  }
-
-  .searchInput {
-    flex: 1 1 100%;
-  }
-
-  .tagsDropdown {
-    flex: 1 1 160px;
-    min-width: 0;
-  }
-
-  .newRecordButton {
-    flex: 1 1 160px;
+    padding: 24px;
   }
 }
 
 @media (max-width: 600px) {
   .header {
-    height: auto;
-    min-height: auto;
-    padding: 18px 16px;
+    position: relative;
+    z-index: 50;
+    display: flex;
     flex-wrap: wrap;
-    gap: 16px;
+    width: 100%;
+    padding: 24px 20px;
+    gap: 20px;
+  }
+
+  .logo {
+    gap: 8px;
   }
 
   .logo span {
-    font-size: 26px;
+    font-size: 28px;
+  }
+
+  .logo img {
+    width: 32px;
+    height: 32px;
   }
 
   .headerActions {
-    width: 100%;
+    display: flex;
+    align-items: center;
     justify-content: space-between;
+    width: 100%;
+    min-width: 0;
     gap: 10px;
+    margin: 0;
+    transform: none;
   }
 
   .environmentSwitcher {
@@ -516,9 +599,8 @@
     flex: 1;
     width: auto;
     min-width: 0;
-    height: 38px;
     padding: 0 8px;
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .menu {
@@ -526,100 +608,143 @@
   }
 
   .menuButton {
-    min-width: auto;
-    height: 46px;
-    padding: 0 12px;
+    min-width: 108px;
+    padding: 0 10px;
+    gap: 7px;
     font-size: 14px;
   }
 
+  .dropdown {
+    right: 0;
+    width: min(260px, calc(100vw - 24px));
+    max-width: calc(100vw - 24px);
+  }
+
   .main {
+    width: 100%;
+    min-width: 0;
     padding: 20px 16px 36px;
   }
 
   .breadcrumb {
-    margin-bottom: 20px;
-    font-size: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
   }
 
   .titleSection {
     margin-bottom: 18px;
   }
 
-  .environment {
-    font-size: 13px;
-  }
-
   .title {
     font-size: 34px;
   }
 
+  .companySelector {
+    max-width: 100%;
+  }
+
   .searchSection {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: 8px;
   }
 
   .searchInput {
-    flex: 1 1 100%;
+    grid-column: 1 / -1;
     width: 100%;
-    height: 44px;
+    min-width: 0;
+  }
+
+  .searchSection > .filterButton {
+    width: 100%;
+    min-width: 0;
+    padding: 0 8px;
+    font-size: 13px;
   }
 
   .tagsDropdown {
-    flex: 1 1 0;
-    width: auto;
+    width: 100%;
     min-width: 0;
   }
 
   .tagsDropdown .filterButton {
     width: 100%;
     min-width: 0;
+    padding: 0 8px;
+    font-size: 13px;
   }
 
-  .newRecordButton {
-    flex: 1 1 0;
-    width: auto;
+  .tagsDropdownContent {
+    right: 0;
+    max-width: calc(100vw - 32px);
+  }
+
+  .searchSection > .newRecordButton {
+    grid-column: 1 / -1;
+    width: 100%;
     min-width: 0;
-    padding: 0 10px;
-    font-size: 13px;
   }
 
   .timelineSection {
     min-height: 360px;
     margin-top: 20px;
   }
-
-  .tagsDropdownContent {
-    left: 0;
-    right: auto;
-    max-width: calc(100vw - 32px);
-  }
-
-  .companySelector {
-    max-width: 100%;
-  }
 }
 
 @media (max-width: 380px) {
+  .header {
+    padding: 20px 12px;
+    gap: 16px;
+  }
+
+  .logo {
+    gap: 6px;
+  }
+
   .logo span {
-    font-size: 24px;
+    font-size: 25px;
+  }
+
+  .logo img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .headerActions {
+    gap: 8px;
+  }
+
+  .environmentButton {
+    padding: 0 5px;
+    font-size: 12px;
+  }
+
+  .menuButton {
+    min-width: 100px;
+    padding: 0 8px;
+    font-size: 13px;
+  }
+
+  .main {
+    padding: 16px 12px 32px;
   }
 
   .title {
     font-size: 30px;
   }
 
-  .menuButton {
-    gap: 6px;
-    padding: 0 10px;
+  .searchSection {
+    gap: 7px;
+  }
+
+  .searchSection > .filterButton,
+  .tagsDropdown .filterButton {
+    font-size: 12px;
   }
 
   .newRecordButton {
-    font-size: 12px;
-    gap: 5px;
-  }
-
-  .filterButton {
     font-size: 13px;
   }
 }

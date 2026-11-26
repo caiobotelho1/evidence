@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { DM_Serif_Display, Inter } from "next/font/google";
 
 import CadastroEmpresaForm from "@/features/empresa/components/CadastroEmpresaForm";
@@ -27,27 +28,27 @@ export default function CadastroEmpresaPage() {
     <main
       className={`${styles.page} ${inter.variable} ${dmSerif.variable}`}
     >
-      <header className={styles.header}>
-        <Link href="/" className={styles.brand}>
-          <span className={styles.brandSymbol} aria-hidden="true">
-            <svg viewBox="0 0 36 36" fill="none">
-              <path
-                d="M7 17L17 7L28 23L17 29L7 17Z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              />
-              <circle cx="18" cy="5" r="3" fill="#1F3D2E" />
-              <circle cx="5" cy="18" r="3" fill="#4A6A41" />
-              <circle cx="15" cy="31" r="3" fill="#1F3D2E" />
-              <circle cx="31" cy="23" r="3" fill="#B65A46" />
-            </svg>
-          </span>
+     <header className={styles.header}>
+        <Link
+          href="/tela-principal"
+          className={styles.brand}
+          aria-label="Evidence — página inicial"
+        >
+          <Image
+            src="/evidence-simbolo.svg"
+            alt=""
+            width={36}
+            height={36}
+            className={styles.brandIcon}
+            priority
+          />
 
-          <span>Evidence</span>
+          <span className={dmSerif.className}>Evidence</span>
         </Link>
 
-        <Link href="/" className={styles.backLink}>
-          ← Voltar ao início
+        <Link href="/tela-principal" className={styles.backLink}>
+          <span aria-hidden="true">←</span>
+          Voltar ao início
         </Link>
       </header>
 
@@ -66,7 +67,7 @@ export default function CadastroEmpresaPage() {
           </p>
         </div>
 
-        <CadastroEmpresaForm />
+        <CadastroEmpresaForm/>
       </section>
     </main>
   );

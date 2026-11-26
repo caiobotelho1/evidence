@@ -246,7 +246,8 @@ export default function Timeline({ registros, onOpenDetails }: TimelineProps) {
                       aberto ? styles.pontoAtivo : ""
                     } ${animacaoInicial ? styles.pontoAnimado : ""}`}
                     style={{ backgroundColor: cor }}
-                    aria-label={`Visualizar registro ${registro.titulo}`}
+                    data-status={registro.status}
+                    aria-label={`Visualizar registro ${registro.titulo} - ${STATUS_LABELS[registro.status]}`}
                     aria-expanded={aberto}
                     onMouseEnter={() =>
                       setRegistroAberto(registro.id)

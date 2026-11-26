@@ -1,11 +1,13 @@
 .page {
   box-sizing: border-box;
   min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
-  padding: 32px 40px 80px;
+  padding: 0 0 80px;
   background: #FAF9F5;
   color: #1F3D2E;
   font-family: var(--font-inter), Arial, sans-serif;
+  color-scheme: light;
 }
 
 .page *,
@@ -16,11 +18,11 @@
 
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
+  padding: 32px clamp(20px, 5.56vw, 80px);
 }
 
 .brand {
@@ -29,6 +31,9 @@
   gap: 12px;
   color: #1F3D2E;
   text-decoration: none;
+}
+
+.brand span {
   font-family: var(--font-dm-serif), Georgia, serif;
   font-size: 32px;
   font-style: italic;
@@ -36,13 +41,18 @@
   line-height: 1.2;
 }
 
-.logo {
+.brandIcon {
+  display: block;
   width: 36px;
   height: 36px;
+  object-fit: contain;
   flex-shrink: 0;
 }
 
 .backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   color: #1F3D2E;
   text-decoration: none;
   font-size: 16px;
@@ -54,15 +64,22 @@
   text-decoration: underline;
 }
 
+.brand:focus-visible,
+.backLink:focus-visible {
+  outline: 2px solid #1F3D2E;
+  outline-offset: 5px;
+  border-radius: 4px;
+}
+
 .card {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  max-width: 860px;
-  margin: 147px auto 0;
-  padding: 32px 40px;
-  gap: 20px;
+  align-items: stretch;
+  gap: 26px;
+  width: calc(100% - 40px);
+  max-width: 800px;
+  margin: 112px auto 0;
+  padding: 40px;
   background: #FFFFFF;
   border: 1px solid #EADFCF;
   border-radius: 24px;
@@ -71,15 +88,14 @@
 .intro {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  width: 100%;
+  gap: 8px;
 }
 
 .intro h1 {
   margin: 0;
   color: #1F3D2E;
   font-family: var(--font-dm-serif), Georgia, serif;
-  font-size: 40px;
+  font-size: 42px;
   font-style: italic;
   font-weight: 400;
   line-height: 1.2;
@@ -88,23 +104,18 @@
 .intro p {
   margin: 0;
   color: #4A6A41;
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 400;
   line-height: 1.45;
-}
-
-.brand:focus-visible,
-.backLink:focus-visible {
-  outline: 3px solid #9CAE8F;
-  outline-offset: 4px;
 }
 
 @media (max-width: 768px) {
   .page {
-    padding: 24px 20px 48px;
+    padding-bottom: 48px;
   }
 
   .card {
-    margin-top: 80px;
+    margin-top: 50px;
     padding: 28px 24px;
   }
 
@@ -113,32 +124,62 @@
   }
 }
 
-@media (max-width: 480px) {
-  .page {
-    padding: 20px 14px 40px;
+@media (max-width: 600px) {
+  .header {
+    padding: 24px 20px;
+    flex-wrap: wrap;
   }
 
   .brand {
-    font-size: 25px;
+    gap: 8px;
+  }
+
+  .brand span {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding-bottom: 40px;
+  }
+
+  .card {
+    width: calc(100% - 32px);
+    margin-top: 32px;
+    padding: 24px 18px;
+    border-radius: 24px;
+  }
+
+  .intro h1 {
+    font-size: 30px;
+  }
+
+  .intro p {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 380px) {
+  .header {
+    padding: 20px 16px;
+    gap: 12px;
+  }
+
+  .brand {
     gap: 6px;
   }
 
-  .logo {
+  .brand span {
+    font-size: 24px;
+  }
+
+  .brandIcon {
     width: 28px;
     height: 28px;
   }
 
   .backLink {
     font-size: 12px;
-  }
-
-  .card {
-    margin-top: 48px;
-    padding: 24px 18px;
-    border-radius: 18px;
-  }
-
-  .intro h1 {
-    font-size: 30px;
   }
 }

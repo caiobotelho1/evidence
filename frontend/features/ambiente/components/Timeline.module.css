@@ -96,21 +96,48 @@
   border: none;
   border-radius: 50%;
   cursor: pointer;
+
+  outline: 2px solid #9CAE8F;
+  outline-offset: 4px;
+
   transition: transform 0.2s ease;
 }
 
+/* Contorno de acordo com o status */
+
+.ponto[data-status="PENDING"] {
+  outline-color: #D9A33D;
+}
+
+.ponto[data-status="IN_PROGRESS"] {
+  outline-color: #005394;
+}
+
+.ponto[data-status="COMPLETED"] {
+  outline-color: #59934C;
+}
+
+.ponto[data-status="CANCELED"] {
+  outline-color: #990000;
+}
+
+/* Interação com os registros */
+
 .ponto:hover,
-.ponto:focus-visible,
 .pontoAtivo {
   transform: scale(1.15);
-  outline: 2px solid #1F3D2E;
-  outline-offset: 4px;
+}
+
+.ponto:focus-visible {
+  transform: scale(1.15);
+  outline-width: 3px;
 }
 
 .data {
   font-size: 12px;
   color: #111C16;
   white-space: nowrap;
+  margin-top: 10px;
 }
 
 .detalhes {

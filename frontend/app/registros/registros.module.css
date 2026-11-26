@@ -1,27 +1,33 @@
 .page {
+  box-sizing: border-box;
   min-height: 100vh;
-  background: #faf9f5;
-  color: #111c16;
+  min-height: 100dvh;
+  width: 100%;
+  background: #FAF9F5;
+  color: #1F3D2E;
+}
+
+.page *,
+.page *::before,
+.page *::after {
+  box-sizing: border-box;
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: 16px;
   width: 100%;
-  max-width: 1440px;
-  min-height: 88px;
-  margin: 0 auto;
-  padding: 0 32px;
+  padding: 32px clamp(20px, 5.56vw, 80px);
   box-sizing: border-box;
 }
 
 .brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  color: #1f3d2e;
+  gap: 12px;
+  color: #1F3D2E;
   text-decoration: none;
 }
 
@@ -34,25 +40,28 @@
 }
 
 .brand span {
-  font-size: 30px;
+  font-size: 32px;
   font-style: italic;
   font-weight: 400;
   line-height: 1.2;
 }
 
 .backLink {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 9px;
-  color: #1f3d2e;
-  font-size: 13px;
-  font-weight: 500;
+  justify-content: center;
+  gap: 10px;
+  min-height: 40px;
+  color: #1F3D2E;
   text-decoration: none;
-  transition: opacity 0.2s ease;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+  transform: translateY(8px);
 }
 
 .backLink:hover {
-  opacity: 0.7;
+  text-decoration: underline;
 }
 
 .message a:hover {

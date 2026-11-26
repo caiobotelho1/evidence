@@ -85,7 +85,7 @@ export default function SolicitacaoAprovada({
 
       <div className={styles.footer}>
         <Link
-          href="/cadastro/empresa/receber-solicitacao"
+          href="/receber-solicitacao"
           className={styles.submitButton}
         >
           Voltar para as solicitações

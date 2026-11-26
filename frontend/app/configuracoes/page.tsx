@@ -215,7 +215,7 @@ export default function ConfiguracoesPage() {
                 </p>
 
                 <Link
-                  href="/cadastro/empresa"
+                  href="/empresa"
                   className={styles.primaryButton}
                 >
                   Cadastrar empresa

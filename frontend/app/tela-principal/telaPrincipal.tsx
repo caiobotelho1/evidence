@@ -490,7 +490,7 @@ const recordCreationMessage = isPessoal
     >
       <header className={styles.header}>
       <Link
-        href="/"
+        href="/tela-principal"
         aria-label="Evidence — página inicial"
         className={styles.logo}
       >
@@ -645,22 +645,40 @@ const recordCreationMessage = isPessoal
                   {companies[0].tradeName?.trim() || companies[0].legalName}
                 </p>
               ) : (
-                <select
-                  id="empresa-atual"
-                  className={styles.companySelect}
-                  value={selectedCompanyId}
-                  onChange={(event) =>
-                    setSelectedCompanyId(event.target.value)
-                  }
-                >
-                  <option value="">Selecione uma empresa</option>
+                <details className={styles.companyDropdown}>
+                  <summary className={styles.companyDropdownButton}>
+                    <span>
+                      {selectedCompany
+                        ? selectedCompany.tradeName?.trim() || selectedCompany.legalName
+                        : "Selecione uma empresa"}
+                    </span>
 
-                  {companies.map((company) => (
-                    <option key={company.id} value={company.id}>
-                      {company.tradeName?.trim() || company.legalName}
-                    </option>
-                  ))}
-                </select>
+                    <Image
+                      src={iconSeta}
+                      alt=""
+                      width={18}
+                      height={18}
+                    />
+                  </summary>
+
+                  <div className={styles.companyDropdownContent}>
+                    {companies.map((company) => (
+                      <button
+                        key={company.id}
+                        type="button"
+                        className={styles.companyDropdownItem}
+                        onClick={(event) => {
+                          setSelectedCompanyId(company.id);
+                          event.currentTarget
+                            .closest("details")
+                            ?.removeAttribute("open");
+                        }}
+                      >
+                        {company.tradeName?.trim() || company.legalName}
+                      </button>
+                    ))}
+                  </div>
+                </details>
               )}
             </div>
           )}

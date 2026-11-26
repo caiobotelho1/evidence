@@ -93,7 +93,7 @@ export default function CadastroEmpresaForm() {
           telefone.replace(/\D/g, "") || undefined,
       });
 
-      router.push("/cadastro/empresa/sucesso");
+      router.push("/empresa/sucesso");
     } catch (error) {
       if (error instanceof ApiError) {
         switch (error.status) {
