@@ -316,9 +316,20 @@ function GerenciarEmpresa({
           <span aria-current="page">GERENCIAR</span>
         </nav>
 
-        <h1 className={`${styles.title} ${dmSerif.className}`}>
-          {nomeEmpresa}
-        </h1>
+        <div className={styles.companyHeading}>
+          <h1 className={`${styles.title} ${dmSerif.className}`}>
+            {nomeEmpresa}
+          </h1>
+
+          {empresa && (
+            <p className={styles.companyCnpj}>
+              CNPJ: {empresa.cnpj.replace(
+                /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
+                "$1.$2.$3/$4-$5"
+              )}
+            </p>
+          )}
+        </div>
 
         {carregandoEmpresa ? (
           <p role="status">
