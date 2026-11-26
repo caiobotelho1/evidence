@@ -15,7 +15,7 @@ import {
 
 import iconUser from "../../imgs/icon_user.png";
 import iconMenu from "../../imgs/icon_menu.png";
-import iconSeta from "../../imgs/icon_seta.png";
+import iconSeta from "../../imgs/icon_seta.png"; 
 
 import TagModal from "@/features/tags/components/TagModal";
 import NovaRegistroModal, {

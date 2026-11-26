@@ -26,6 +26,7 @@ export default function MenuAmbiente({
   onCriarTag,
 }: MenuAmbienteProps) {
   const isPessoal = ambiente === "pessoal";
+
   const isProprietario =
     ambiente === "empresa" && papelEmpresa === "proprietario";
 
@@ -35,13 +36,22 @@ export default function MenuAmbiente({
       ? `/registros?ambiente=empresa&companyId=${encodeURIComponent(companyId)}`
       : "/registros?ambiente=empresa";
 
+  const companyManagementHref = companyId
+    ? `/gerenciar-empresa?ambiente=empresa&companyId=${encodeURIComponent(companyId)}`
+    : "/gerenciar-empresa?ambiente=empresa";
+
   return (
     <nav
       className={styles.menu}
       aria-label="Menu do ambiente atual"
     >
       <Link href={recordsHref} className={styles.menuItem}>
-        <Image src={iconRegistro} alt="" width={20} height={20} />
+        <Image
+          src={iconRegistro}
+          alt=""
+          width={20}
+          height={20}
+        />
         <span>Registros</span>
       </Link>
 
@@ -51,13 +61,21 @@ export default function MenuAmbiente({
           className={styles.menuItem}
           onClick={onCriarTag}
         >
-          <Image src={iconTag} alt="" width={20} height={20} />
+          <Image
+            src={iconTag}
+            alt=""
+            width={20}
+            height={20}
+          />
           <span>Criar tag</span>
         </button>
       )}
 
-      {isProprietario && (
-        <Link href="/gerenciar-empresa" className={styles.menuItem}>
+      {isProprietario && companyId && (
+        <Link
+          href={companyManagementHref}
+          className={styles.menuItem}
+        >
           <Image
             src={iconEquipe}
             alt=""
@@ -68,7 +86,10 @@ export default function MenuAmbiente({
         </Link>
       )}
 
-      <Link href="/configuracoes" className={styles.menuItem}>
+      <Link
+        href="/configuracoes"
+        className={styles.menuItem}
+      >
         <Image
           src={iconConfiguracoes}
           alt=""
@@ -80,13 +101,18 @@ export default function MenuAmbiente({
 
       <div className={styles.divider} />
 
-    <Link
-      href="/login"
-      className={`${styles.menuItem} ${styles.logout}`}
-    >
-      <Image src={iconSair} alt="" width={20} height={20} />
-      <span>Sair</span>
-    </Link>
+      <Link
+        href="/login"
+        className={`${styles.menuItem} ${styles.logout}`}
+      >
+        <Image
+          src={iconSair}
+          alt=""
+          width={20}
+          height={20}
+        />
+        <span>Sair</span>
+      </Link>
     </nav>
   );
 }
