@@ -2,10 +2,24 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { DM_Serif_Display, Inter } from "next/font/google";
-import EditarDadosModal, {type DadosPessoais,} from "@/features/configuracoes/components/EditarDadosModal";
-import AlterarSenhaModal, {type AlteracaoSenha,} from "@/features/configuracoes/components/AlterarSenhaModal";
-import {getUserProfile,updateUserProfile,changeUserPassword,type UserProfile,} from "@/services/users.service";
+
+import EditarDadosModal, {
+  type DadosPessoais,
+} from "@/features/configuracoes/components/EditarDadosModal";
+
+import AlterarSenhaModal, {
+  type AlteracaoSenha,
+} from "@/features/configuracoes/components/AlterarSenhaModal";
+
+import {
+  getUserProfile,
+  updateUserProfile,
+  changeUserPassword,
+  type UserProfile,
+} from "@/services/users.service";
+
 import { ApiError } from "@/services/api";
 import styles from "./configuracoes.module.css";
 
@@ -43,6 +57,7 @@ export default function ConfiguracoesPage() {
       setUsuario(converterDados(profile));
     } catch (error) {
       setUsuario(null);
+
       setErro(
         error instanceof ApiError
           ? error.message
@@ -80,27 +95,22 @@ export default function ConfiguracoesPage() {
   return (
     <div className={`${styles.page} ${inter.className}`}>
       <header className={styles.header}>
-        <Link href="/" className={styles.logo}>
-          <svg
-            width="36"
-            height="36"
-            viewBox="0 0 36 36"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <path
-              d="M18 7L8 18L15 29L29 22L18 7Z"
-              stroke="#1F3D2E"
-              strokeWidth="1.2"
-            />
-            <circle cx="18" cy="7" r="3.4" fill="#1F3D2E" />
-            <circle cx="8" cy="18" r="3.4" fill="#4A6A41" />
-            <circle cx="15" cy="29" r="3.4" fill="#1F3D2E" />
-            <circle cx="29" cy="22" r="3.4" fill="#B65A46" />
-          </svg>
+        <Link
+          href="/tela-principal"
+          className={styles.logo}
+          aria-label="Evidence — página inicial"
+        >
+          <Image
+            src="/evidence-simbolo.svg"
+            alt=""
+            width={36}
+            height={36}
+            priority
+          />
 
-          <span className={dmSerif.className}>Evidence</span>
+          <span className={dmSerif.className}>
+            Evidence
+          </span>
         </Link>
 
         <Link
@@ -113,7 +123,9 @@ export default function ConfiguracoesPage() {
       </header>
 
       <main className={styles.main}>
-        <span className={styles.eyebrow}>MINHA CONTA</span>
+        <span className={styles.eyebrow}>
+          MINHA CONTA
+        </span>
 
         <h1 className={`${styles.title} ${dmSerif.className}`}>
           Configurações
@@ -124,14 +136,23 @@ export default function ConfiguracoesPage() {
         </p>
 
         {mensagem && (
-          <p role="status" style={{ color: "#1f3d2e" }}>
+          <p
+            role="status"
+            className={styles.successMessage}
+          >
             {mensagem}
           </p>
         )}
 
         {erro && (
-          <div role="alert">
-            <p style={{ color: "#a34237" }}>{erro}</p>
+          <div
+            role="alert"
+            className={styles.errorContainer}
+          >
+            <p className={styles.errorMessage}>
+              {erro}
+            </p>
+
             <button
               type="button"
               className={styles.outlineButton}
@@ -143,13 +164,23 @@ export default function ConfiguracoesPage() {
         )}
 
         {carregando ? (
-          <p className={styles.subtitle}>Carregando seus dados...</p>
+          <p
+            className={styles.subtitle}
+            role="status"
+          >
+            Carregando seus dados...
+          </p>
         ) : (
           <div className={styles.grid}>
+
+            {/* Dados pessoais */}
+
             <section className={styles.card}>
               <h2>Dados pessoais</h2>
 
-              <p>Suas informações de contato no Evidence.</p>
+              <p>
+                Suas informações de contato no Evidence.
+              </p>
 
               <div className={styles.fields}>
                 <div className={styles.field}>
@@ -182,6 +213,9 @@ export default function ConfiguracoesPage() {
             </section>
 
             <div className={styles.rightColumn}>
+
+              {/* Segurança da conta */}
+
               <section className={styles.card}>
                 <h2>Segurança da conta</h2>
 
@@ -202,29 +236,44 @@ export default function ConfiguracoesPage() {
                 </button>
               </section>
 
+              {/* Minhas empresas */}
+
               <section className={styles.card}>
                 <h2>Minhas empresas</h2>
 
                 <p>
-                  Sua conta pessoal também pode ter uma empresa.
+                  Sua conta pessoal também pode estar vinculada
+                  a empresas.
                 </p>
 
                 <p>
-                  Cadastre agora ou quando precisar. Você usará o
-                  mesmo acesso e será responsável pela empresa.
+                  Cadastre sua própria empresa ou solicite
+                  participação em uma empresa existente,
+                  utilizando o mesmo acesso.
                 </p>
 
-                <Link
-                  href="/empresa"
-                  className={styles.primaryButton}
-                >
-                  Cadastrar empresa
-                </Link>
+                <div className={styles.companyActions}>
+                  <Link
+                    href="/empresa"
+                    className={styles.primaryButton}
+                  >
+                    Cadastrar empresa
+                  </Link>
+
+                  <Link
+                    href="/solicitar-participacao"
+                    className={styles.primaryButton}
+                  >
+                    Solicitar participação em uma empresa
+                  </Link>
+                </div>
               </section>
             </div>
           </div>
         )}
       </main>
+
+      {/* Modal de edição de dados pessoais */}
 
       {modalDadosAberto && usuario && (
         <EditarDadosModal
@@ -234,6 +283,8 @@ export default function ConfiguracoesPage() {
           onSave={handleSalvarDados}
         />
       )}
+
+      {/* Modal de alteração de senha */}
 
       {modalSenhaAberto && (
         <AlterarSenhaModal
