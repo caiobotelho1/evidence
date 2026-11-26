@@ -118,10 +118,10 @@ export default function SolicitacaoRecebida() {
         });
 
         router.push(
-          `/cadastro/empresa/receber-solicitacao/aprovar?${params.toString()}`
+          `/receber-solicitacao/aprovar?${params.toString()}`
         );
       } else {
-        router.push("/cadastro/empresa/receber-solicitacao/recusar");
+        router.push("/receber-solicitacao/recusar");
       }
     } catch (err: unknown) {
       setRequestResult({

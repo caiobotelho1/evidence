@@ -1,11 +1,13 @@
 .page {
   box-sizing: border-box;
   min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
-  padding: 32px 40px 80px;
+  padding: 0 0 80px;
   background: #FAF9F5;
   color: #1F3D2E;
   font-family: var(--font-inter), Arial, sans-serif;
+  color-scheme: light;
 }
 
 .page *,
@@ -16,11 +18,11 @@
 
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
+  padding: 32px clamp(20px, 5.56vw, 80px);
 }
 
 .brand {
@@ -50,10 +52,14 @@
 }
 
 .backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   color: #1F3D2E;
   text-decoration: none;
   font-size: 16px;
   font-weight: 500;
+  line-height: 1.45;
 }
 
 .backLink:hover {
@@ -64,10 +70,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  width: calc(100% - 40px);
   max-width: 860px;
-  margin: 150px auto 0;
-  padding: 32px 40px;
+  margin: 80px auto 0;
+  padding: 40px;
   gap: 20px;
   background: #FFFFFF;
   border: 1px solid #EADFCF;

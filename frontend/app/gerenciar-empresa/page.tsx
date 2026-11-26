@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { DM_Serif_Display, Inter } from "next/font/google";
 import FuncionarioModal, {type Funcionario,} from "@/features/empresa/components/FuncionarioModal";
 import {getMyCompanies,getCompanyMembers,getCompanyMember,removeCompanyMember,type CompanyMember,type MyCompany,} from "@/services/company.service";
@@ -136,35 +137,29 @@ export default function GerenciarEmpresaPage() {
   return (
     <div className={`${styles.page} ${inter.className}`}>
       <header className={styles.header}>
-        <Link href="/" className={styles.logo}>
-          <svg
-            width="36"
-            height="36"
-            viewBox="0 0 36 36"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
+          <Link
+            href="/"
+            className={styles.logo}
+            aria-label="Evidence — página inicial"
           >
-            <path
-              d="M18 7L8 18L15 29L29 22L18 7Z"
-              stroke="#1F3D2E"
-              strokeWidth="1.2"
+            <Image
+              src="/evidence-simbolo.svg"
+              alt=""
+              width={36}
+              height={36}
+              className={styles.brandIcon}
+              priority
             />
-            <circle cx="18" cy="7" r="3.4" fill="#1F3D2E" />
-            <circle cx="8" cy="18" r="3.4" fill="#4A6A41" />
-            <circle cx="15" cy="29" r="3.4" fill="#1F3D2E" />
-            <circle cx="29" cy="22" r="3.4" fill="#B65A46" />
-          </svg>
 
-          <span className={dmSerif.className}>Evidence</span>
-        </Link>
+            <span className={dmSerif.className}>Evidence</span>
+          </Link>
 
         <Link
           href="/tela-principal?ambiente=empresa"
           className={styles.backLink}
         >
           <span aria-hidden="true">←</span>
-          Voltar à timeline
+          Voltar ao início
         </Link>
       </header>
 
@@ -186,7 +181,7 @@ export default function GerenciarEmpresaPage() {
         {empresa && (
           <>
             <Link
-              href="/cadastro/empresa/receber-solicitacao"
+              href="/receber-solicitacao"
               className={styles.requestsSection}
             >
               <span className={styles.requestsLabel}>

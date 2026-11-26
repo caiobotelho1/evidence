@@ -1,10 +1,12 @@
 .page {
   box-sizing: border-box;
   min-height: 100vh;
-  padding: 32px 40px 60px;
+  min-height: 100dvh;
+  padding: 0 0 60px;
   background: #FAF9F5;
   color: #1F3D2E;
   font-family: var(--font-inter), Arial, sans-serif;
+  color-scheme: light;
 }
 
 .page *,
@@ -14,13 +16,12 @@
 }
 
 .header {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 24px;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 32px clamp(20px, 5.56vw, 80px);
 }
 
 .brand {
@@ -44,6 +45,7 @@
   width: 36px;
   height: 36px;
   object-fit: contain;
+  flex-shrink: 0;
 }
 
 .tagline {
@@ -57,14 +59,15 @@
 
 .hero {
   max-width: 800px;
-  margin: 120px auto 0;
+  margin: 80px auto 0;
+  padding: 0 20px;
   text-align: center;
 }
 
 .title {
   margin: 0;
   font-family: var(--font-dm-serif), Georgia, serif;
-  font-size: clamp(64px, 7vw, 96px);
+  font-size: clamp(56px, 6vw, 80px);
   font-style: italic;
   font-weight: 400;
   line-height: 1.15;
@@ -72,15 +75,15 @@
 }
 
 .subtitle {
-  margin: 28px 0 0;
+  margin: 20px 0 0;
   font-family: var(--font-inter), Arial, sans-serif;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 400;
   line-height: 1.5;
 }
 
 .description {
-  margin: 22px 0 0;
+  margin: 16px 0 0;
   font-family: var(--font-inter), Arial, sans-serif;
   font-size: 15px;
   font-weight: 400;
@@ -92,7 +95,7 @@
   display: flex;
   justify-content: center;
   gap: 16px;
-  margin-top: 30px;
+  margin-top: 28px;
 }
 
 .primaryButton,
@@ -142,7 +145,8 @@
 .footer {
   width: 100%;
   max-width: 1000px;
-  margin: 110px auto 0;
+  margin: 80px auto 0;
+  padding: 0 20px;
   text-align: center;
 }
 
@@ -164,19 +168,27 @@
 
 @media (max-width: 768px) {
   .page {
-    padding: 20px 16px 40px;
+    padding-bottom: 40px;
+  }
+
+  .header {
+    padding: 24px 20px;
+  }
+
+  .brand {
+    gap: 8px;
   }
 
   .brand span {
-    font-size: 26px;
+    font-size: 28px;
   }
 
   .hero {
-    margin-top: 80px;
+    margin-top: 60px;
   }
 
   .subtitle {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .desktopBreak {
@@ -184,7 +196,7 @@
   }
 
   .footer {
-    margin-top: 80px;
+    margin-top: 60px;
   }
 }
 

@@ -106,13 +106,13 @@ async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         return;
       }
 
-      router.push("/cadastro/solicitar-participacao");
+      router.push("/solicitar-participacao");
       return;
     }
 
     // Responsável que deseja cadastrar a empresa agora.
     if (responsavel && momentoCadastro === "agora") {
-      router.push("/cadastro/empresa");
+      router.push("/empresa");
       return;
     }
 
