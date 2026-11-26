@@ -361,7 +361,17 @@ export default function NovaRegistroModal({
               </label>
 
               <div className={styles.tagSelector}>
-                <div className={styles.tagSelectedArea}>
+                <div className={styles.tagSelectedArea}  
+                  onClick={(event) => {
+                  const target = event.target;
+                  if (!(target instanceof Element)) return;
+                  if (target.closest("button, details")) return;
+                  const dropdown = tagsDropdownRef.current;
+                  if (dropdown) {
+                    dropdown.open = !dropdown.open;
+                    }
+                  }}
+                >
                   {selectedTags.map((tag) => (
                     <span
                       key={tag.id}

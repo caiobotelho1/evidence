@@ -386,6 +386,8 @@
 
 .tagSelectedArea {
   box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
 
   display: flex;
   align-items: center;
@@ -410,6 +412,8 @@
 .tagPlaceholder {
   color: #4A6A41;
   font-size: 14px;
+  cursor: pointer;
+  user-select: none;
 }
 
 .tagChip {
