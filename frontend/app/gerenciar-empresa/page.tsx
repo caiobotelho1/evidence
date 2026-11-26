@@ -1,11 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { DM_Serif_Display, Inter } from "next/font/google";
-import FuncionarioModal, {type Funcionario,} from "@/features/empresa/components/FuncionarioModal";
-import {getMyCompanies,getCompanyMembers,getCompanyMember,removeCompanyMember,type CompanyMember,type MyCompany,} from "@/services/company.service";
+
+import FuncionarioModal, {
+  type Funcionario,
+} from "@/features/empresa/components/FuncionarioModal";
+
+import {
+  getMyCompanies,
+  getCompanyMembers,
+  getCompanyMember,
+  removeCompanyMember,
+  type CompanyMember,
+  type MyCompany,
+} from "@/services/company.service";
+
 import styles from "./gerenciarEmpresa.module.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -37,56 +49,188 @@ function converterFuncionario(member: CompanyMember): Funcionario {
 }
 
 export default function GerenciarEmpresaPage() {
-  const [empresa, setEmpresa] = useState<MyCompany | null>(null);
+  const [menuEmpresaAberto, setMenuEmpresaAberto] = useState(false);
+
+  const [empresas, setEmpresas] = useState<MyCompany[]>([]);
+
+  const [empresaSelecionadaId, setEmpresaSelecionadaId] =
+    useState("");
+
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
+
   const [funcionarioSelecionado, setFuncionarioSelecionado] =
     useState<Funcionario | null>(null);
 
-  const [carregando, setCarregando] = useState(true);
+  const [carregandoEmpresas, setCarregandoEmpresas] = useState(true);
+
+  const [carregandoFuncionarios, setCarregandoFuncionarios] =
+    useState(false);
+
   const [carregandoDetalhes, setCarregandoDetalhes] = useState(false);
+
   const [removendo, setRemovendo] = useState(false);
-  const [erro, setErro] = useState<string | null>(null);
 
-  const carregarDados = useCallback(async () => {
-    setCarregando(true);
-    setErro(null);
+  const [erroEmpresas, setErroEmpresas] = useState<string | null>(null);
 
-    try {
-      const empresas = await getMyCompanies();
+  const [erroFuncionarios, setErroFuncionarios] =
+    useState<string | null>(null);
 
-      const empresaProprietaria = empresas.find(
-        (item) => item.role === "OWNER"
-      );
+  const [erroOperacao, setErroOperacao] = useState<string | null>(null);
 
-      if (!empresaProprietaria) {
-        setEmpresa(null);
-        setFuncionarios([]);
-        setErro("Nenhuma empresa disponível para gerenciamento.");
+  const empresa = empresas.find(
+    (item) => item.id === empresaSelecionadaId
+  );
+
+  const seletorDesabilitado =
+    carregandoDetalhes ||
+    removendo ||
+    Boolean(funcionarioSelecionado);
+
+  // Fecha o dropdown ao clicar fora ou pressionar Escape.
+  useEffect(() => {
+    if (!menuEmpresaAberto) return;
+
+    function fecharMenu(event: MouseEvent) {
+      if (
+        event.target instanceof Element &&
+        !event.target.closest(`.${styles.companyDropdown}`)
+      ) {
+        setMenuEmpresaAberto(false);
+      }
+    }
+
+    function fecharComEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setMenuEmpresaAberto(false);
+        document.getElementById("empresa-atual")?.focus();
+      }
+    }
+
+    document.addEventListener("click", fecharMenu);
+    document.addEventListener("keydown", fecharComEscape);
+
+    return () => {
+      document.removeEventListener("click", fecharMenu);
+      document.removeEventListener("keydown", fecharComEscape);
+    };
+  }, [menuEmpresaAberto]);
+
+  // Carrega todas as empresas que o usuário pode gerenciar.
+  useEffect(() => {
+    let cancelado = false;
+
+    async function carregarEmpresas() {
+      setCarregandoEmpresas(true);
+      setErroEmpresas(null);
+
+      try {
+        const resultado = await getMyCompanies();
+
+        const empresasProprietarias = resultado.filter(
+          (item) => item.role === "OWNER"
+        );
+
+        if (cancelado) return;
+
+        setEmpresas(empresasProprietarias);
+
+        // Seleciona automaticamente quando houver apenas uma empresa.
+        if (empresasProprietarias.length === 1) {
+          setEmpresaSelecionadaId(empresasProprietarias[0].id);
+        }
+      } catch (error) {
+        if (!cancelado) {
+          setErroEmpresas(
+            error instanceof Error
+              ? error.message
+              : "Não foi possível carregar suas empresas."
+          );
+        }
+      } finally {
+        if (!cancelado) {
+          setCarregandoEmpresas(false);
+        }
+      }
+    }
+
+    void carregarEmpresas();
+
+    return () => {
+      cancelado = true;
+    };
+  }, []);
+
+  // Carrega os funcionários sempre que a empresa selecionada mudar.
+  useEffect(() => {
+    let cancelado = false;
+
+    async function carregarFuncionarios() {
+      setFuncionarios([]);
+      setErroFuncionarios(null);
+
+      if (!empresaSelecionadaId) {
+        setCarregandoFuncionarios(false);
         return;
       }
 
-      setEmpresa(empresaProprietaria);
+      setCarregandoFuncionarios(true);
 
-      const membros = await getCompanyMembers(empresaProprietaria.id);
+      try {
+        const membros = await getCompanyMembers(
+          empresaSelecionadaId
+        );
 
-      setFuncionarios(membros.map(converterFuncionario));
-    } catch (error) {
-      console.error("Erro ao carregar empresa:", error);
-      setErro("Não foi possível carregar os dados da empresa.");
-    } finally {
-      setCarregando(false);
+        if (!cancelado) {
+          setFuncionarios(membros.map(converterFuncionario));
+        }
+      } catch (error) {
+        if (!cancelado) {
+          setErroFuncionarios(
+            error instanceof Error
+              ? error.message
+              : "Não foi possível carregar os funcionários."
+          );
+        }
+      } finally {
+        if (!cancelado) {
+          setCarregandoFuncionarios(false);
+        }
+      }
     }
-  }, []);
 
-  useEffect(() => {
-    void carregarDados();
-  }, [carregarDados]);
+    void carregarFuncionarios();
 
+    return () => {
+      cancelado = true;
+    };
+  }, [empresaSelecionadaId]);
+
+  // Altera a empresa selecionada.
+  function selecionarEmpresa(companyId: string) {
+    setMenuEmpresaAberto(false);
+
+    document.getElementById("empresa-atual")?.focus();
+
+    if (seletorDesabilitado) return;
+
+    // Evita recarregar a empresa que já está selecionada.
+    if (companyId === empresaSelecionadaId) return;
+
+    setFuncionarios([]);
+    setFuncionarioSelecionado(null);
+    setErroFuncionarios(null);
+    setErroOperacao(null);
+    setCarregandoFuncionarios(Boolean(companyId));
+    setEmpresaSelecionadaId(companyId);
+  }
+
+  // Carrega os detalhes do funcionário selecionado.
   async function abrirFuncionario(funcionario: Funcionario) {
-    if (!empresa || carregandoDetalhes) return;
+    if (!empresa || carregandoDetalhes || removendo) return;
 
+    setMenuEmpresaAberto(false);
     setCarregandoDetalhes(true);
-    setErro(null);
+    setErroOperacao(null);
 
     try {
       const member = await getCompanyMember(
@@ -96,13 +240,17 @@ export default function GerenciarEmpresaPage() {
 
       setFuncionarioSelecionado(converterFuncionario(member));
     } catch (error) {
-      console.error("Erro ao consultar funcionário:", error);
-      setErro("Não foi possível carregar os detalhes do funcionário.");
+      setErroOperacao(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível carregar os detalhes do funcionário."
+      );
     } finally {
       setCarregandoDetalhes(false);
     }
   }
 
+  // Remove um funcionário da empresa.
   async function handleRemove(funcionario: Funcionario) {
     if (!empresa || removendo) return;
 
@@ -113,7 +261,7 @@ export default function GerenciarEmpresaPage() {
     if (!confirmado) return;
 
     setRemovendo(true);
-    setErro(null);
+    setErroOperacao(null);
 
     try {
       await removeCompanyMember(empresa.id, funcionario.id);
@@ -124,42 +272,45 @@ export default function GerenciarEmpresaPage() {
 
       setFuncionarioSelecionado(null);
     } catch (error) {
-      console.error("Erro ao remover funcionário:", error);
-      setErro("Não foi possível remover o funcionário.");
+      setErroOperacao(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível remover o funcionário."
+      );
     } finally {
       setRemovendo(false);
     }
   }
 
   const nomeEmpresa =
-    empresa?.tradeName || empresa?.legalName || "Gerenciar empresa";
+    empresa?.tradeName?.trim() ||
+    empresa?.legalName ||
+    "Gerenciar empresa";
 
   return (
     <div className={`${styles.page} ${inter.className}`}>
       <header className={styles.header}>
-          <Link
-            href="/"
-            className={styles.logo}
-            aria-label="Evidence — página inicial"
-          >
-            <Image
-              src="/evidence-simbolo.svg"
-              alt=""
-              width={36}
-              height={36}
-              className={styles.brandIcon}
-              priority
-            />
+        <Link
+          href="/tela-principal?ambiente=empresa"
+          className={styles.logo}
+        >
+          <Image
+            src="/evidence-simbolo.svg"
+            alt=""
+            width={36}
+            height={36}
+            priority
+          />
 
-            <span className={dmSerif.className}>Evidence</span>
-          </Link>
+          <span className={dmSerif.className}>Evidence</span>
+        </Link>
 
         <Link
           href="/tela-principal?ambiente=empresa"
           className={styles.backLink}
         >
           <span aria-hidden="true">←</span>
-          Voltar ao início
+          Voltar à timeline
         </Link>
       </header>
 
@@ -169,19 +320,157 @@ export default function GerenciarEmpresaPage() {
         </div>
 
         <h1 className={`${styles.title} ${dmSerif.className}`}>
-          {carregando ? "Carregando..." : nomeEmpresa}
+          {nomeEmpresa}
         </h1>
 
-        {erro && (
-          <p role="alert" style={{ color: "#B65A46", marginBottom: 20 }}>
-            {erro}
+        {/* Seletor de empresas */}
+        <div className={styles.companySelector}>
+          <label
+            id="empresa-label"
+            htmlFor={
+              !carregandoEmpresas &&
+              !erroEmpresas &&
+              empresas.length > 1
+                ? "empresa-atual"
+                : undefined
+            }
+            className={styles.companySelectorLabel}
+          >
+            Empresa
+          </label>
+
+          {carregandoEmpresas ? (
+            <p
+              className={styles.companySelectorStatus}
+              role="status"
+            >
+              Carregando empresas...
+            </p>
+          ) : erroEmpresas ? (
+            <p className={styles.error} role="alert">
+              {erroEmpresas}
+            </p>
+          ) : empresas.length === 0 ? (
+            <p className={styles.companySelectorStatus}>
+              Nenhuma empresa disponível para gerenciamento.
+            </p>
+          ) : empresas.length === 1 ? (
+            <p className={styles.companySelectorName}>
+              {empresas[0].tradeName?.trim() ||
+                empresas[0].legalName}
+            </p>
+          ) : (
+            <div className={styles.companyDropdown}>
+              <button
+                id="empresa-atual"
+                type="button"
+                className={styles.companyDropdownButton}
+                aria-expanded={menuEmpresaAberto}
+                aria-controls={
+                  menuEmpresaAberto
+                    ? "empresa-dropdown-content"
+                    : undefined
+                }
+                aria-labelledby="empresa-label empresa-atual"
+                disabled={seletorDesabilitado}
+                onClick={() =>
+                  setMenuEmpresaAberto((atual) => !atual)
+                }
+              >
+                <span>
+                  {empresa?.tradeName?.trim() ||
+                    empresa?.legalName ||
+                    "Selecione uma empresa"}
+                </span>
+
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className={
+                    menuEmpresaAberto
+                      ? styles.dropdownArrowOpen
+                      : styles.dropdownArrow
+                  }
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M6 9L12 15L18 9"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+
+              {menuEmpresaAberto && !seletorDesabilitado && (
+                <div
+                  id="empresa-dropdown-content"
+                  className={styles.companyDropdownContent}
+                >
+                  <button
+                    type="button"
+                    className={`${styles.companyDropdownItem} ${
+                      !empresaSelecionadaId
+                        ? styles.companyDropdownActive
+                        : ""
+                    }`}
+                    aria-pressed={!empresaSelecionadaId}
+                    onClick={() => selecionarEmpresa("")}
+                  >
+                    <span>Selecione uma empresa</span>
+                  </button>
+
+                  {empresas.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      className={`${styles.companyDropdownItem} ${
+                        empresaSelecionadaId === item.id
+                          ? styles.companyDropdownActive
+                          : ""
+                      }`}
+                      aria-pressed={
+                        empresaSelecionadaId === item.id
+                      }
+                      onClick={() => selecionarEmpresa(item.id)}
+                    >
+                      <span>
+                        {item.tradeName?.trim() ||
+                          item.legalName}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {!carregandoEmpresas &&
+          empresas.length > 1 &&
+          !empresa && (
+            <p className={styles.companySelectorStatus}>
+              Selecione uma empresa para gerenciar seus funcionários.
+            </p>
+          )}
+
+        {erroOperacao && (
+          <p className={styles.error} role="alert">
+            {erroOperacao}
           </p>
         )}
 
         {empresa && (
           <>
+            {/* Solicitações de participação */}
             <Link
-              href="/receber-solicitacao"
+              href={{
+                pathname: "/receber-solicitacao",
+                query: { companyId: empresa.id },
+              }}
               className={styles.requestsSection}
             >
               <span className={styles.requestsLabel}>
@@ -194,6 +483,7 @@ export default function GerenciarEmpresaPage() {
               </span>
             </Link>
 
+            {/* Funcionários */}
             <section className={styles.employeesSection}>
               <div className={styles.sectionHeader}>
                 <h2
@@ -202,14 +492,24 @@ export default function GerenciarEmpresaPage() {
                   Funcionários
                 </h2>
 
-                <span className={styles.employeeCount}>
-                  {funcionarios.length}{" "}
-                  {funcionarios.length === 1 ? "pessoa" : "pessoas"}
-                </span>
+                {!carregandoFuncionarios && !erroFuncionarios && (
+                  <span className={styles.employeeCount}>
+                    {funcionarios.length}{" "}
+                    {funcionarios.length === 1
+                      ? "pessoa"
+                      : "pessoas"}
+                  </span>
+                )}
               </div>
 
-              {carregando ? (
-                <p>Carregando funcionários...</p>
+              {carregandoFuncionarios ? (
+                <p role="status">
+                  Carregando funcionários...
+                </p>
+              ) : erroFuncionarios ? (
+                <p className={styles.error} role="alert">
+                  {erroFuncionarios}
+                </p>
               ) : funcionarios.length === 0 ? (
                 <p>Nenhum funcionário ativo nesta empresa.</p>
               ) : (
@@ -220,7 +520,9 @@ export default function GerenciarEmpresaPage() {
                       key={funcionario.id}
                       className={styles.employeeCard}
                       disabled={carregandoDetalhes || removendo}
-                      onClick={() => void abrirFuncionario(funcionario)}
+                      onClick={() =>
+                        void abrirFuncionario(funcionario)
+                      }
                       aria-label={`Visualizar detalhes de ${funcionario.nome}`}
                     >
                       <span
@@ -243,7 +545,10 @@ export default function GerenciarEmpresaPage() {
                         </span>
                       </span>
 
-                      <span className={styles.cardArrow} aria-hidden="true">
+                      <span
+                        className={styles.cardArrow}
+                        aria-hidden="true"
+                      >
                         ›
                       </span>
                     </button>
@@ -259,9 +564,13 @@ export default function GerenciarEmpresaPage() {
         funcionario={funcionarioSelecionado}
         nomeEmpresa={nomeEmpresa}
         onClose={() => {
-          if (!removendo) setFuncionarioSelecionado(null);
+          if (!removendo) {
+            setFuncionarioSelecionado(null);
+          }
         }}
-        onRemove={(funcionario) => void handleRemove(funcionario)}
+        onRemove={(funcionario) =>
+          void handleRemove(funcionario)
+        }
       />
     </div>
   );

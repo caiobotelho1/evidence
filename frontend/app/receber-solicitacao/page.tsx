@@ -5,6 +5,7 @@ import { DM_Serif_Display, Inter } from "next/font/google";
 import { AuthGate } from "@/features/auth/components/AuthGate";
 import SolicitacaoRecebida from "@/features/empresa/components/ReceberSolicitacaoForm";
 import styles from "./receberSolicitacao.module.css";
+import { Suspense } from "react";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -65,7 +66,9 @@ export default function SolicitacoesPage() {
             </p>
           </div>
 
-          <SolicitacaoRecebida />
+          <Suspense fallback={<p>Carregando solicitações...</p>}>
+            <SolicitacaoRecebida />
+          </Suspense>
         </section>
       </main>
     </AuthGate>

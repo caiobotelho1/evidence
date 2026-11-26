@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthUser } from "@/features/auth/components/AuthGate";
 import {
   approveMembershipRequest,
@@ -12,8 +12,11 @@ import {
 import styles from "./ReceberSolicitacaoForm.module.css";
 
 export default function SolicitacaoRecebida() {
-  const user = useAuthUser();
-  const router = useRouter();
+const user = useAuthUser();
+const router = useRouter();
+
+const searchParams = useSearchParams();
+const companyIdFromUrl = searchParams.get("companyId");
 
   // Empresas nas quais o usuário pode analisar solicitações.
   const companies = useMemo(() => {
@@ -34,10 +37,13 @@ export default function SolicitacaoRecebida() {
   }, [user.memberships]);
 
   // Seleciona inicialmente a primeira empresa disponível.
-  const [selectedCompanyId, setSelectedCompanyId] = useState(
-    () => companies[0]?.companyId ?? ""
+  const [selectedCompanyId, setSelectedCompanyId] = useState(() => {
+  const selectedCompany = companies.find(
+    (company) => company.companyId === companyIdFromUrl
   );
 
+  return selectedCompany?.companyId ?? companies[0]?.companyId ?? "";
+});
   // Guarda o resultado da consulta e possíveis erros.
   const [requestResult, setRequestResult] = useState<{
     companyId: string;
@@ -153,6 +159,7 @@ export default function SolicitacaoRecebida() {
               <select
                 id="company-select"
                 value={selectedCompanyId}
+                disabled={processingRequestId !== null}
                 onChange={(event) => {
                   setRequestResult(null);
                   setSelectedCompanyId(event.target.value);
