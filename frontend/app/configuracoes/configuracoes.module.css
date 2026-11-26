@@ -3,108 +3,195 @@
   min-height: 100vh;
   width: 100%;
   box-sizing: border-box;
-  background: #faf9f5;
-  color: #1f3d2e;
+  overflow-x: hidden;
+
+  background: #FAF9F5;
+  color: #1F3D2E;
 }
 
-/* Cabeçalho */
+/* CABEÇALHO */
 
 .header {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 32px 5.5%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 20px;
+  justify-content: space-between;
+  gap: 24px;
+
+  width: 100%;
+  padding-top: 32px;
+  padding-bottom: 32px;
+
+  padding-left: clamp(20px, 5.56vw, 80px);
+  padding-right: max(32px, calc((100% - 1200px) / 2 + 32px));
+
+  box-sizing: border-box;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+
   flex-shrink: 0;
-  color: #1f3d2e;
+
+  color: #1F3D2E;
   text-decoration: none;
-  font-size: 29px;
+}
+
+.logo img {
+  display: block;
+
+  width: 36px;
+  height: 36px;
+
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.logo span {
+  font-size: 32px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.2;
 }
 
 .backLink {
   display: flex;
   align-items: center;
-  gap: 9px;
-  color: #1f3d2e;
+  gap: 10px;
+
+  color: #1F3D2E;
   text-decoration: none;
-  font-size: 13px;
+
+  font-size: 16px;
   font-weight: 500;
+  line-height: 145%;
+
   transition: opacity 0.2s ease;
+}
+
+.backLink span {
+  font-size: 20px;
 }
 
 .backLink:hover {
   opacity: 0.7;
 }
 
-/* Conteúdo principal */
+/* CONTEÚDO PRINCIPAL */
 
 .main {
   box-sizing: border-box;
-  width: min(100% - 48px, 1264px);
-  margin: 32px auto 0;
-  padding-bottom: 100px;
+
+  width: 100%;
+  max-width: 1200px;
+
+  margin: 0 auto;
+  padding: 24px 32px 48px;
 }
 
 .eyebrow {
   display: block;
-  font-size: 11px;
-  font-weight: 600;
-  color: #4a6a41;
-  letter-spacing: 0.02em;
+
+  margin: 0 0 22px;
+
+  color: #4A6A41;
+
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 145%;
 }
 
 .title {
-  margin: 12px 0;
-  font-size: clamp(32px, 3vw, 40px);
+  margin: 0 0 12px;
+
+  color: #1F3D2E;
+
+  font-size: 40px;
+  font-style: italic;
   font-weight: 400;
-  line-height: 1.2;
+  line-height: 115%;
 }
 
 .subtitle {
-  margin: 0 0 30px;
-  color: #4a6a41;
+  margin: 0 0 24px;
+
+  color: #4A6A41;
+
   font-size: 15px;
   line-height: 1.5;
 }
 
-/* Layout dos cards */
+/* MENSAGENS DE FEEDBACK */
+
+.successMessage {
+  margin: 0 0 20px;
+  padding: 14px 16px;
+
+  background: #E3E8DC;
+  border-radius: 10px;
+
+  color: #1F3D2E;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+
+  margin-bottom: 20px;
+}
+
+.errorMessage {
+  margin: 0;
+
+  color: #900B09;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* LAYOUT DOS CARDS */
 
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
-  gap: 24px;
   align-items: stretch;
+  gap: 24px;
+
+  width: 100%;
 }
 
 .rightColumn {
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 20px;
+
   min-width: 0;
 }
 
-/* Estilo geral dos cards */
+/* ESTILO GERAL DOS CARDS */
 
 .card {
   box-sizing: border-box;
+
   min-width: 0;
   padding: 32px;
-  background: #fff;
-  border: 1px solid #ebe0d0;
-  border-radius: 18px;
+
+  background: #FFFFFF;
+  border: 1px solid #EADFCF;
+  border-radius: 16px;
 }
 
 .card h2 {
   margin: 0 0 18px;
-  color: #1f3d2e;
+
+  color: #1F3D2E;
+
   font-size: 21px;
   font-weight: 600;
   line-height: 1.3;
@@ -112,16 +199,19 @@
 
 .card p {
   margin: 0 0 20px;
-  color: #4a6a41;
-  font-size: 13px;
+
+  color: #4A6A41;
+
+  font-size: 14px;
   line-height: 1.55;
 }
 
-/* Card de dados pessoais */
+/* CARD DE DADOS PESSOAIS */
 
 .grid > .card {
   display: flex;
   flex-direction: column;
+
   min-height: 490px;
 }
 
@@ -129,6 +219,7 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
+
   margin-top: 8px;
   margin-bottom: 30px;
 }
@@ -140,15 +231,18 @@
 }
 
 .field span {
-  color: #4a6a41;
-  font-size: 12px;
+  color: #4A6A41;
+
+  font-size: 13px;
   font-weight: 500;
 }
 
 .field strong {
-  color: #1f3d2e;
+  color: #1F3D2E;
+
   font-size: 16px;
   font-weight: 500;
+
   overflow-wrap: anywhere;
 }
 
@@ -157,7 +251,7 @@
   margin-top: auto;
 }
 
-/* Cards da coluna direita */
+/* CARDS DA COLUNA DIREITA */
 
 .rightColumn .card {
   display: flex;
@@ -173,56 +267,106 @@
   justify-content: flex-start;
 }
 
-/* Botões */
+/* AÇÕES DE EMPRESAS */
+
+.companyActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+
+  width: 100%;
+}
+
+.companyActions .primaryButton {
+  width: 100%;
+  max-width: 100%;
+
+  text-align: center;
+}
+
+/* BOTÕES */
 
 .outlineButton,
 .primaryButton {
   box-sizing: border-box;
-  min-height: 44px;
-  padding: 12px 28px;
-  border-radius: 11px;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.4;
-  cursor: pointer;
-  text-decoration: none;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
   align-self: flex-start;
+
+  min-height: 44px;
+  padding: 12px 28px;
+
+  border-radius: 10px;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+
+  text-decoration: none;
+  text-align: center;
+
+  cursor: pointer;
+
   transition:
     opacity 0.2s ease,
-    background-color 0.2s ease;
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .outlineButton {
-  border: 1px solid #a9b99e;
-  background: #faf9f5;
-  color: #1f3d2e;
+  background: #FAF9F5;
+  border: 1px solid #9CAE8F;
+
+  color: #1F3D2E;
 }
 
 .primaryButton {
-  border: 1px solid #1f3d2e;
-  background: #1f3d2e;
-  color: #fff;
+  background: #1F3D2E;
+  border: 1px solid #1F3D2E;
+
+  color: #FFFFFF;
 }
 
-.outlineButton:hover,
+.outlineButton:hover:not(:disabled) {
+  background: #E3E8DC;
+  border-color: #4A6A41;
+}
+
 .primaryButton:hover {
-  opacity: 0.8;
+  background: #315740;
+  border-color: #315740;
+}
+
+.outlineButton:disabled,
+.primaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .outlineButton:focus-visible,
 .primaryButton:focus-visible,
-.backLink:focus-visible {
-  outline: 2px solid #4a6a41;
+.backLink:focus-visible,
+.logo:focus-visible {
+  outline: 2px solid #4A6A41;
   outline-offset: 3px;
 }
 
-/* Responsividade: tablets */
+/* RESPONSIVIDADE — TABLETS */
 
 @media (max-width: 900px) {
+  .header {
+    padding: 24px;
+    gap: 20px;
+  }
+
+  .main {
+    padding: 24px;
+  }
+
   .grid {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -251,38 +395,52 @@
   }
 }
 
-/* Responsividade: celulares */
+/* RESPONSIVIDADE — CELULARES */
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .header {
+    display: flex;
+    flex-wrap: wrap;
+
+    width: 100%;
     padding: 24px 20px;
-    gap: 12px;
+    gap: 20px;
   }
 
   .logo {
-    font-size: 24px;
-    gap: 7px;
+    gap: 8px;
   }
 
-  .logo svg {
-    width: 30px;
-    height: 30px;
+  .logo span {
+    font-size: 28px;
+  }
+
+  .logo img {
+    width: 32px;
+    height: 32px;
   }
 
   .backLink {
-    font-size: 11px;
-    gap: 5px;
-    white-space: nowrap;
+    font-size: 14px;
+    gap: 8px;
+  }
+
+  .backLink span {
+    font-size: 18px;
   }
 
   .main {
-    width: calc(100% - 40px);
-    margin-top: 24px;
-    padding-bottom: 60px;
+    width: 100%;
+    min-width: 0;
+    padding: 20px 16px 36px;
+  }
+
+  .eyebrow {
+    margin-bottom: 18px;
   }
 
   .title {
-    font-size: 32px;
+    font-size: 34px;
   }
 
   .subtitle {
@@ -290,13 +448,26 @@
     margin-bottom: 24px;
   }
 
+  .grid {
+    gap: 16px;
+  }
+
+  .rightColumn {
+    gap: 16px;
+  }
+
   .card {
     padding: 24px 20px;
-    border-radius: 16px;
+    border-radius: 14px;
   }
 
   .card h2 {
     font-size: 19px;
+    margin-bottom: 16px;
+  }
+
+  .card p {
+    font-size: 13px;
   }
 
   .fields {
@@ -310,6 +481,60 @@
 
   .outlineButton,
   .primaryButton {
-    padding: 12px 22px;
+    padding: 12px 20px;
+    font-size: 13px;
+  }
+
+  .companyActions {
+    gap: 10px;
+  }
+
+  .companyActions .primaryButton {
+    width: 100%;
+  }
+}
+
+/* RESPONSIVIDADE — TELAS MENORES */
+
+@media (max-width: 380px) {
+  .header {
+    padding: 20px 12px;
+    gap: 16px;
+  }
+
+  .logo {
+    gap: 6px;
+  }
+
+  .logo span {
+    font-size: 25px;
+  }
+
+  .logo img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .backLink {
+    font-size: 13px;
+    gap: 6px;
+  }
+
+  .main {
+    padding: 16px 12px 32px;
+  }
+
+  .title {
+    font-size: 30px;
+  }
+
+  .card {
+    padding: 20px 16px;
+  }
+
+  .outlineButton,
+  .primaryButton {
+    padding: 12px 16px;
+    font-size: 12px;
   }
 }
